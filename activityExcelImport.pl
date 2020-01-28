@@ -83,6 +83,8 @@ if ( not $cgi->param('preview') and not $cgi->param('submit') ) {
 <li>Copy and paste from Excel into the textbox below</li>
 <li>Tipp: Test the import with one activity until everything works as expected, only than add more</li>
 <li>Note: The Strava API allows only for <a href="https://developers.strava.com/docs/reference/#api-Activities-createActivity" target="_blank">very few parameters for activity creation</a>, so I can not add more</li>
+<li>A list of already used gear_ids can be found below after caching your activities</li>
+<li>Alternatively set a default gear prior to importing the data, and uses "0" as gear ID</li>
 </ul>';
 
 	say '<form action="activityExcelImport.pl?session=' . $s{'session'} . '" method="post">
@@ -196,7 +198,9 @@ if ( $cgi->param('submit') ) {
 <tbody align="center">';
 	foreach my $line (@lines) {
 		my ( $type, $date, $duration, $dist, $name, $desc, $commute, $trainer, $elev_gain, $gear_id ) = extractFromLine($line);
-		$date =~ s/^(\d{4}\-\d{2}\-\d{2}) (\d{2}:\d{2}:\d{2})$/$1T$2Z/;    #  "2018-02-20T10:02:13Z",
+		$date =~ s/^(\d{4}\-\d{2}\-\d{2}) (\d{2}:\d{2}:\d{2})$/$1T$2Z/;    #  "2018-02-20T10:02:13Z"
+    # if time is 00:00:00 -> 00:00:01 to ensure the correct day is used by Strava
+    $date =~ s/T00:00:00Z/T00:00:01Z/;
 		foreach my $s ( $name, $desc ) {
 			$s =~ s/\s+/%20/g;                                               # replace spaces by %20
 			 # UTF -> HTML, not working as in "schön"
