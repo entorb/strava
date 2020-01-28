@@ -53,7 +53,7 @@ if ( $cgi->param('importtext') or $cgi->param('submit') ) {
 
 my $tableheader = '
 <tr>
-<th>Type<br/><small>Run/<br/>Ride</small></th>
+<th>Type<br/><small>Run/<br/>Ride/<br/>Swim</small></th>
 <th>Date<br/><small>YYYY-MM-DD HH:MM:SS<br/>2019-05-14 20:45:00</small></th>
 <th>Duration<br/><small>seconds<br/>3600</small></th>
 <th>Distance*<br/><small>meter<br/>12000</small></th>
@@ -83,6 +83,8 @@ if ( not $cgi->param('preview') and not $cgi->param('submit') ) {
 <li>Copy and paste from Excel into the textbox below</li>
 <li>Tipp: Test the import with one activity until everything works as expected, only than add more</li>
 <li>Note: The Strava API allows only for <a href="https://developers.strava.com/docs/reference/#api-Activities-createActivity" target="_blank">very few parameters for activity creation</a>, so I can not add more</li>
+<li>A list of already used gear_ids can be found below after caching your activities</li>
+<li>Alternatively set a default gear prior to importing the data, and uses "0" as gear ID</li>
 </ul>';
 
 	say '<form action="activityExcelImport.pl?session=' . $s{'session'} . '" method="post">
@@ -196,7 +198,9 @@ if ( $cgi->param('submit') ) {
 <tbody align="center">';
 	foreach my $line (@lines) {
 		my ( $type, $date, $duration, $dist, $name, $desc, $commute, $trainer, $elev_gain, $gear_id ) = extractFromLine($line);
-		$date =~ s/^(\d{4}\-\d{2}\-\d{2}) (\d{2}:\d{2}:\d{2})$/$1T$2Z/;    #  "2018-02-20T10:02:13Z",
+		$date =~ s/^(\d{4}\-\d{2}\-\d{2}) (\d{2}:\d{2}:\d{2})$/$1T$2Z/;    #  "2018-02-20T10:02:13Z"
+    # if time is 00:00:00 -> 00:00:01 to ensure the correct day is used by Strava
+    $date =~ s/T00:00:00Z/T00:00:01Z/;
 		foreach my $s ( $name, $desc ) {
 			$s =~ s/\s+/%20/g;                                               # replace spaces by %20
 			 # UTF -> HTML, not working as in "schön"
@@ -207,7 +211,9 @@ if ( $cgi->param('submit') ) {
 
 		# say "'$_'" foreach ( $type, $date, $duration, $dist, $name, $desc, $commute, $trainer, $elev_gain );
 		my $param = "name=$name&type=$type&start_date_local=$date&elapsed_time=$duration&description=$desc&distance=$dist&trainer=$trainer&commute=$commute&elev_gain=$elev_gain&gear_id=$gear_id";
-
+    if ($type eq 'Swim') {
+      $param = "name=$name&type=$type&start_date_local=$date&elapsed_time=$duration&description=$desc&distance=$dist";
+    }
 		# say "<p><code>debug for Dave 1:<br/>param= '$param'</code></p>";
 
 		# say "<p>param = $param</p>";
@@ -249,8 +255,8 @@ TMsStrava::htmlPrintFooter($cgi);
 sub check {
 	my ( $type, $date, $duration, $dist, $name, $desc, $commute, $trainer, $elev_gain, $gear_id ) = @_;
 	my $error = '';
-	if ( not grep { $type eq $_ } qw (Run Ride) ) {
-		$error .= "<br/>Type '$type' must be Run or Ride.";
+	if ( not grep { $type eq $_ } qw (Run Ride Swim) ) {
+		$error .= "<br/>Type '$type' must be Run, Ride or Swim.";
 	}
 	if ( not $date =~ m/^(\d{4})\-(\d{2})\-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/ ) {    # YYYY-MM-DD HH:MM:SS
 		$error .= "<br/>Date '$date' must be formatted YYYY-MM-DD HH:MM:SS.";

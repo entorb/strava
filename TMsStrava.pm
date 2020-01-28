@@ -1076,7 +1076,7 @@ sub send_mail {
   my ( $subject, $body, $to_address ) = @_;
   logSubStart( 'send_mail' );
   $subject = encode( 'UTF-8', $subject );
-  $body    = encode( 'UTF-8', $body );
+  # $body    = encode( 'UTF-8', $body ); # no need for conversion here
   my $mailprog = '/usr/lib/sendmail';
   open( MAIL, "|$mailprog -t" ) || print STDERR "Mail-Error\n";
   print MAIL "To: $to_address\n";
