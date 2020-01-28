@@ -40,7 +40,7 @@ numPointsInRange (datafile, min, max, col) = 0 + system ("perl -e '\
 # print numPointsInRange (data, date_min, fitHigh0, 12)
 
 # settings for terminal 
-set terminal png size 800,600 font myFont
+set terminal png size 1200,600 font myFont
 # crop 
 # set terminal png giant size 3*360,3*180
 

@@ -53,7 +53,7 @@ if ( $cgi->param('importtext') or $cgi->param('submit') ) {
 
 my $tableheader = '
 <tr>
-<th>Type<br/><small>Run/<br/>Ride</small></th>
+<th>Type<br/><small>Run/<br/>Ride/<br/>Swim</small></th>
 <th>Date<br/><small>YYYY-MM-DD HH:MM:SS<br/>2019-05-14 20:45:00</small></th>
 <th>Duration<br/><small>seconds<br/>3600</small></th>
 <th>Distance*<br/><small>meter<br/>12000</small></th>
@@ -207,7 +207,9 @@ if ( $cgi->param('submit') ) {
 
 		# say "'$_'" foreach ( $type, $date, $duration, $dist, $name, $desc, $commute, $trainer, $elev_gain );
 		my $param = "name=$name&type=$type&start_date_local=$date&elapsed_time=$duration&description=$desc&distance=$dist&trainer=$trainer&commute=$commute&elev_gain=$elev_gain&gear_id=$gear_id";
-
+    if ($type eq 'Swim') {
+      $param = "name=$name&type=$type&start_date_local=$date&elapsed_time=$duration&description=$desc&distance=$dist";
+    }
 		# say "<p><code>debug for Dave 1:<br/>param= '$param'</code></p>";
 
 		# say "<p>param = $param</p>";
@@ -249,8 +251,8 @@ TMsStrava::htmlPrintFooter($cgi);
 sub check {
 	my ( $type, $date, $duration, $dist, $name, $desc, $commute, $trainer, $elev_gain, $gear_id ) = @_;
 	my $error = '';
-	if ( not grep { $type eq $_ } qw (Run Ride) ) {
-		$error .= "<br/>Type '$type' must be Run or Ride.";
+	if ( not grep { $type eq $_ } qw (Run Ride Swim) ) {
+		$error .= "<br/>Type '$type' must be Run, Ride or Swim.";
 	}
 	if ( not $date =~ m/^(\d{4})\-(\d{2})\-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/ ) {    # YYYY-MM-DD HH:MM:SS
 		$error .= "<br/>Date '$date' must be formatted YYYY-MM-DD HH:MM:SS.";
