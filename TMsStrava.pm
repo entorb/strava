@@ -41,7 +41,7 @@ $o{ 'dataFolderBase' }          = '/home/entorb/data-web-pages/strava';
 $o{ 'tmpDataFolderBase' }       = $o{ 'dataFolderBase' } . '/tmp';
 $o{ 'tmpDownloadFolderBase' }   = './download';
 $o{ 'dirKnownLocationsBase' }   = $o{ 'dataFolderBase' } . '/knownLocations';
-$o{ 'ageDeleteOldDataFolders' } = 7200; # s
+$o{ 'ageDeleteOldDataFolders' } = 7200;                                         # s
 $o{ 'urlStravaAPI' }            = "https://www.strava.com/api/v3";
 $o{ 'cityGeoDatabase' }         = $o{ 'dataFolderBase' } . '/city-gps.dat';
 
@@ -113,6 +113,7 @@ sub initSessionVariables {
   $s{ 'tmpDownloadFolder' }          = "$o{'tmpDownloadFolderBase'}/$session";
   $s{ 'pathToActivityListHashDump' } = "$s{'tmpDataFolder'}/activityList/activityList-Array.dmp";
   $s{ 'pathToGearHashDump' }         = "$s{'tmpDataFolder'}/gear.dmp";
+  $s{ 'pathToClubsHashDump' }        = "$s{'tmpDataFolder'}/clubs.dmp";
 
   my $fileIn = "$s{'tmpDataFolder'}/session.txt";
   if ( not -f $fileIn ) {
@@ -386,12 +387,12 @@ sub convertJSONcont2Hash {
   logSubStart( 'convertJSONcont2Hash' );
   # say "<p><code>debug for Dave 2:<br/>json= '$cont'</code></p>";
   my $j       = JSON->new->allow_nonref;
-  my $decoded  = {}; # empty hash ref
-  if (length ($cont) > 0 ) {
-    $decoded = $j->decode( $cont ) ;
+  my $decoded = {};                        # empty hash ref
+  if ( length( $cont ) > 0 ) {
+    $decoded = $j->decode( $cont );
     die "E: message '$decoded' is no HASHREF" if ( not ref( $decoded ) eq "HASH" );
   }
-  return %{ $decoded };    # ref -> hash
+  return %{ $decoded };                    # ref -> hash
 } ## end sub convertJSONcont2Hash
 
 
@@ -771,7 +772,8 @@ sub sortArrayHashRefsAbcAsc {
     $aHash{ $fieldname } cmp $bHash{ $fieldname };
   } @list;
   return @sorted;
-} ## end sub sortArrayHashRefsNumAsc
+} ## end sub sortArrayHashRefsAbcAsc
+
 
 sub zipFiles {
   # Zipping of activityJSONs
@@ -799,8 +801,8 @@ sub fetchSegmentsStarred {
   my ( $token ) = @_;
   logSubStart( 'fetchSegmentsStarred' );
   my $cont = getContfromURL( "$o{'urlStravaAPI'}/segments/starred?per_page=200&page=1", $token );
-  my @L = convertJSONcont2Array( $cont );
-  return sortArrayHashRefsAbcAsc ('name', @L);
+  my @L    = convertJSONcont2Array( $cont );
+  return sortArrayHashRefsAbcAsc( 'name', @L );
 } ## end sub fetchSegmentsStarred
 
 
@@ -822,10 +824,11 @@ sub fetchSegment {
   # out: hash
   my ( $token, $segmentid ) = @_;
   logSubStart( 'fetchSegment' );
-  my $cont        = getContfromURL( "$o{'urlStravaAPI'}/segments/$segmentid", $token );
-  my %h           = convertJSONcont2Hash( $cont );
+  my $cont = getContfromURL( "$o{'urlStravaAPI'}/segments/$segmentid", $token );
+  my %h    = convertJSONcont2Hash( $cont );
   return %h;
 } ## end sub fetchSegment
+
 
 sub fetchSegmentRecord {
   # fetch leaderboard rank 1
@@ -842,34 +845,75 @@ sub fetchSegmentRecord {
 
 
 sub fetchSegmentLeaderboard {
-  # fetch leaderboard
-  # in: Token, segmentid
-  # out: hash of segment leaderboard
-  my ( $token, $segmentid ) = @_;
+  my ( $token, $segment_id, $date_range, $club_id ) = @_;
   logSubStart( 'fetchSegmentLeaderboard' );
-  my $cont = getContfromURL( "$o{'urlStravaAPI'}/segments/$segmentid/leaderboard?per_page=200&page=1", $token );
-  #  say "<code>$cont</code>";
-  my %h           = convertJSONcont2Hash( $cont );
-  my $entry_count = $h{ "entry_count" };
-  say $entry_count;
-  my $ranking = $h{ "entries" };
-  my @rank    = @{ $ranking };
-  my %h2      = %{ $rank[ 0 ] };
-  my $recTime = $h2{ "elapsed_time" };
-  say Dumper %h2;
+  # validate date_range
+  $date_range = "" unless grep { $date_range eq $_ } qw (this_year this_month this_week today);
+  $club_id = "" if $club_id == 0;
+  my $page        = 1;
+  my $lastpage    = 0;
+  my $entry_count = 0;
+  my @list;
 
-  return ( $entry_count, $ranking );
+  while ( $lastpage != 1 and $page <= 10 ) {
+    my $url  = "$o{ 'urlStravaAPI' }/segments/$segment_id/leaderboard?per_page=200&following=false&date_range=$date_range&club_id=$club_id&page=$page";
+    my $cont = getContfromURL( $url, $token );
+    my %h    = convertJSONcont2Hash( $cont );
+
+    $entry_count = $h{ "entry_count" } if $entry_count == 0;
+    my @entries_this_page = @{ $h{ "entries" } };
+    $lastpage = 1 if ( $#entries_this_page < 200 );
+    foreach my $hashref ( @entries_this_page ) {
+      my %h2      = %{ $hashref };
+      my $listref = [ $h2{ "rank" }, $h2{ "moving_time" }, $h2{ "athlete_name" }, formatDate( $h2{ "start_date_local" }, 'date' ) ];
+      push( @list, $listref );
+    }
+
+    # {
+    #   'start_date_local' =&gt; '2019-02-28T15:08:36Z',
+    #   'start_date' =&gt; '2019-02-28T14:08:36Z',
+    #   'rank' =&gt; 182,
+    #   'moving_time' =&gt; 133,
+    #   'elapsed_time' =&gt; 133,
+    #   'athlete_name' =&gt; 'xxxx'
+    # };
+
+    $page += 1;
+
+  } ## end while ( $lastpage != 1 and...)
+  # print Dumper @list;
+  return @list;
 } ## end sub fetchSegmentLeaderboard
+
+
+sub fetchClubs {
+  # TODO: caching via $s{ 'pathToClubsHashDump' }
+  my ( $token ) = @_;
+  logSubStart( 'fetchClubs' );
+  my @list;
+
+  my $url  = "$o{ 'urlStravaAPI' }/athlete/clubs?per_page=200";
+  my $cont = getContfromURL( $url, $token );
+  my @l    = convertJSONcont2Array( $cont );
+  foreach my $hashref ( @l ) {
+    my %h2      = %{ $hashref };
+    my $listref = [ $h2{ "id" }, $h2{ "name" }, $h2{ "member_count" }, $h2{ "sport_type" }, $h2{ "city" } ];
+    push( @list, $listref );
+  }
+  return @list;
+} ## end sub fetchClubs
 
 
 sub formatDate {
   # convert 2019-05-16T14:18:00Z -> 2019-05-16 14:18:00
   my ( $date, $format ) = @_;
   logSubStart( 'formatDate' );
-  if ($format eq 'datetime') {
+  if ( $format eq 'datetime' ) {
     $date =~ s/^(\d{4}\-\d{2}\-\d{2})T(\d{2}:\d{2}:\d{2})Z$/$1 $2/;
-  } elsif ($format eq 'date') {
+  } elsif ( $format eq 'date' ) {
     $date =~ s/^(\d{4}\-\d{2}\-\d{2})T(\d{2}:\d{2}:\d{2})Z$/$1/;
+  } else {
+    die "format '$format' unknown";
   }
 
   return $date;
@@ -893,6 +937,7 @@ sub activityUrl {
   my ( $id, $name ) = @_;
   return '<a href="https://www.strava.com/activities/' . $id . '" target="_blank">' . $name . '</a>';
 } ## end sub activityUrl
+
 
 sub htmlPrintHeader {
   # print html header using $cgi->header and $cgi->start_html
@@ -972,6 +1017,13 @@ sub htmlPrintNavigation {
 	<form action="segments.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnSegments" value="Starred Segments"
   title="Fetch starred segments"/>
+	<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
+	</form>';
+
+  say '
+	<form action="segmentLeaderboard.pl" method="post">
+	<input type="submit" name="submitFromNav" class="navButton" id="btnSegmentLeaderboard" value="Segment Leaderboard"
+  title="Fetch a segment\'s Leaderboard"/>
 	<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
 	</form>';
 
