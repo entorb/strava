@@ -1,0 +1,20 @@
+URL Tests
+token as parameter
+https://www.strava.com/api/v3/segments/23504293/leaderboard?access_token=xxx
+
+CURL
+# This works
+curl -X GET "https://www.strava.com/api/v3/athlete?access_token=xxx" -H "accept: application/json"
+
+# Token in header is more secure, as this will not be included in webserver logs
+curl -X GET "https://www.strava.com/api/v3/athlete" -H "accept: application/json" -H "Authorization: Bearer xxx"
+
+# now using bash variables
+BASEURL="https://www.strava.com/api/v3"
+TOKEN="Authorization: Bearer xxx"
+# athlete data according to access token
+
+PARA="?per_page=3&page=1"
+URL="$BASEURL/athlete/activities$PARA" 
+
+curl -X GET "$URL" -H "Accept: application/json" -H "Accept-Charset: UTF-8" -H "$TOKEN"
