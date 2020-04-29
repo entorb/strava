@@ -845,7 +845,7 @@ sub fetchSegmentRecord {
 
 
 sub fetchSegmentLeaderboard {
-  my ( $token, $segment_id, $date_range, $club_id ) = @_;
+  my ( $token, $segment_id, $date_range, $club_id, $gender, $age_group ) = @_;
   logSubStart( 'fetchSegmentLeaderboard' );
   # validate date_range
   $date_range = "" unless grep { $date_range eq $_ } qw (this_year this_month this_week today);
@@ -854,9 +854,14 @@ sub fetchSegmentLeaderboard {
   my $lastpage    = 0;
   my $entry_count = 0;
   my @list;
+  if    ( $gender eq 'men' )   { $gender = 'M'; }
+  elsif ( $gender eq 'women' ) { $gender = 'F'; }
+  else                         { $gender = ''; }
+
+  $age_group = '' if ( $age_group eq 'all_age' );
 
   while ( $lastpage != 1 and $page <= 10 ) {
-    my $url  = "$o{ 'urlStravaAPI' }/segments/$segment_id/leaderboard?per_page=200&following=false&date_range=$date_range&club_id=$club_id&page=$page";
+    my $url  = "$o{ 'urlStravaAPI' }/segments/$segment_id/leaderboard?per_page=200&following=false&gender=$gender&age_group=$age_group&date_range=$date_range&club_id=$club_id&page=$page";
     my $cont = getContfromURL( $url, $token );
     my %h    = convertJSONcont2Hash( $cont );
 
@@ -865,7 +870,7 @@ sub fetchSegmentLeaderboard {
     $lastpage = 1 if ( $#entries_this_page < 200 );
     foreach my $hashref ( @entries_this_page ) {
       my %h2      = %{ $hashref };
-      my $listref = [ $h2{ "rank" }, $h2{ "moving_time" }, $h2{ "athlete_name" }, formatDate( $h2{ "start_date_local" }, 'date' ) ];
+      my $listref = [ $h2{ "rank" }, $h2{ "elapsed_time" }, $h2{ "athlete_name" }, formatDate( $h2{ "start_date_local" }, 'date' ) ];
       push( @list, $listref );
     }
 

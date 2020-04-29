@@ -51,6 +51,8 @@ if ( $cgi->param( 'segment_id' ) and $cgi->param( 'segment_id' ) =~ m /^\d+$/ ) 
 }
 if ( $cgi->param( 'date_range' ) ) { $formparam{ 'date_range' } = $cgi->param( 'date_range' ); }
 if ( $cgi->param( 'club_id' ) and $cgi->param( 'club_id' ) =~ m /^\d+$/ ) { $formparam{ 'club_id' } = $cgi->param( 'club_id' ) + 0; }
+if ( $cgi->param( 'gender' ) )    { $formparam{ 'gender' }    = $cgi->param( 'gender' ); }
+if ( $cgi->param( 'age_group' ) ) { $formparam{ 'age_group' } = $cgi->param( 'age_group' ); }
 
 say "<p>A segment ID looks like 17204908 in https://www.strava.com/segments/17204908</p>";
 
@@ -70,19 +72,33 @@ for my $s ( qw( all_time this_year this_month this_week today) ) {
 say "</select>";
 
 say "<select name=\"club_id\">";
-say "<option value=\"0\" " . ( $formparam{ 'club_id' } eq 0 ? 'selected' : '' ) . ">any club</option>";
+say "<option value=\"0\" " . ( $formparam{ 'club_id' } eq 0 ? 'selected' : '' ) . ">any_club</option>";
 for my $ref ( @clubs ) {
   my @l = @{ $ref };    # id, name, member_count, sport_type, city
   say "<option value=\"$l[0]\" " . ( $formparam{ 'club_id' } eq $l[ 0 ] ? 'selected' : '' ) . ">$l[1]</option>";
 }
 say "</select>";
 
+say "<select name=\"gender\">";
+for my $s ( qw( men_and_women men women ) ) {
+  say "<option value=\"$s\" " . ( $formparam{ 'gender' } eq $s ? 'selected' : '' ) . ">$s</option>";
+}
+say "</select>";
+
+say "<select name=\"age_group\">";
+for my $s ( qw( all_age 0_19 20_24 25_34 35_44 45_54 55_64 65_69 70_74 75_plus ) ) {
+  say "<option value=\"$s\" " . ( $formparam{ 'age_group' } eq $s ? 'selected' : '' ) . ">$s</option>";
+}
+say "</select>*";
+
 say "<input type=\"submit\" name=\"submit\" value=\"Submit\"/> 
   </form>";
+say "<p>* age filtering requires Strava 'Summit' subscription</p>";
 
 # form was submitted, so the search is performed
+# TODO: all -> gender variable
 if ( $cgi->param( 'submit' ) ) {
-  my @list = TMsStrava::fetchSegmentLeaderboard( $s{ 'token' }, $formparam{ 'segment_id' }, $formparam{ 'date_range' }, $formparam{ 'club_id' } );
+  my @list = TMsStrava::fetchSegmentLeaderboard( $s{ 'token' }, $formparam{ 'segment_id' }, $formparam{ 'date_range' }, $formparam{ 'club_id' }, $formparam{ 'gender' }, $formparam{ 'age_group' } );
 
   say "<table border='1'>";
   say "<tr><th>Rank</th><th>Time (s)</th><th>Name</th><th>Date</th></tr>";
