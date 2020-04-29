@@ -6,3 +6,4 @@ download
 0-*.pl
 index-*.html
 stats.*
+.vstags
