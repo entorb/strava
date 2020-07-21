@@ -195,6 +195,7 @@ if ( not $cgi->param("code") ) {    # and not $cgi->param("session") ?
 	say '
 <h3>List of changes</h3>
 <ul>
+<li>2020-07-21: fancy activities table</li>
 <li>2019-06-08: top10 activities</li>
 <li>2019-05-21: starred segments overview</li>
 <li>2019-05-21: Excel import of activities</li>
