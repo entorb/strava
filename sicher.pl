@@ -28,14 +28,14 @@ use Encode qw(encode decode);
 @_ = localtime time;
 
 # ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime (time);
-my $datestr = sprintf "%02d%02d%02d-%02d%02d%02d", $_[5] + 1900 - 2000, $_[4] + 1, $_[3], $_[2], $_[1], $_[0];
+my $datestr = sprintf "%02d%02d%02d-%02d%02d%02d", $_[ 5 ] + 1900 - 2000, $_[ 4 ] + 1, $_[ 3 ], $_[ 2 ], $_[ 1 ], $_[ 0 ];
 
 my $outfile = "/home/entorb/sicher/strava/$datestr.zip";
 
 say $outfile;
 
 my @listOfFiles;
-push @listOfFiles, grep {-f} <*>; # files only
+push @listOfFiles, grep {-f} <*>;    # files only
 push @listOfFiles, <screenshots/*>;
 push @listOfFiles, <download/*.xlsx>;
 push @listOfFiles, <gnuplot/*.gp>;
@@ -43,23 +43,25 @@ push @listOfFiles, '/home/entorb/data-web-pages/strava/city-gps.dat';
 
 # print Dumper @listOfFiles;
 
-zipFiles($outfile, @listOfFiles);
+zipFiles( $outfile, @listOfFiles );
 
 
 sub zipFiles {
 
-	# Zipping of activityJSONs
-	# in: $pathToZip, @files , both in absolute path
-	# out: nothing
-	my ( $pathToZip, @files ) = @_;
-	use IO::Compress::Zip qw(zip $ZipError);
-	zip \@files => $pathToZip,
-	  FilterName => sub {s<.*[/\\]><>}    # trim path, filename only
-	  , TextFlag      => 1                                                           # It is used to signal that the data stored in the zip file/buffer is probably text.
-	  , CanonicalName => 1                                                           # This option controls whether the filename field in the zip header is normalized into Unix format before being written to the zip file.
-	  , ZipComment    => "Created by Torben's Stava App https://entorb.net/strava"
+  # Zipping of activityJSONs
+  # in: $pathToZip, @files , both in absolute path
+  # out: nothing
+  my ( $pathToZip, @files ) = @_;
+  use IO::Compress::Zip qw(zip $ZipError);
+  zip \@files  => $pathToZip,
+      TextFlag => 1             # It is used to signal that the data stored in the zip file/buffer is probably text.
+      , CanonicalName => 1                                                           # This option controls whether the filename field in the zip header is normalized into Unix format before being written to the zip file.
+      , ZipComment    => "Created by Torben's Stava App https://entorb.net/strava"
 
-	  # , Level => 9 # [0..9], 0=none, 9=best compression
-	  or die "zip failed: $ZipError\n";
-	return;
-}
+      # , Level => 9 # [0..9], 0=none, 9=best compression
+      or die "zip failed: $ZipError\n";
+  return;
+} ## end sub zipFiles
+
+# FilterName =>  sub {s<.*[/\\]><>}    # trim path, filename only
+
