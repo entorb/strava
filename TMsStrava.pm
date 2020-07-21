@@ -112,6 +112,7 @@ sub initSessionVariables {
   $s{ 'tmpDataFolder' }              = "$o{'tmpDataFolderBase'}/$session";
   $s{ 'tmpDownloadFolder' }          = "$o{'tmpDownloadFolderBase'}/$session";
   $s{ 'pathToActivityListHashDump' } = "$s{'tmpDataFolder'}/activityList/activityList-Array.dmp";
+  $s{ 'pathToActivityListJsonDump' } = "$o{'tmpDownloadFolderBase'}/$session/activityList.json";
   $s{ 'pathToGearHashDump' }         = "$s{'tmpDataFolder'}/gear.dmp";
   $s{ 'pathToClubsHashDump' }        = "$s{'tmpDataFolder'}/clubs.dmp";
 
@@ -1033,6 +1034,13 @@ sub htmlPrintNavigation {
 	</form>';
 
   say '
+	<form action="activityTable.pl" method="post">
+	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats" value="Activity Table" ' . $missingActivityCacheDisablesButton . ' 
+  title="display statistics of your activities
+(requires caching first)" />
+	<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
+	</form>
+
 	<form action="activityStats.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats" value="Activity Statistics" ' . $missingActivityCacheDisablesButton . ' 
   title="display statistics of your activities
