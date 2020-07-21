@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+    <title>Strava - Tabulator Test</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Dr. Torben Menke">
+    <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+    <script src="./activity-tabulator.js"></script>
+    <script src="/COVID-19-coronavirus/eCharts/jquery-3.5.0.min.js"></script>
+    <!-- Polyfiles for IE, suggested by Tabulator : http://tabulator.info/docs/4.6/browsers#ie -->
+    <script src="/COVID-19-coronavirus/tabulator/polyfill.min.js"></script>
+    <script src="/COVID-19-coronavirus/tabulator/fetch.umd.js"></script>
+    <!-- Tabulator -->
+    <link href="/COVID-19-coronavirus/tabulator/tabulator.min.css" rel="stylesheet">
+    <script src="/COVID-19-coronavirus/tabulator/tabulator-4.6.min.js"></script>
+    <div id="table-activity-list"></div>
+    <!--  
+    Start JavaScript  
+  -->
+    <script>
+        // variables
+        const promises = []; // array of promises for async fetching        
+
+        // ASync JQuery fetching
+        function fetch_table_data() {
+            table.setData("https://entorb.net/strava-test/download/nmB4U_RtF9-RMs0QfQ7-Hg/activityList.json", {}, "get")
+        }
+
+        // define and populate table
+        var table = defineTable();
+        promises.push(fetch_table_data());
+
+    </script>
+</body>
+
+</html>
