@@ -36,40 +36,40 @@ my $cgi = CGI->new;
 use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 
 # Modules: My Strava Module Lib
-use lib ('.');
+use lib ( '.' );
 use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just for making Visual Studio Code happy
 use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
 use TMsStrava qw( %o %s);                                              # at entorb.net some modules require use local::lib!!!
 
 TMsStrava::htmlPrintHeader( $cgi, 'List of activities' );
-TMsStrava::initSessionVariables( $cgi->param("session") );
+TMsStrava::initSessionVariables( $cgi->param( "session" ) );
 TMsStrava::htmlPrintNavigation();
 
 # if not already done, fetchActivityList, 200 per page into dir activityList
-unless ( -f $s{'pathToActivityListHashDump'} ) {
-	die("E: activity cache missing");
+unless ( -f $s{ 'pathToActivityListHashDump' } ) {
+  die( "E: activity cache missing" );
 }
 
-TMsStrava::logIt("reading activity data from dmp file");
-my $ref               = retrieve( $s{'pathToActivityListHashDump'} );    # retrieve data from file (as ref)
-my @allActivityHashes = @{$ref};                                         # convert arrayref to array
+TMsStrava::logIt( "reading activity data from dmp file" );
+my $ref               = retrieve( $s{ 'pathToActivityListHashDump' } );    # retrieve data from file (as ref)
+my @allActivityHashes = @{ $ref };                                         # convert arrayref to array
 
 my $pathToZip = "$s{'tmpDownloadFolder'}/ActivityList.zip";
 
 # zip jsons if not already done
 unless ( -f $pathToZip ) {
-	my $dir = dirname($pathToZip);
-	make_path $dir unless -d $dir;
-	undef $dir;
-	my @L = <$s{'tmpDataFolder'}/activityList/*.json>;
-	TMsStrava::zipFiles( $pathToZip, @L );
+  my $dir = dirname( $pathToZip );
+  make_path $dir unless -d $dir;
+  undef $dir;
+  my @L = <$s{'tmpDataFolder'}/activityList/*.json>;
+  TMsStrava::zipFiles( $pathToZip, @L );
 } ## end unless ( -f $pathToZip )
 
 say "<p>Download your data as <a href=\"$pathToZip\">zipped .json files</a></p>";
 
 say '
-<form action="modify_activities.pl?session=' . $s{'session'} . '" method="post">
-<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+<form action="activityModify.pl?session=' . $s{ 'session' } . '" method="post">
+<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
 <table width="100%" border="1" cellpadding="2" cellspacing="0">
 <input type="submit" name="submitFromActivityList" value="Edit selected"/>
 <tr>
@@ -77,21 +77,21 @@ say '
 </tr>
 ';
 my $rownum = 0;
-foreach my $activity (@allActivityHashes) {
-	$rownum++;
-	my %h = %{$activity};    # each $activity is a hashref
-	 #say "<tr>$h{'id'} - $h{'name'}<br>";
-	if ( not defined $h{"moving_time"} ) {
-		$h{"x_min"} = 0;
-	}
-	say "<tr class=\"r" . ( ( $rownum % 2 == 1 ) ? '1' : '2' ) . "\">";    # alternating tr class
-	say "  <td>
+foreach my $activity ( @allActivityHashes ) {
+  $rownum++;
+  my %h = %{ $activity };    # each $activity is a hashref
+  #say "<tr>$h{'id'} - $h{'name'}<br>";
+  if ( not defined $h{ "moving_time" } ) {
+    $h{ "x_min" } = 0;
+  }
+  say "<tr class=\"r" . ( ( $rownum % 2 == 1 ) ? '1' : '2' ) . "\">";    # alternating tr class
+  say "  <td>
   <input type=\"checkbox\" name=\"activityID\" value=\"$h{'id'}\">
   </td>	
-  <td>$h{'type'}</td><td>" . TMsStrava::formatDate( $h{'start_date_local'}, 'datetime' ) . "</td><td>" . TMsStrava::activityUrl( $h{"id"}, $h{"name"} ) . "</td><td>" . TMsStrava::secToMinSec( $h{"moving_time"} ) . "</td><td>$h{'commute'}</td><td>$h{'trainer'}</td><td>$h{'visibility'}</td>
+  <td>$h{'type'}</td><td>" . TMsStrava::formatDate( $h{ 'start_date_local' }, 'datetime' ) . "</td><td>" . TMsStrava::activityUrl( $h{ "id" }, $h{ "name" } ) . "</td><td>" . TMsStrava::secToMinSec( $h{ "moving_time" } ) . "</td><td>$h{'commute'}</td><td>$h{'trainer'}</td><td>$h{'visibility'}</td>
 </tr>";
 } ## end foreach my $activity ( @allActivityHashes)
 say '</table>
 </form>';
 
-TMsStrava::htmlPrintFooter($cgi);
+TMsStrava::htmlPrintFooter( $cgi );
