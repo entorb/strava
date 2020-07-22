@@ -26,13 +26,14 @@ use Encode qw(encode decode);
 
 # use File::Path qw/remove_tree/;
 use Time::Local;
-use Storable;               # read and write variables to
-use File::Basename;         # for basename, dirname, fileparse
+use Time::HiRes( 'time' );    # -> time() -> float of seconds
+use Storable;                 # read and write variables to
+use File::Basename;           # for basename, dirname, fileparse
 use File::Path qw(make_path);
 
 use local::lib;
 use JSON::Create 'create_json';
-use CGI::ProgressBar qw/:standard/;
+# use CGI::ProgressBar qw/:standard/;
 
 # Modules: Web
 use CGI;
@@ -79,18 +80,15 @@ sub fetchActivityList {
   }
 
   my $endReached = 0;
-  print "<ul>";
-  # print "<table>";
   while ( $page < $startpage + $numpages ) {
-    # print "<tr> <td>start fetching page $page ... ";
-    print "<li>start fetching page $page ... ";
+    my $t = time;
+    print "<li>downloading page $page ... ";
     my $url  = "$o{'urlStravaAPI'}/athlete/activities?$param&page=$page";
     my $cont = TMsStrava::getContfromURL( $url, $token );
-    # print " done </td></tr>\n";
-    print " done </li>\n";
+    printf "done (%.1fs)</li>\n", ( time - $t );
     if ( $cont eq "[]" ) {
       $endReached = 1;
-      last;    # say "Empty activity page: $page";
+      last;                                                               # say "Empty activity page: $page";
     } else {
       my $fileOut = sprintf( "$s{'tmpDataFolder'}/activityList/all_per-page-" . $per_page . "_page-%05d.json", $page );    # page with 5 digits
       $_ = dirname( $fileOut );
@@ -102,8 +100,6 @@ sub fetchActivityList {
     } ## end else [ if ( $cont eq "[]" ) ]
     $page++;
   } ## end while ( $page < $startpage...)
-  # print "</table>";
-  print "</li>";
   return $endReached;
 } ## end sub fetchActivityList
 
@@ -133,9 +129,13 @@ sub fetchActivityListYear {
   while ( 1 ) {
     my $url = "$o{'urlStravaAPI'}/athlete/activities?$param&page=$page";
 
+    my $t = time;
+    print "<li>downloading page $page ... ";
     my $cont = TMsStrava::getContfromURL( $url, $token );
+    printf "done (%.1fs)</li>\n", ( time - $t );
+
     if ( $cont eq "[]" ) {
-      last;                                                          # say "Empty activity page: $page";
+      last;    # say "Empty activity page: $page";
     } else {
       my $fileOut = sprintf( "$s{'tmpDataFolder'}/activityList/" . $year . "_per-page-" . $per_page . "_page-%05d.json", $page );    # page with 5 digits
       $_ = dirname( $fileOut );
@@ -174,6 +174,7 @@ if ( $yearToDL ne '' ) {                                                       #
   #
   # DL Mode All
   #
+  print "<ul>\n";
   if ( $yearToDL eq 'all' ) {
 
     # if page = 1 -> delete all cache files
@@ -249,11 +250,17 @@ if ( $yearToDL ne '' ) {                                                       #
 
   my %gear;
   if ( -f $s{ 'pathToGearHashDump' } ) {
+    print "<li>reading cached gear data ... ";
+    my $t = time;
     %gear = %{ retrieve( $s{ 'pathToGearHashDump' } ) };                              # retrieve data from file (as ref)
-  }
+    printf "done (%.1fs)</li>\n", ( time - $t );
+  } ## end if ( -f $s{ 'pathToGearHashDump'...})
 
   # in this hash a database of cityname and coordinates is stored: $latitude, $longitude, $name
+  print "<li>performing geo calcualtions ... ";
+  my $t        = time;
   my %geoBoxes = TMsStrava::geoBoxesFromDataFile( $o{ 'cityGeoDatabase' } );
+  printf "done (%.1fs)</li>\n", ( time - $t );
   my %geoCache;                                                                       # a cache of lat,lon -> name
   my @knownLocations = TMsStrava::getKnownLocationsOfUser();
   my %knownLocationsCache;                                                            # A cache of lat,lon -> id
@@ -263,9 +270,11 @@ if ( $yearToDL ne '' ) {                                                       #
   # check for gear_id and fetch gear_name if not already cached
   # calculate nearest city based on DB
   # idea: use caching in hash dump as well?
-  print progress_bar( -from => 0, -to => $#allActivityHashes );    # , -number
+  # print progress_bar( -from => 1, -to => $#allActivityHashes, -blocks => $#allActivityHashes );    # , -number
+  print "<li>calculating addition fields ... ";
+  my $t = time;
   foreach my $activity ( @allActivityHashes ) {
-    my %h = %{ $activity };                                        # each $activity is a hashref
+    my %h = %{ $activity };    # each $activity is a hashref
     # next if already modified this activity in the cache earlier
     if ( exists $h{ 'x_start_h' } ) {
       next;
@@ -370,9 +379,11 @@ if ( $yearToDL ne '' ) {                                                       #
 
     # update the activity in the hash of activities
     $activity = \%h;    # add new hash field
-    print update_progress_bar;
+    # print update_progress_bar;
   } ## end foreach my $activity ( @allActivityHashes)
-  print hide_progress_bar;
+  printf "done (%.1fs)</li>\n", ( time - $t );
+
+  # print hide_progress_bar;
 
   # write ActivityHash and geadHash to filesystem for caching
   store \@allActivityHashes, $s{ 'pathToActivityListHashDump' };
@@ -385,6 +396,8 @@ if ( $yearToDL ne '' ) {                                                       #
   close $fhOut;
 
   store \%gear, $s{ 'pathToGearHashDump' };
+  print "</ul>\n";
+
 } ## end if ( $yearToDL ne '' )
 
 # walk through all activities to count the number of activities per year
