@@ -32,6 +32,7 @@ use File::Path qw(make_path);
 
 use local::lib;
 use JSON::Create 'create_json';
+use CGI::ProgressBar qw/:standard/;
 
 # Modules: Web
 use CGI;
@@ -51,15 +52,113 @@ TMsStrava::htmlPrintHeader( $cgi, 'Activity List Caching' );
 TMsStrava::initSessionVariables( $cgi->param( "session" ) );
 TMsStrava::logIt( "#\n# Start file file: Activity List Caching\n#" );
 
-my $yearToDL = '';                                                     # all or year
+TMsStrava::htmlPrintNavigation();
+
+$| = 1;                                                                # Do not buffer output
+
+
+sub fetchActivityList {
+  # fetch all activities, store JSONs of 200 activities per file in file system
+  # output location: "$s{'tmpDataFolder'}/activityList/per_page-" . $per_page . "_page-$page.json"
+  # if parameter after is set: the sort order is ASC by time -> reverse later on
+  # in: token, per_page, $days, startpage, numpages to fetch
+  # $days = max age of activity, 0 for all
+  # out: endReached = 0/1, 1 if last pages was empty
+  my ( $token, $per_page, $days, $startpage, $numpages ) = @_;
+  TMsStrava::logSubStart( 'fetchActivityList' );
+  my $page         = $startpage;
+  my $timestampnow = time;
+  my ( $secsToday, $timestampDaysOld );
+  my $param = "per_page=$per_page";
+  if ( $days > 0 ) {
+    $secsToday        = $timestampnow % ( 86400 );                        # 86400 = 24 *3600
+    $timestampDaysOld = $timestampnow - $secsToday - ( 86400 * $days );
+    $param .= "&before=$timestampnow&after=$timestampDaysOld";
+  } else {
+    $param .= "&before=$timestampnow&after=0";                            #
+  }
+
+  my $endReached = 0;
+  print "<ul>";
+  # print "<table>";
+  while ( $page < $startpage + $numpages ) {
+    # print "<tr> <td>start fetching page $page ... ";
+    print "<li>start fetching page $page ... ";
+    my $url  = "$o{'urlStravaAPI'}/athlete/activities?$param&page=$page";
+    my $cont = TMsStrava::getContfromURL( $url, $token );
+    # print " done </td></tr>\n";
+    print " done </li>\n";
+    if ( $cont eq "[]" ) {
+      $endReached = 1;
+      last;    # say "Empty activity page: $page";
+    } else {
+      my $fileOut = sprintf( "$s{'tmpDataFolder'}/activityList/all_per-page-" . $per_page . "_page-%05d.json", $page );    # page with 5 digits
+      $_ = dirname( $fileOut );
+      make_path $_ unless -d $_;
+      open my $fhOut, '>:encoding(UTF-8)', $fileOut
+          or die "ERROR: Can't write to file '$fileOut': $!";
+      print { $fhOut } $cont;
+      close $fhOut;
+    } ## end else [ if ( $cont eq "[]" ) ]
+    $page++;
+  } ## end while ( $page < $startpage...)
+  # print "</table>";
+  print "</li>";
+  return $endReached;
+} ## end sub fetchActivityList
+
+
+sub fetchActivityListYear {
+  # fetch all activities, store JSONs of 200 activities per file in file system
+  # output location: "$s{'tmpDataFolder'}/activityList/per_page-" . $per_page . "_page-$page.json"
+  # if parameter after is set: the sort order is ASC by time -> reverse later on
+  # in: token, per_page, $days
+  # $days = max age of activity, 0 for all
+  # out: nothing
+  my ( $token, $per_page, $year ) = @_;
+  TMsStrava::logSubStart( 'fetchActivityListYear' );
+  my $page         = 1;
+  my $timestampnow = time;
+  my ( $secsToday, $timestampDaysOld );
+  my $param = "per_page=$per_page";
+
+  my $tsStart = timelocal( 0, 0, 0, 1, 0, $year - 1900 );
+  my $tsEnd   = timelocal( 0, 0, 0, 1, 0, $year - 1900 + 1 ) - 1;    # 1 s vor 1.1.
+
+  # for year 2000 also include all activities of the previous millenia :-)
+  $tsStart = 0 if ( $year == 2000 );
+
+  $param .= "&before=$tsEnd&after=$tsStart";
+
+  while ( 1 ) {
+    my $url = "$o{'urlStravaAPI'}/athlete/activities?$param&page=$page";
+
+    my $cont = TMsStrava::getContfromURL( $url, $token );
+    if ( $cont eq "[]" ) {
+      last;                                                          # say "Empty activity page: $page";
+    } else {
+      my $fileOut = sprintf( "$s{'tmpDataFolder'}/activityList/" . $year . "_per-page-" . $per_page . "_page-%05d.json", $page );    # page with 5 digits
+      $_ = dirname( $fileOut );
+      make_path $_ unless -d $_;
+      open my $fhOut, '>:encoding(UTF-8)', $fileOut
+          or die "ERROR: Can't write to file '$fileOut': $!";
+      print { $fhOut } $cont;
+      close $fhOut;
+    } ## end else [ if ( $cont eq "[]" ) ]
+    $page++;
+  } ## end while ( 1 )
+  return;
+} ## end sub fetchActivityListYear
+
+my $yearToDL = '';    # all or year
 if ( $cgi->param( 'year' ) ) {
   $yearToDL = $cgi->param( 'year' );
 }
-my $allStartPage = 1;                                                  # if mode = all, the first page to fetch
+my $allStartPage = 1;    # if mode = all, the first page to fetch
 if ( $cgi->param( 'allStartPage' ) ) {
   $allStartPage = $cgi->param( 'allStartPage' );
 }
-my $dlActivitiesPerPage = 200;                                         # Strava has a max of 200 per page
+my $dlActivitiesPerPage = 200;    # Strava has a max of 200 per page
 my @allActivityHashes   = ();
 my %actPerYear;
 my $allLastPageReached = 0;
@@ -84,7 +183,7 @@ if ( $yearToDL ne '' ) {                                                       #
     }
 
     # download data for all years
-    $allLastPageReached = TMsStrava::fetchActivityList( $s{ 'token' }, $dlActivitiesPerPage, 0, $allStartPage, 5 );
+    $allLastPageReached = fetchActivityList( $s{ 'token' }, $dlActivitiesPerPage, 0, $allStartPage, 5 );
 
     # max 200 per page/json file
     # max 0 days past
@@ -131,7 +230,7 @@ if ( $yearToDL ne '' ) {                                                       #
     unlink foreach ( <$s{'tmpDataFolder'}/activityList/*.dmp> );
 
     # download data for selected year
-    TMsStrava::fetchActivityListYear( $s{ 'token' }, $dlActivitiesPerPage, $yearToDL );
+    fetchActivityListYear( $s{ 'token' }, $dlActivitiesPerPage, $yearToDL );
 
     # recreate/overwrite activity list hash cache, read all json files in the folder
     # Ordering problem: api gives latest activity first per call, but fetching several years messes the order, if each year-file is in reverse order.
@@ -164,8 +263,9 @@ if ( $yearToDL ne '' ) {                                                       #
   # check for gear_id and fetch gear_name if not already cached
   # calculate nearest city based on DB
   # idea: use caching in hash dump as well?
+  print progress_bar( -from => 0, -to => $#allActivityHashes );    # , -number
   foreach my $activity ( @allActivityHashes ) {
-    my %h = %{ $activity };    # each $activity is a hashref
+    my %h = %{ $activity };                                        # each $activity is a hashref
     # next if already modified this activity in the cache earlier
     if ( exists $h{ 'x_start_h' } ) {
       next;
@@ -270,7 +370,9 @@ if ( $yearToDL ne '' ) {                                                       #
 
     # update the activity in the hash of activities
     $activity = \%h;    # add new hash field
+    print update_progress_bar;
   } ## end foreach my $activity ( @allActivityHashes)
+  print hide_progress_bar;
 
   # write ActivityHash and geadHash to filesystem for caching
   store \@allActivityHashes, $s{ 'pathToActivityListHashDump' };
@@ -284,8 +386,6 @@ if ( $yearToDL ne '' ) {                                                       #
 
   store \%gear, $s{ 'pathToGearHashDump' };
 } ## end if ( $yearToDL ne '' )
-
-TMsStrava::htmlPrintNavigation();
 
 # walk through all activities to count the number of activities per year
 foreach my $activity ( @allActivityHashes ) {
