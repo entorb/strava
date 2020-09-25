@@ -82,7 +82,7 @@ if ( not $cgi->param('preview') and not $cgi->param('submit') ) {
 <li>Ensure to use the following date format \'YYYY-MM-DD HH:MM:SS\'</li>
 <li>Copy and paste from Excel into the textbox below</li>
 <li>Tipp: Test the import with one activity until everything works as expected, only than add more</li>
-<li>Note: The Strava API allows only for <a href="https://developers.strava.com/docs/reference/#api-Activities-createActivity" target="_blank">very few parameters for activity creation</a>, so I can not add more</li>
+<li>Note: The Strava API allows only for <a href="https://developers.strava.com/docs/reference/#api-Activities-createActivity" target="_blank">very few parameters for activity creation</a>, so I am unable to add more</li>
 <li>A list of already used gear_ids can be found below after caching your activities</li>
 <li>Alternatively set a default gear prior to importing the data, and uses "0" as gear ID</li>
 <li>Guide by Tony for bikes only: To find the gear ID, log into your Strava account. Navigate to Settings/My Gear and a list of your gear appears. Go into each bike that is listed in turn. At the top of the page the URL will appear as (eg) www.strava.com/bikes/6510003 . The 6510003 is the gear ID for that bike. Make a note of that number and prefix it with a lower case b and the result (eg: b6510003) is the value to input as Gear ID for that particular bike on the spreadsheet that you wish to load. If you don\'t put in a gear ID, the ride will be logged against your default bike.</li>
@@ -211,10 +211,8 @@ if ( $cgi->param('submit') ) {
 		} ## end foreach my $s ( $name, $desc)
 
 		# say "'$_'" foreach ( $type, $date, $duration, $dist, $name, $desc, $commute, $trainer, $elev_gain );
-		my $param = "name=$name&type=$type&start_date_local=$date&elapsed_time=$duration&description=$desc&distance=$dist&trainer=$trainer&commute=$commute&elev_gain=$elev_gain&gear_id=$gear_id";
-		if ($type eq 'Swim') {
-			$param = "name=$name&type=$type&start_date_local=$date&elapsed_time=$duration&description=$desc&distance=$dist";
-		}
+		my $param = "name=$name&type=$type&start_date_local=$date&elapsed_time=$duration&description=$desc&distance=$dist&gear_id=$gear_id&trainer=$trainer&commute=$commute&elev_gain=$elev_gain";
+
 
 		# say "<p><code>debug for Dave 1:<br/>param= '$param'</code></p>";
 
@@ -257,9 +255,79 @@ TMsStrava::htmlPrintFooter($cgi);
 sub check {
 	my ( $type, $date, $duration, $dist, $name, $desc, $commute, $trainer, $elev_gain, $gear_id ) = @_;
 	my $error = '';
-	if ( not grep { $type eq $_ } qw (Run Ride Swim) ) {
-		$error .= "<br/>Type '$type' must be Run, Ride or Swim.";
-	}
+
+	# if (
+	# 	not grep { $type eq $_ }
+	# 	qw (
+	# 	Ride
+	# 	Run
+	# 	Swim
+	# 	Hike
+	# 	Walk
+	# 	AlpineSki
+	# 	BackcountrySki
+	# 	Canoeing
+	# 	Crossfit
+	# 	EBikeRide
+	# 	Elliptical
+	# 	Handcycle
+	# 	IceSkate
+	# 	InlineSkate
+	# 	Kayaking
+	# 	Kitesurf
+	# 	NordicSki
+	# 	RockClimbing
+	# 	RollerSki
+	# 	Rowing
+	# 	Snowboard
+	# 	Snowshoe
+	# 	StairStepper
+	# 	StandUpPaddling
+	# 	Surfing
+	# 	Velomobile
+	# 	VirtualRide
+	# 	VirtualRun
+	# 	WeightTraining
+	# 	Wheelchair
+	# 	Windsurf
+	# 	Workout
+	# 	Yoga
+	# 	Run
+	# 	Swim
+	# 	Hike
+	# 	Walk
+	# 	AlpineSki
+	# 	BackcountrySki
+	# 	Canoeing
+	# 	Crossfit
+	# 	EBikeRide
+	# 	Elliptical
+	# 	Handcycle
+	# 	IceSkate
+	# 	InlineSkate
+	# 	Kayaking
+	# 	Kitesurf
+	# 	NordicSki
+	# 	RockClimbing
+	# 	RollerSki
+	# 	Rowing
+	# 	Snowboard
+	# 	Snowshoe
+	# 	StairStepper
+	# 	StandUpPaddling
+	# 	Surfing
+	# 	Velomobile
+	# 	VirtualRide
+	# 	VirtualRun
+	# 	WeightTraining
+	# 	Wheelchair
+	# 	Windsurf
+	# 	Workout
+	# 	Yoga
+	# 	)
+	# ) {
+	# 	$error .= "<br/>Type '$type' unknown.";
+	# }
 	if ( not $date =~ m/^(\d{4})\-(\d{2})\-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/ ) {    # YYYY-MM-DD HH:MM:SS
 		$error .= "<br/>Date '$date' must be formatted YYYY-MM-DD HH:MM:SS.";
 	} else {

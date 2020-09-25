@@ -56,13 +56,13 @@ TMsStrava::htmlPrintNavigation();
 print '
 
     <script src="./activity-tabulator.js"></script>
-    <script src="/COVID-19-coronavirus/eCharts/jquery-3.5.0.min.js"></script>
+    <script src="/COVID-19-coronavirus/js/jquery-3.5.0.min.js"></script>
     <!-- Polyfiles for IE, suggested by Tabulator : http://tabulator.info/docs/4.6/browsers#ie -->
-    <script src="/COVID-19-coronavirus/tabulator/polyfill.min.js"></script>
-    <script src="/COVID-19-coronavirus/tabulator/fetch.umd.js"></script>
+    <script src="/COVID-19-coronavirus/js/tabulator-polyfill.min.js"></script>
+    <script src="/COVID-19-coronavirus/js/tabulator-fetch.umd.js"></script>
     <!-- Tabulator -->
-    <link href="/COVID-19-coronavirus/tabulator/tabulator.min.css" rel="stylesheet">
-    <script src="/COVID-19-coronavirus/tabulator/tabulator-4.6.min.js"></script>
+    <link href="/COVID-19-coronavirus/js/tabulator.min.css" rel="stylesheet">
+    <script src="/COVID-19-coronavirus/js/tabulator-4.6.min.js"></script>
     <div id="table-activity-list"></div>
     <!--  
     Start JavaScript  
