@@ -8,6 +8,7 @@
 # calculates some additional fields per activity e.g. km/h
 
 # TODO
+# move print of navi to top, add a javascript to re-enabling the disabled ones after fetching
 
 # IDEAS
 
@@ -52,8 +53,6 @@ use TMsStrava qw( %o %s);                                              # at ento
 TMsStrava::htmlPrintHeader( $cgi, 'Activity List Caching' );
 TMsStrava::initSessionVariables( $cgi->param( "session" ) );
 TMsStrava::logIt( "#\n# Start file file: Activity List Caching\n#" );
-
-TMsStrava::htmlPrintNavigation();
 
 $| = 1;                                                                # Do not buffer output
 
@@ -174,7 +173,7 @@ if ( $yearToDL ne '' ) {                                                       #
   #
   # DL Mode All
   #
-  print "<ul>\n";
+  print "<div id=\"div_log_output\"><ul>\n";
   if ( $yearToDL eq 'all' ) {
 
     # if page = 1 -> delete all cache files
@@ -207,7 +206,10 @@ if ( $yearToDL ne '' ) {                                                       #
     # recreate hash cache
     # my @L = <$s{'tmpDataFolder'}/activityList/all_*.json>;
     # prepend newly downloaded files
+    print "<li>merging files ... ";
+    my $t = time;
     unshift @allActivityHashes, reverse TMsStrava::convertJsonFilesToArrayOfHashes( @listOfNewFiles );    # reverse -> ASC sorting
+    printf "done (%.1fs)</li>\n", ( time - $t );
 
     #
     # DL Mode Single Year
@@ -245,7 +247,10 @@ if ( $yearToDL ne '' ) {                                                       #
       push @L, <$_*.json>;
       $year--;
     }
+    print "<li>merging files ... ";
+    my $t = time;
     @allActivityHashes = reverse TMsStrava::convertJsonFilesToArrayOfHashes( @L );    # reverse -> ASC sorting
+    printf "done (%.1fs)</li>\n", ( time - $t );
   } ## end elsif ( $yearToDL >= 1950)
 
   my %gear;
@@ -396,9 +401,12 @@ if ( $yearToDL ne '' ) {                                                       #
   close $fhOut;
 
   store \%gear, $s{ 'pathToGearHashDump' };
-  print "</ul>\n";
+  print "</ul></div>\n";
+  print '<script>var x = document.getElementById("div_log_output"); x.style.display = "none"; </script>' . "\n";
 
 } ## end if ( $yearToDL ne '' )
+
+TMsStrava::htmlPrintNavigation();    # print this after caching
 
 # walk through all activities to count the number of activities per year
 foreach my $activity ( @allActivityHashes ) {
