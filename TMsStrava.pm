@@ -14,6 +14,10 @@ use utf8;     # this script is written in UTF-8
 binmode STDOUT, ':utf8';    # default encoding for linux print STDOUT
 use autodie qw (open close);    # Replace functions with ones that succeed or die: e.g. close
 
+# use local::lib;               # at entorb.net some modules require use local::lib!!!
+use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
+
+
 # Modules: Perl Standard
 use Encode qw(encode decode);
 use File::Basename;             # for basename, dirname, fileparse
@@ -31,13 +35,12 @@ use Time::Local;              # date vars -> timestamp
 use Storable;                 # read and write variables to
 
 # Modules: CPAN
-use local::lib;               # at entorb.net some modules require use local::lib!!!
 use LWP::UserAgent;           # http requests
 use JSON;                     # imports encode_json, decode_json, to_json and from_json.
 
 our %o;                       # Global Sessings / Options, is exported, see above
 our %s;                       # Session variables, is exported, see above
-$o{ 'dataFolderBase' }          = '/home/entorb/data-web-pages/strava';
+$o{ 'dataFolderBase' }          = '/var/www/virtual/entorb/data-web-pages/strava';
 $o{ 'tmpDataFolderBase' }       = $o{ 'dataFolderBase' } . '/tmp';
 $o{ 'tmpDownloadFolderBase' }   = './download';
 $o{ 'dirKnownLocationsBase' }   = $o{ 'dataFolderBase' } . '/knownLocations';
@@ -100,6 +103,7 @@ sub initSessionVariables {
   # out : nothing
   # former out: Array of ($stravaUserID,$stravaUsername,$token,$scope)
   my ( $session ) = @_;
+  # $session = 'cGjopr0eSVOVXC9_JJOW2A' ; ##TODO: set session for run via terminal
   logSubStart( 'initSessionVariables' );
   logIt( "session = '$session'" );
   if ( $session eq '' ) {
@@ -696,7 +700,7 @@ sub zipFiles {
   # out: nothing
   my ( $pathToZip, @files ) = @_;
   logSubStart( 'zipFiles' );
-  logSubStart( join /\n/, @files );
+  logSubStart( join "\n", @files );
   use IO::Compress::Zip qw(zip $ZipError);
   zip \@files => $pathToZip,
       FilterName => sub {s<.*[/\\]><>}    # trim path, filename only
@@ -1049,22 +1053,47 @@ and deauthorize this app from your Strava account"/>
 sub send_mail {
   # in: $subject, $body, $to_address
   # out: nothing
-  # send an email
+  # sends an email
   # correct utf-8 encoding for body
   # subject encoding not 100% correct, since something link =?utf-8?B? should be added, but I couldn't get it working. Thunderbird and K9-Mail accept the subject, so it should be fine for me
+
   my ( $subject, $body, $to_address ) = @_;
   logSubStart( 'send_mail' );
-  $subject = encode( 'UTF-8', $subject );
-  # $body    = encode( 'UTF-8', $body ); # no need for conversion here
-  my $mailprog = '/usr/lib/sendmail';
-  open( MAIL, "|$mailprog -t" ) || print STDERR "Mail-Error\n";
-  print MAIL "To: $to_address\n";
-  print MAIL "Subject: [Strava] $subject\n";    # =?utf-8?B?
-  print MAIL "Content-Type: text/plain; charset=\"utf-8\"";
-  print MAIL "\n$body";                         # \n starts body
-  close( MAIL );
+  # V1: sendmail
+  # $subject = encode( 'UTF-8', $subject );
+  # # $body    = encode( 'UTF-8', $body ); # no need for conversion here
+  # my $mailprog = '/usr/lib/sendmail';
+  # open( MAIL, "|$mailprog -t" ) || print STDERR "Mail-Error\n";
+  # print MAIL "To: $to_address\n";
+  # print MAIL "Subject: [Strava] $subject\n";    # =?utf-8?B?
+  # print MAIL "Content-Type: text/plain; charset=\"utf-8\"";
+  # print MAIL "\n$body";                         # \n starts body
+  # close( MAIL );
+
+  # V2: via my Mail_Daemon
+  insertNewEMail( $to_address, $subject, $body, '' );
   return;
 } ## end sub send_mail
+
+
+sub insertNewEMail {
+  # This is a copy of Mail-Daemon/insert.pl
+  use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
+  my ( $send_to, $subject, $body, $send_from ) = @_;    # , $send_cc, $send_bcc
+
+  my $PATH = "/var/www/virtual/entorb/mail-daemon/outbox.db";
+  use DBI;
+  my $dbh = DBI->connect( "dbi:SQLite:dbname=$PATH", "", "" );
+  $dbh->{ AutoCommit } = 0;
+
+  my $sth = $dbh->prepare( "INSERT INTO outbox(send_to, subject, body, send_from, send_cc, send_bcc, date_created, date_sent) VALUES (?, ?, ?, ?, '', '', CURRENT_TIMESTAMP, NULL)" );
+  $sth->bind_param( 1, $send_to,   DBI::SQL_VARCHAR );
+  $sth->bind_param( 2, $subject,   DBI::SQL_VARCHAR );
+  $sth->bind_param( 3, $body,      DBI::SQL_VARCHAR );
+  $sth->bind_param( 4, $send_from, DBI::SQL_VARCHAR );
+  $sth->execute;
+  $dbh->commit;
+} ## end sub insertNewEMail
 
 # sub convertDate4Excel {
 # # 2018-08-21T08:14:53Z -> 21.08.2018 08:14:53

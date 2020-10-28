@@ -25,6 +25,14 @@ binmode STDOUT, ':utf8';    # default encoding for linux print STDOUT
 # Modules: Perl Standard
 use Encode qw(encode decode);
 
+# Modules: My Strava Module Lib
+use lib ( '.' );
+use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
+use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just for making Visual Studio Code happy
+use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
+use TMsStrava qw( %o %s);                                              # at entorb.net some modules require use local::lib!!!
+
+
 # use File::Path qw/remove_tree/;
 use Time::Local;
 use Time::HiRes( 'time' );    # -> time() -> float of seconds
@@ -32,7 +40,7 @@ use Storable;                 # read and write variables to
 use File::Basename;           # for basename, dirname, fileparse
 use File::Path qw(make_path);
 
-use local::lib;
+# use local::lib;
 use JSON::Create 'create_json';
 # use CGI::ProgressBar qw/:standard/;
 
@@ -44,18 +52,12 @@ my $cgi = CGI->new;
 #use CGI qw(:standard);
 use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 
-# Modules: My Strava Module Lib
-use lib ( '.' );
-use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just for making Visual Studio Code happy
-use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
-use TMsStrava qw( %o %s);                                              # at entorb.net some modules require use local::lib!!!
 
 TMsStrava::htmlPrintHeader( $cgi, 'Activity List Caching' );
 TMsStrava::initSessionVariables( $cgi->param( "session" ) );
 TMsStrava::logIt( "#\n# Start file file: Activity List Caching\n#" );
 
 $| = 1;                                                                # Do not buffer output
-
 
 sub fetchActivityList {
   # fetch all activities, store JSONs of 200 activities per file in file system
@@ -169,7 +171,8 @@ if ( -f $s{ 'pathToActivityListHashDump' } ) {
   @allActivityHashes = @{ retrieve( $s{ 'pathToActivityListHashDump' } ) };    # retrieve data from file (as ref)
 }
 
-if ( $yearToDL ne '' ) {                                                       # all or a certain year -> perform some download
+if ( $yearToDL ne '' ) {  
+# all or a certain year -> perform some download
   #
   # DL Mode All
   #
@@ -277,7 +280,7 @@ if ( $yearToDL ne '' ) {                                                       #
   # idea: use caching in hash dump as well?
   # print progress_bar( -from => 1, -to => $#allActivityHashes, -blocks => $#allActivityHashes );    # , -number
   print "<li>calculating addition fields ... ";
-  my $t = time;
+  $t = time;
   foreach my $activity ( @allActivityHashes ) {
     my %h = %{ $activity };    # each $activity is a hashref
     # next if already modified this activity in the cache earlier
@@ -448,6 +451,8 @@ say '<table border="1">
 # ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime (time);
 my $year = $_[ 5 ] + 1900;
 while ( $year >= 2000 ) {    # here 2000 as well
+  $actPerYear{$year} = 0  unless exists  $actPerYear{$year};
+  
   # $_ = "$s{'tmpDataFolder'}/activityList/".$year."_";
   # my @L = <$_*.json>;
   # my $numFiles = 1 + $#L;
