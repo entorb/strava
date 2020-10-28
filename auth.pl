@@ -46,13 +46,14 @@ use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 use LWP::UserAgent;
 
 use Digest::MD5 qw(md5_base64);    # for md5 coded sessions for subfolders
-use local::lib;                    # at entorb.net some modules require use local::lib!!!
+# use local::lib;                    # at entorb.net some modules require use local::lib!!!
 use JSON;                          # imports encode_json, decode_json, to_json and from_json.
 
 # Modules: My Strava Module Lib
-use lib ('.');
-use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
-use TMsStrava qw( %o %s);                                              # at entorb.net some modules require use local::lib!!!
+use lib ( '.' );
+use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
+# use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
+use TMsStrava qw( %o %s);          # at entorb.net some modules require use local::lib!!!
 
 TMsStrava::htmlPrintHeader( $cgi, 'Authoriziation' );
 
@@ -61,30 +62,30 @@ my $url = "https://www.strava.com/oauth/token";
 
 # read from TMsStravaSecret.pm
 use TMsStravaSecret qw( %secret );
-my $clientId = $secret{'clientId'};
-my $secret   = $secret{'secret'};
+my $clientId = $secret{ 'clientId' };
+my $secret   = $secret{ 'secret' };
 
 # cleanup for old sessions : delete old files and deauthorize old tokens
 {
-	my @l = <$o{'tmpDataFolderBase'}/*>;
-	push @l, <$o{'tmpDownloadFolderBase'}/*>;
+  my @l = <$o{'tmpDataFolderBase'}/*>;
+  push @l, <$o{'tmpDownloadFolderBase'}/*>;
 
-	# TMsStrava::logIt( "cleaning up old temp data: @l" ); # logfile not here available
-	foreach my $dir (@l) {
-		next unless -d $dir;    # only dirs
-		if ( ( stat $dir )[9] < time - $o{'ageDeleteOldDataFolders'} ) {    # 9 = mtime
-			if ( -f "$dir/session.txt" ) {
-				my $fileIn = "$dir/session.txt";
-				open my $fhIn, '<', $fileIn or next;
-				my @cont = <$fhIn>;
-				close $fhIn;
-				chomp @cont;                                                        # remove spaces
-				my ( $thatstravaUserID, $thatstravaUsername, $thattoken, $thatscope ) = @cont;
-				TMsStrava::deauthorize( $thattoken, 1 );                            # 2nd paramter-> 1=silent , 0= die on error
-			} ## end if ( -f "$dir/session.txt")
-			remove_tree($dir);
-		} ## end if ( ( stat $dir )[ 9 ...])
-	} ## end foreach my $dir ( @l )
+  # TMsStrava::logIt( "cleaning up old temp data: @l" ); # logfile not here available
+  foreach my $dir ( @l ) {
+    next unless -d $dir;    # only dirs
+    if ( ( stat $dir )[ 9 ] < time - $o{ 'ageDeleteOldDataFolders' } ) {    # 9 = mtime
+      if ( -f "$dir/session.txt" ) {
+        my $fileIn = "$dir/session.txt";
+        open my $fhIn, '<', $fileIn or next;
+        my @cont = <$fhIn>;
+        close $fhIn;
+        chomp @cont;                                                        # remove spaces
+        my ( $thatstravaUserID, $thatstravaUsername, $thattoken, $thatscope ) = @cont;
+        TMsStrava::deauthorize( $thattoken, 1 );                            # 2nd paramter-> 1=silent , 0= die on error
+      } ## end if ( -f "$dir/session.txt")
+      remove_tree( $dir );
+    } ## end if ( ( stat $dir )[ 9 ...])
+  } ## end foreach my $dir ( @l )
 }    # delete old files
 
 # Idea: Display greeting if session is already present? TODO: check if session is valid
@@ -93,12 +94,12 @@ my $secret   = $secret{'secret'};
 # my ($s{'stravaUserID'},$s{'stravaUsername'},$token,$s{'scope'}) = TMsStrava::initSessionVariables ($s{'session'});
 # }
 
-if ( not $cgi->param("code") ) {    # and not $cgi->param("session") ?
-	 # if not, this a new visiter (or one owning a token / session already?)
-	 # die("ERROR: parameter 'code' missing");
+if ( not $cgi->param( "code" ) ) {    # and not $cgi->param("session") ?
+  # if not, this a new visiter (or one owning a token / session already?)
+  # die("ERROR: parameter 'code' missing");
 
-	# All user data and login tokens are periodically deleted for reasons of privacy and security. Therefore (re-) authorization of this app is required at each session.
-	say '
+  # All user data and login tokens are periodically deleted for reasons of privacy and security. Therefore (re-) authorization of this app is required at each session.
+  say '
 <a href="/strava/">start over</a>
 &nbsp;
 <a href="/contact.php?origin=strava">Contact me</a>
@@ -108,91 +109,91 @@ if ( not $cgi->param("code") ) {    # and not $cgi->param("session") ?
 
 } else {    # param("code") is set -> visitor coming from strava auth page
 
-	# debug: print all parameters
-	# say $cgi->param;
-	# say "url_param"; print Dumper $cgi->url_param; # not needed
+  # debug: print all parameters
+  # say $cgi->param;
+  # say "url_param"; print Dumper $cgi->url_param; # not needed
 
-	# reading parameters for generation of access_token
-	my $exchangecode = $cgi->param("code");
-	$s{'scope'} = $cgi->param("scope");
-	if ( $s{'scope'} eq "" ) { $s{'scope'} = "public"; }
+  # reading parameters for generation of access_token
+  my $exchangecode = $cgi->param( "code" );
+  $s{ 'scope' } = $cgi->param( "scope" );
+  if ( $s{ 'scope' } eq "" ) { $s{ 'scope' } = "public"; }
 
-	# say "<p>code=$exchangecode<br>scope=$s{'scope'}</p>";
+  # say "<p>code=$exchangecode<br>scope=$s{'scope'}</p>";
 
-	# 1. HTTP Post form data to Strava API (and fetch JSON response)
-	#
-	# exampe: curl -X POST $url \ -F client_id=$clientId \ -F client_secret=$secret \ -F code=$exchangecode
-	#
-	my $ua = LWP::UserAgent->new();    # create User Agent using LWP
-	my %h;
-	$h{'client_id'}       = $clientId;
-	$h{'client_secret'}   = $secret;
-	$h{'code'}            = $exchangecode;
-	$h{'Accept'}          = 'application/json';
-	$h{'Accept-Encoding'} = 'UTF-8';
+  # 1. HTTP Post form data to Strava API (and fetch JSON response)
+  #
+  # exampe: curl -X POST $url \ -F client_id=$clientId \ -F client_secret=$secret \ -F code=$exchangecode
+  #
+  my $ua = LWP::UserAgent->new();    # create User Agent using LWP
+  my %h;
+  $h{ 'client_id' }       = $clientId;
+  $h{ 'client_secret' }   = $secret;
+  $h{ 'code' }            = $exchangecode;
+  $h{ 'Accept' }          = 'application/json';
+  $h{ 'Accept-Encoding' } = 'UTF-8';
 
-	my $res = $ua->post( $url, \%h );    # this is strava servers response
+  my $res = $ua->post( $url, \%h );    # this is strava servers response
 
-	if ( not $res->is_success ) {
-		say "<h2>ERROR at authentication</h2>";
-		say "HTTP get code: ", $res->code,    "<br>";
-		say "HTTP get msg : ", $res->message, "<br>";
-		die;
-	} ## end if ( not $res->is_success)
-	%h = undef;
+  if ( not $res->is_success ) {
+    say "<h2>ERROR at authentication</h2>";
+    say "HTTP get code: ", $res->code,    "<br>";
+    say "HTTP get msg : ", $res->message, "<br>";
+    die;
+  } ## end if ( not $res->is_success)
+  %h = undef;
 
-	# my $json = decode( 'UTF-8',  $res->as_string() );
-	my $json = decode( 'UTF-8', $res->decoded_content );
+  # my $json = decode( 'UTF-8',  $res->as_string() );
+  my $json = decode( 'UTF-8', $res->decoded_content );
 
-	# print "<br>Cont=$json";
+  # print "<br>Cont=$json";
 
-	# 2. extract access_token and username/id from the json attachment
-	# $json =~ m/"access_token":"([^"]+)","athlete":{"id":(\d+),"username":"([^"]+)"/;
-	# ($s{'token'}, $s{'stravaUserID'}, $s{'stravaUsername'}) = ($1,$2,$3);
-	my %h2      = TMsStrava::convertJSONcont2Hash($json);
-	my %athlete = %{ $h2{'athlete'} };
-	( $s{'token'}, $s{'stravaUserID'}, $s{'stravaUsername'} ) = ( $h2{'access_token'}, $athlete{'id'}, $athlete{'username'} );
+  # 2. extract access_token and username/id from the json attachment
+  # $json =~ m/"access_token":"([^"]+)","athlete":{"id":(\d+),"username":"([^"]+)"/;
+  # ($s{'token'}, $s{'stravaUserID'}, $s{'stravaUsername'}) = ($1,$2,$3);
+  my %h2      = TMsStrava::convertJSONcont2Hash( $json );
+  my %athlete = %{ $h2{ 'athlete' } };
+  ( $s{ 'token' }, $s{ 'stravaUserID' }, $s{ 'stravaUsername' } ) = ( $h2{ 'access_token' }, $athlete{ 'id' }, $athlete{ 'username' } );
 
-	# say "<p>id=$s{'stravaUserID'}, user=$s{'stravaUsername'}, scope=$s{'scope'}, access_token=$s{'token'}</p>";
-	if ( not $s{'token'} =~ m/[0-9a-f]{40}/ ) {    # sollte 40 hex chars lang sein
-		die "ERROR: no or bad access_token";
-	}
+  # say "<p>id=$s{'stravaUserID'}, user=$s{'stravaUsername'}, scope=$s{'scope'}, access_token=$s{'token'}</p>";
+  if ( not $s{ 'token' } =~ m/[0-9a-f]{40}/ ) {    # sollte 40 hex chars lang sein
+    die "ERROR: no or bad access_token";
+  }
 
-	# 3. generate session from userID and time and store it on the server, Idea: alternative: store in browser cookie NO: since I do not want make it work without cockie support.
-	$_ = "$s{'stravaUserID'}" . '_' . time;
-	$s{'session'} = md5_base64($_);
-	$s{'session'} =~ s/\//-/sg;                    # kein / in ID wegen path
-	$s{'session'} =~ s/\+/_/sg;                    # kein + in ID wegen url
+  # 3. generate session from userID and time and store it on the server, Idea: alternative: store in browser cookie NO: since I do not want make it work without cockie support.
+  $_ = "$s{'stravaUserID'}" . '_' . time;
+  $s{ 'session' } = md5_base64( $_ );
+  $s{ 'session' } =~ s/\//-/sg;                    # kein / in ID wegen path
+  $s{ 'session' } =~ s/\+/_/sg;                    # kein + in ID wegen url
 
-	$s{'tmpDataFolder'} = "$o{'tmpDataFolderBase'}/$s{'session'}";
+  $s{ 'tmpDataFolder' } = "$o{'tmpDataFolderBase'}/$s{'session'}";
 
-	my $fileOut = "$s{'tmpDataFolder'}/session.txt";
-	$_ = dirname($fileOut);
-	make_path $_ unless -d $_;
+  my $fileOut = "$s{'tmpDataFolder'}/session.txt";
+  $_ = dirname( $fileOut );
+  make_path $_ unless -d $_;
 
-	# TMsStrava::logIt("writing to session file $fileOut"); not available before initSessionVariables
-	open my $fhOut, ">", $fileOut or die "ERROR: Can't write to file '$fileOut': $!";
-	print {$fhOut} "$s{'stravaUserID'}\n$s{'stravaUsername'}\n$s{'token'}\n$s{'scope'}";
-	close $fhOut;
+  # TMsStrava::logIt("writing to session file $fileOut"); not available before initSessionVariables
+  open my $fhOut, ">", $fileOut or die "ERROR: Can't write to file '$fileOut': $!";
+  print { $fhOut } "$s{'stravaUserID'}\n$s{'stravaUsername'}\n$s{'token'}\n$s{'scope'}";
+  close $fhOut;
 
-	# Check for present and valid parameter session
-	# TMsStrava::initSessionVariables ($cgi->param("session"));
-	TMsStrava::initSessionVariables( $s{'session'} );
-	TMsStrava::logIt("Auth complete");
-	TMsStrava::logIt("response content was (UTF-8-decoded):\n$json");
+  # Check for present and valid parameter session
+  # TMsStrava::initSessionVariables ($cgi->param("session"));
+  TMsStrava::initSessionVariables( $s{ 'session' } );
+  TMsStrava::logIt( "Auth complete" );
+  TMsStrava::logIt( "response content was (UTF-8-decoded):\n$json" );
 
-	@_ = TMsStrava::whoAmI( $s{'token'} );
+  @_ = TMsStrava::whoAmI( $s{ 'token' } );
 
-	# 	TMsStrava::logIt("WhoAmI:@_");
+  # 	TMsStrava::logIt("WhoAmI:@_");
 
-	# manually printing of navi bar, copied from htmlPrintHeader
-	TMsStrava::htmlPrintNavigation();
-	say "<h2>Welcome</h2>";
+  # manually printing of navi bar, copied from htmlPrintHeader
+  TMsStrava::htmlPrintNavigation();
+  say "<h2>Welcome</h2>";
 
-	TMsStrava::logIt("<p>Token for user '$s{'stravaUsername'}' with scope '$s{'scope'}' successfully exchanged</p>");
-	say "<p>Please start by clicking on cache activities button to the left. Be patient, it takes a little while (&asymp;1 min per 1000 activities). If you have many activities on Strava, you better use the per year button.</p>";
+  TMsStrava::logIt( "<p>Token for user '$s{'stravaUsername'}' with scope '$s{'scope'}' successfully exchanged</p>" );
+  say "<p>Please start by clicking on cache activities button to the left. Be patient, it takes a little while (&asymp;1 min per 1000 activities). If you have many activities on Strava, you better use the per year button.</p>";
 
-	say '
+  say '
 <h3>List of changes</h3>
 <ul>
 <li>2020-07-21: fancy activities table</li>
@@ -210,31 +211,32 @@ if ( not $cgi->param("code") ) {    # and not $cgi->param("session") ?
 </ul>
 ';
 
-	# <h3>Feature ideas</h3>
-	# <ul>
-	# <li>find some use for the polymap</li>
-	# <li>stats for starred segments (access to segement leaderboard not possible due to changes in api, premium account required?)</li>
-	# </ul>
+  # <h3>Feature ideas</h3>
+  # <ul>
+  # <li>find some use for the polymap</li>
+  # <li>stats for starred segments (access to segement leaderboard not possible due to changes in api, premium account required?)</li>
+  # </ul>
 
+  say "<p><small>strava user=$s{'stravaUsername'} user id=$s{'stravaUserID'} scope=$s{'scope'} session=$s{'session'}</small></p>";
 
-	say "<p><small>strava user=$s{'stravaUsername'} user id=$s{'stravaUserID'} scope=$s{'scope'} session=$s{'session'}</small></p>";
-
-	# log login and send E-Mail for torben only if write-session-log = 1
-	if ( $s{'stravaUserID'} != 7656541 ) {    # or ( $s{ 'stravaUserID' } == 7656541 and $s{ 'write-session-log' } == 1 ) ) {
-		@_ = localtime time;
-		my $datestr = sprintf '%02d.%02d.%04d %02d:%02d:%02d', $_[3], $_[4] + 1, $_[5] + 1900, $_[2], $_[1], $_[0];
-		my $subject = "auth. by '$s{'stravaUsername'}', scope '$s{'scope'}'";
-		my $body    = "$datestr\t$s{'stravaUserID'}\t$s{'stravaUsername'}\t$s{'scope'}\n";
-		$body .= "$athlete{'firstname'} $athlete{'lastname'} from $athlete{'country'}\n";
-		$body .= "https://www.strava.com/athletes/$s{'stravaUserID'}\n";
-		$fileOut = $o{'dataFolderBase'} . '/login.log';
-		if ( open $fhOut, '>>', $fileOut ) {      # don't care if not ;-)
-			print {$fhOut} "$datestr\t$s{'stravaUserID'}\t$s{'stravaUsername'}\t$s{'scope'}\n";
-			close $fhOut;
-		}
-		TMsStrava::send_mail( $subject, $body, $secret{'my-email'});    # not for torben
-	} ## end if ( $s{ 'stravaUserID'...})
+  # log login and send E-Mail for torben only if write-session-log = 1
+  if ( $s{ 'stravaUserID' } != 7656541 ) {    # or ( $s{ 'stravaUserID' } == 7656541 and $s{ 'write-session-log' } == 1 ) ) {
+    @_ = localtime time;
+    my $datestr = sprintf '%02d.%02d.%04d %02d:%02d:%02d', $_[ 3 ], $_[ 4 ] + 1, $_[ 5 ] + 1900, $_[ 2 ], $_[ 1 ], $_[ 0 ];
+    my $subject = "auth. by '$s{'stravaUsername'}', scope '$s{'scope'}'";
+    my $body    = "$datestr\t$s{'stravaUserID'}\t$s{'stravaUsername'}\t$s{'scope'}\n";
+    $body .= "$athlete{'firstname'} $athlete{'lastname'} from $athlete{'country'}\n";
+    $body .= "https://www.strava.com/athletes/$s{'stravaUserID'}\n";
+    # TODO: use SQLite instead
+    $fileOut = $o{ 'dataFolderBase' } . '/login.log';
+    if ( open $fhOut, '>>', $fileOut ) {      # don't care if not ;-)
+      print { $fhOut } "$datestr\t$s{'stravaUserID'}\t$s{'stravaUsername'}\t$s{'scope'}\n";
+      close $fhOut;
+    }
+    # TODO: do not send these emails any more
+    # TMsStrava::send_mail( $subject, $body, $secret{ 'my-email' } );    # not for torben
+  } ## end if ( $s{ 'stravaUserID'...})
 }    # end of token exchange
 
-TMsStrava::htmlPrintFooter($cgi);
+TMsStrava::htmlPrintFooter( $cgi );
 

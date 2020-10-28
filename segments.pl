@@ -34,6 +34,7 @@ use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 
 # Modules: My Strava Module Lib
 use lib ('.');
+use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
 use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just for making Visual Studio Code happy
 use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
 use TMsStrava qw( %o %s);
