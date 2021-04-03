@@ -401,6 +401,7 @@ sub convertJsonFilesToArrayOfHashes {
       my %h = convertJSONcont2Hash( $cont );
       push @allActivityHashes, $_;
     }
+  print ".<br>";
   }    # foreach my $fileIn (@L)
   return @allActivityHashes;
 } ## end sub convertJsonFilesToArrayOfHashes
@@ -944,13 +945,15 @@ sub htmlPrintNavigation {
 	<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
 	</form>';
 
-  say '
-	<form action="segmentLeaderboard.pl" method="post">
-	<input type="submit" name="submitFromNav" class="navButton" id="btnSegmentLeaderboard" value="Segment Leaderboard"
-  title="Fetch a segment\'s Leaderboard"/>
-	<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
-	</form>';
-
+# 17.11.2020: Strava disabled this feature
+#  say '
+#	<form action="segmentLeaderboard.pl" method="post">
+#	<input type="submit" name="submitFromNav" class="navButton" id="btnSegmentLeaderboard" value="Segment Leaderboard"
+#  title="Fetch a segment\'s Leaderboard"/>
+#	<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
+#	</form>';
+#
+#
   say '
 	<form action="activityTable.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats" value="Activity Table" ' . $missingActivityCacheDisablesButton . ' 
