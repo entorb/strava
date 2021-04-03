@@ -209,7 +209,7 @@ if ( $yearToDL ne '' ) {
     # recreate hash cache
     # my @L = <$s{'tmpDataFolder'}/activityList/all_*.json>;
     # prepend newly downloaded files
-    print "<li>merging files ... ";
+    print "<li>merging files ... <br>";
     my $t = time;
     unshift @allActivityHashes, reverse TMsStrava::convertJsonFilesToArrayOfHashes( @listOfNewFiles );    # reverse -> ASC sorting
     printf "done (%.1fs)</li>\n", ( time - $t );
@@ -250,7 +250,7 @@ if ( $yearToDL ne '' ) {
       push @L, <$_*.json>;
       $year--;
     }
-    print "<li>merging files ... ";
+    print "<li>merging files ... <br>";
     my $t = time;
     @allActivityHashes = reverse TMsStrava::convertJsonFilesToArrayOfHashes( @L );    # reverse -> ASC sorting
     printf "done (%.1fs)</li>\n", ( time - $t );
@@ -279,7 +279,7 @@ if ( $yearToDL ne '' ) {
   # calculate nearest city based on DB
   # idea: use caching in hash dump as well?
   # print progress_bar( -from => 1, -to => $#allActivityHashes, -blocks => $#allActivityHashes );    # , -number
-  print "<li>calculating addition fields ... ";
+  print "<li>calculating additional fields ... ";
   $t = time;
   foreach my $activity ( @allActivityHashes ) {
     my %h = %{ $activity };    # each $activity is a hashref
