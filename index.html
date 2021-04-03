@@ -1,5 +1,4 @@
-<!DOCTYPE html
-	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 
 <head>
@@ -7,145 +6,121 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="author" content="Torben Menke" />
 	<meta name="description" content="Torben's Strava App: Excel export and more" />
-	<meta name="keywords"
-		content="Strava, App, Excel, export, import, report, search, activity list, activities, segment, csv, gps, location, bulk modify" />
+	<meta name="keywords" content="Strava, App, Excel, export, import, report, search, activity list, activities, segment, csv, gps, location, bulk modify" />
 	<link rel="stylesheet" type="text/css" href="/style.css" />
 	<link rel="stylesheet" type="text/css" href="./style-strava.css" />
 </head>
 
 <body>
 
-
-<h2>Anouncement</h2>
-<p>
-Maybe you want to check out my daily updated
-<a href="/COVID-19-coronavirus/">COVID-19 coronavirus disease spread time series analysis</a>
-for german regions and selected countries
-</p>
-
+	<h2>Announcements</h2>
+	<ul>
+		<li>Maybe you want to check out my daily updated <a href="https://entorb.net/COVID-19-coronavirus/" target="_blank">COVID-19 coronavirus disease spread analysis</a>, including a configureable <a href="https://entorb.net/COVID-19-coronavirus/" target="_blank">email alerter for German "Landkreise"</a></li>
+		<li>2020-07-24: I am very prod to announce, that today this tool passed the 1000-unique-users milestone!<br /> In details: 2269 logins by 1002 unique and 248 returning users.<br /> In order to thank you for your valuable feedback and for recommendation to your friends, I added a new feature: a "fancy" filterable activity table.</li>
+	</ul>
 
 	<h1>Welcome to Torben's Strava Äpp</h1>
-	
-	<a
-		href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">Quickstart</a>
+	<ul><li>
+	<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write"><b>Quickstart</b></a></li></ul>
 	<!--
 <form action="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write" method="post">
 <input type="submit" class="navButton" id="quickstart" value="Quickstart" title="read&amp;write public&amp;private activities">
 </form>
 -->
+
 	<h2>User features</h2>
-	<ul>
-		<li>Detailed activity statistics: sums and averages per activity type and timeslot of parameters distance,
-			elevation, speed ... </li>
-		<li>Excel report/export of your activities for enabling your private advanced analysis (compatible to <a
-				href="https://www.libreoffice.org/" target="_blank">LibreOffice</a>)</li>
-		<li>Search for activities based on many criteria, in particular by geo location</li>
+<ul>
+		<li>Detailed activity statistics: sums and averages per activity type and timeslot of parameters distance, elevation, speed ... </li>
+		<li>Excel report/export of your activities for enabling your private advanced analysis (compatible to <a href="https://www.libreoffice.org/" target="_blank">LibreOffice</a>)</li>
 		<li>Import activities from Excel / CSV</li>
+		<li>Search for activities based on many criteria, in particular by geo location</li>
 		<li>Starred segments summary</li>
 		<li>Naming of frequent used start/end locations, for easier filtering in Excel</li>
-		<li>Bulk modify of activity meta data: set name, description, commute-flag, training-machine-flag for multiple
-			activities</li>
+		<li>Bulk modify of activity meta data: set name, description, commute-flag, training-machine-flag for multiple activities</li>
 		<li>Export segment leaderboard</li>
 	</ul>
+
 	<h2>Technical features</h2>
 	<ul>
-		<li>OpenSource: source code now available at <a href="https://github.com/entorb/strava" target="_blank">GitHub</a></li>
-		<li>High level of security and privacy (HTTPS encrypted communication, Strava access token to your profile is
-			deleted after 2 hours)</li>
-		<li>Proudly made without cookies, JavaScript, database and of course free from advertisement</li>
-		<li>No third party api's used (No GoogleMaps, etc)</li>
+		<li>OpenSource: source code available at <a href="https://github.com/entorb/strava" target="_blank">GitHub</a></li>
+		<li>High level of security and privacy (HTTPS encrypted communication, no data is kept in a database, your temporarily cached data is deleted upon logout, a temporary access token to your Strava profile is used and deleted after logout</li>
+		<li>Proudly made without cookies, database and of course free from advertisement</li>
+		<li>No third party api's used (No Google Analytics, Maps, etc)</li>
 		<li>Plain and simple layout</li>
-		<li>Coded in <a href="/wickie/Perl" target="_blank">Perl</a> and <a href="/wickie/Gnuplot"
-				target="_blank">Gnuplot</a></li>
+		<li>Coded in <a href="/wickie/Perl" target="_blank">Perl</a> and <a href="/wickie/Gnuplot" target="_blank">Gnuplot</a></li>
 	</ul>
 
 	<h2>Screenshots</h2>
-	<p>
-		Generated Excel report<br />
+
+	<p> Generated Excel report<br />
 		<img src="screenshots/ActivitiesAll.png" alt="ActivitiesAll.png" width="895" height="119" />
 	</p>
-	<p>
-		Custom charts and slicers on a connected analysis sheet<br />
+
+	<p> Custom charts and slicers on a connected analysis sheet<br />
 		<img src="screenshots/ActivitiesAll-Charts.png" alt="ActivitiesAll-Charts.png" width="1290" height="442" />
 	</p>
-	<p>
-		Activity statistics table<br />
-		<img src="screenshots/Stats-run-qrt.jpg" alt="Stats-run-qrt.jpg" width="1256" height="262" /><br/>
+
+	<p> Activity statistics table<br />
+		<img src="screenshots/Stats-run-qrt.jpg" alt="Stats-run-qrt.jpg" width="1256" height="262" /><br />
 	</p>
-	<p>
-		Activity statistics chart<br />
+
+	<p> Activity statistics chart<br />
 		<img src="screenshots/act-stats-Run-Quarter-elevation-av.png" alt="act-stats-Run-Quarter-elevation-av.png" width="800" height="400" />
 	</p>
-
-
-
 
 	<h2>Start by choosing permission scope for the app</h2>
 	<ul>
 		<li>
-			<a
-				href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">Quickstart<br/>&nbsp;</a>
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">Quickstart<br />&nbsp;</a>
 		</li>
 		<li>
-			<a
-				href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read">read
-				public activities</a>
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read">read public activities</a>
 		</li>
 		<li>
-			<a
-				href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all">read
-				public&amp;private activities</a> (preferred choice for statistics and Excel export of your activities)
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all">read public&amp;private activities</a> (preferred choice for statistics and Excel export of your activities) </li>
+		<li>
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read,activity:write">read&amp;write public activities</a>
 		</li>
 		<li>
-			<a
-				href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read,activity:write">read&amp;write
-				public activities</a>
-		</li>
-		<li>
-			<a
-				href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">read&amp;write
-				public&amp;private activities</a> (preferred choice if you want to modify your activities as well)
-		</li>
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">read&amp;write public&amp;private activities</a> (preferred choice if you want to modify your activities as well) </li>
 	</ul>
 
 	<h2>User feedback</h2>
 	<ul>
+		<li>2021-04-03 Peter: Fantastic stuff, many thanks for this! It converts Strava data from fun to a great analysis base. Have a nice day!</li>
+		<li>2021-03-01 Eugene: This app is amazing and full of useful details.</li>
+		<li>2020-12-27 Mike: Excellent work! Thank YOU!!!</li>
+		<li>2020-09-23 Tom: big thanks from australia here for your strava manual upload plugin.</li>
+		<li>2020-09-16 Don: This is fantastic. I was excited to learn that I have a cumulative elevation gain in all my activities to summit Mt. Everest over 7 times! Thanks for putting this together. Much appreciated.</li>
+		<li>2020-08-25 Franz: vielen Dank für dein klasse Exporttool Strava->Excel</li>
+		<li>2020-07-10 John: Great tool!! Worked superbly.</li>
+		<li>2020-05-28 Sebastian: großartiges Tool, ich war schon dabei mir etwas eigenes zu basteln (was definitiv nicht deine Qualität erreicht hätte) - awesome tool and thanks for all the work!</li>
+		<li>2020-05-23 Mike: Thanks for sharing your great interface with everyone!</li>
+		<li>2020-05-09 Martin: I just want to say BIG THANK you for your great tool. I needed the export to gather my life time sport-related data. I also like statistics a lot. Keep up great work you do!</li>
 		<li>2020-02-25 Tony: Thanks so much for this tool, I've been able to load years of past information in a couple of hours.</li>
-		<li>2020-01-21 Chris: Hi.   I love your Strava app.    I use the excel export on a regular basis and for my needs</li>
-		<li>2020-01-19 Mike: Great program. Many thanks! This means a lot to me, and I am sure  a lot of other people. Have a great year!</li>
+		<li>2020-01-21 Chris: Hi. I love your Strava app. I use the excel export on a regular basis and for my needs</li>
+		<li>2020-01-19 Mike: Great program. Many thanks! This means a lot to me, and I am sure a lot of other people. Have a great year!</li>
 		<li>2020-01-07 Ben: Awesome set of tools, love all the data!</li>
-        <li>2019-12-30 Jon: Your strava import/export site is excellent! I just imported years of manual data and it worked perfectly. And the export will allow me to recreate my excel pivot charts using the entirety of my training data. Thank you for sharing it!</li>
+		<li>2019-12-30 Jon: Your strava import/export site is excellent! I just imported years of manual data and it worked perfectly. And the export will allow me to recreate my excel pivot charts using the entirety of my training data. Thank you for sharing it!</li>
 		<li>2019-12-17 Tim: Thanks for the useful tool. I really just needed to be able to see my total miles for 2019 and 2020. Only your tool seems to be able to do it.</li>
 		<li>2019-12-02 Cody: I got it all figured out! Things are importing smoothly now. Hundreds of rides from 2007 to 2014. This is making me so happy! I will definitely spread the word with anyone who needs something like this.</li>
 		<li>2019-09-11 Georg: Thank you Torben for making this facility available</li>
 		<li>2019-08-27 Sergio: Brilliant job. I have been looking for something like that for ages. And it's written in Perl! I thought I was the last one Perl Programmer... Keep up with the good work!</li>
 		<li>2019-08-07 Scott: Thanks for making the application!</li>
 		<li>2019-07-02 Rob: This is a cool tool! </li>
-		<li>2019-06-26 Chris: Your app works great and I believe will be a big value to people who use Strava. The import function will be great when Strava or Garmin doesn't work right leaving us to do manual input. Your answers were so quick also. I didn't expect you to do this work on such a expedient basis, nor did you have to do this for us, but you did, and it works wonderfully.  Thank you so much.</li>
+		<li>2019-06-26 Chris: Your app works great and I believe will be a big value to people who use Strava. The import function will be great when Strava or Garmin doesn't work right leaving us to do manual input. Your answers were so quick also. I didn't expect you to do this work on such a expedient basis, nor did you have to do this for us, but you did, and it works wonderfully. Thank you so much.</li>
 		<li>2019-06-26 Dave: The Excel data importer is a great feature of this Strava app. Instead of having to manually transcribe my activity data that predates Strava, I was able to quickly setup my old Excel data into a format compatible with this tool. Copy, paste, preview and submit and the data is in Strava correctly. Thank you.</li>
 		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360006178612#community_comment_360006178612" target="_blank">2019-06-23 Richard</a>: Thank you, Worked perfectly!</li>
-		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360005515591#community_comment_360005515591"
-				target="_blank">2019-05-06 Rémi</a>:
-				Awesome tool! As I wasn't really familiar with Strava Apps, it took me a couple of minutes to understand
-				how to use it, maybe it's worth producing a little "tutorial" in a few steps. Anyway, that's a great
-				help and it brought me exactly what I needed to analyze and measure my progresses from my Strava stats!
-				Thanks for your work!</li>
+		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360005515591#community_comment_360005515591" target="_blank">2019-05-06 Rémi</a>: Awesome tool! As I wasn't really familiar with Strava Apps, it took me a couple of minutes to understand how to use it, maybe it's worth producing a little "tutorial" in a few steps. Anyway, that's a great help and it brought me exactly what I needed to analyze and measure my progresses from my Strava stats! Thanks for your work!</li>
 		<li>2019-04-20 Brie: Thanks so much for making it! It's great!</li>
-		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360005038451"
-				target="_blank">
-				2019-03-28 Wilton</a>: That's fantastic work! Thanks for all your work. Exactly what I was after.</li>
+		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360005038451" target="_blank"> 2019-03-28 Wilton</a>: That's fantastic work! Thanks for all your work. Exactly what I was after.</li>
 		<li>2019-03-20 Jon Magnus: Great site! I'm very grateful that I found info about it on a discussion forum.</li>
 		<li>2019-02-23 Nick: thanks for the strava tool! incredibly useful!</li>
 		<li>2019-02-08 Daniel: thanks man! this works great!!!</li>
-		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003607592"
-				target="_blank">2019-01-01 David</a>: Great excel exporter tool Torben!! Thanks</li>
-		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003602031"
-				target="_blank">2019-01-01 Johan</a>: Perfect tool...all i was looking for for years. Thanks</li>
-		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003586871"
-				target="_blank">2018-12-31 Bill</a>: Really cool! Works great. Thanks!</li>
-		<li>2018-12-31 Gabe: Thanks for the cool Strava exporter. It was exactly what I was looking for -- frustrating that Strava
-			doesn't provide these features themselves! Anyway your tool works great and, as a fellow perl coder, I'm
-			happy to see such nice work written in perl :-)</li>
+		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003607592" target="_blank">2019-01-01 David</a>: Great excel exporter tool Torben!! Thanks</li>
+		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003602031" target="_blank">2019-01-01 Johan</a>: Perfect tool...all i was looking for for years. Thanks</li>
+		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003586871" target="_blank">2018-12-31 Bill</a>: Really cool! Works great. Thanks!</li>
+		<li>2018-12-31 Gabe: Thanks for the cool Strava exporter. It was exactly what I was looking for -- frustrating that Strava doesn't provide these features themselves! Anyway your tool works great and, as a fellow perl coder, I'm happy to see such nice work written in perl :-)</li>
 		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003268951" target="_blank">2018-12-03 Stephen</a>: super awesome and thank you!</li>
 		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003165772" target="_blank">2018-11-28 Wayne</a>: Excellent tool, just downloaded my Strava history, and its impressive the no of fields that the data contains. Now we need a tool to download segments :)</li>
 		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003165391" target="_blank">2018-11-27 Ken</a>: Thanks Torben! The extract worked extremely well!</li>
@@ -162,82 +137,20 @@ for german regions and selected countries
 				<th width="50%">Haftungsausschluss</th>
 			</tr>
 			<tr>
-				<td width="50%">
-					This piece of software is tested extensivly and to the best of my knowledge, but I cannot garanty
-					for error-free operation. Use at your own risk. Developed by Torben Menke, using <a
-						href="https://developers.strava.com/" target="_blank">Strava's API</a>, requires a <a
-						href="https://www.strava.com/" target="_blank">Strava account</a>.
-				</td>
-				<td width="50%">
-					Diese Software ist ausgiebig und nach bestem Wissen und Gewissen getestet, trotzdem können Fehler
-					nicht ausgeschlossen werden. Ich übernehme keinerlei Haftung für Fehler und garantiere nicht für die
-					korrekte Funktionsweise. Entwicklet von Torben Menke, unter Verwendung der <a
-						href="https://developers.strava.com/" target="_blank">Strava API</a>, erfordert einen <a
-						href="https://www.strava.com/" target="_blank">Strava account</a>.
-				</td>
+				<td width="50%"> This piece of software is tested extensivly and to the best of my knowledge, but I cannot garanty for error-free operation. Use at your own risk. Developed by Torben Menke, using <a href="https://developers.strava.com/" target="_blank">Strava's API</a>, requires a <a href="https://www.strava.com/" target="_blank">Strava account</a>. </td>
+				<td width="50%"> Diese Software ist ausgiebig und nach bestem Wissen und Gewissen getestet, trotzdem können Fehler nicht ausgeschlossen werden. Ich übernehme keinerlei Haftung für Fehler und garantiere nicht für die korrekte Funktionsweise. Entwicklet von Torben Menke, unter Verwendung der <a href="https://developers.strava.com/" target="_blank">Strava API</a>, erfordert einen <a href="https://www.strava.com/" target="_blank">Strava account</a>. </td>
 			</tr>
 			<tr>
-				<td width="50%" valign="top">
-					Security and Privacy<br />
-					I put quite some effort on implementing as much security and privacy issues:
-					All communication is encrypted via HTTPS. The access to your data is not via your login credentials
-					(my app does not see your password!). Instead an "access token" is generated and provided by Strava
-					after you granting (temporary) permission to this app. For reasons of data reduction and data
-					responsibility, these sensitive access tokens as well as your Strava content are not stored
-					permanently but are deleted after 1 hour (at the next login by anyone) and the access token is
-					de-registered at Strava (can be checked <a href="https://www.strava.com/settings/apps"
-						target="_blank">here</a>). As
-					a consequence, the user must grant access again via Strava before each use of my app. Furthermore, I
-					have implemented a button for manually deletion of this data. One exception: I do not delete your
-					coordinates to known locations automatically. In order to do so you can replace the list with an
-					empty list, which leads to deletion of your locations. The access token, the temporary JSON data of
-					your Strava activities and your known locations are outside the server's web folder and are
-					therefore technically not accessible from the internet. The access tokens are only transmitted to
-					communicate with Strava (and as little as possible and not via URL, but in the body) and encrypted
-					via HTTPS. The communication between your browser and my website uses a non-critical custom session
-					ID, which allows the web server to retrieve the appropriate access token from its temporary storage.
-					Despite these efforts, I can not guarantee 100% security of your data, so use at your own risk.
-				</td>
-				<td width="50%" valign="top">
-					Sicherheit und Privatsphäre<br />
-					Ich habe mir größte Mühe gegeben so viel Sicherheit und Privatsphäre so gut wie möglich zu
-					respektieren und zu schützen:<br />
-					Sämtliche Kommunikation erfolgt verschlüsselt via HTTPS. Der Zugriff auf Eure Daten erfolgt nicht
-					über die eure Logindaten (diese bekommt meine App nicht zu sehen!), sondern über einen
-					„Accesstoken“, der von Strava nach (temporären) Freigabe von euch für diese App generiert wird. Aus
-					Gründen der Datensparsamkeit und der damit einhergehenden Verantwortung werden diese sensiblen
-					Accesstoken und ebenso wie zwischengespeicherte Strava Inhalte nicht permanent gespeichert, sondern
-					schon nach 1 Stunde (beim nächsten Login durch irgendeinen Besucher) gelöscht (<a
-						href="https://www.strava.com/settings/apps" target=" _blank">Hier</a> zu prüfen.). Als
-					Konsequenz muss der
-					Anwender vor jeder Verwendung meiner App erneut den Zugriff via Strava gewähren. Ferner habe ich
-					einen Button zum manuellen Löschen dieser Daten implementiert. Einzige Ausnahme: Eure Koordinaten zu
-					bekannten Orten lösche ich nicht automatisch, diese könnt ihr durch eine leere Liste ersetzen, dann
-					werden diese gelöscht. Die Accesstoken, die temporären von Strava kommenden JSON Daten der
-					Aktivitäten und eure bekannten Orte liegen außerhalb des Web-Ordners des Servers und sind damit
-					technisch nicht aus dem Internet abrufbar. Die Accesstoken werden nur zur Kommunikation mit Strava
-					(und so wenig wie möglich) über das Netz (und nicht via URL, sondern im Body) und verschlüsselt via
-					HTTPS übertragen. In der Kommunikation zwischen eurem Browser und meiner Webseite wird eine
-					unkritische selbstdefinierte Session-ID verwendet, über die sich der Webserver den passenden
-					Accesstoken aus seinem temporären Speicherort holt. Trotz dieser Aufwände kann ich keine 100%
-					Sicherheit der Daten garantieren, daher erfolgt die Benutzung auf eigenens Risiko.
-				</td>
+				<td width="50%" valign="top"> Security and Privacy<br /> I put quite some effort on implementing as much security and privacy issues: All communication is encrypted via HTTPS. The access to your data is not via your login credentials (my app does not see your password!). Instead an "access token" is generated and provided by Strava after you granting (temporary) permission to this app. For reasons of data reduction and data responsibility, these sensitive access tokens as well as your Strava content are not stored permanently but are deleted after 1 hour (at the next login by anyone) and the access token is de-registered at Strava (can be checked <a href="https://www.strava.com/settings/apps" target="_blank">here</a>). As a consequence, the user must grant access again via Strava before each use of my app. Furthermore, I have implemented a button for manually deletion of this data. One exception: I do not delete your coordinates to known locations automatically. In order to do so you can replace the list with an empty list, which leads to deletion of your locations. The access token, the temporary JSON data of your Strava activities and your known locations are outside the server's web folder and are therefore technically not accessible from the internet. The access tokens are only transmitted to communicate with Strava (and as little as possible and not via URL, but in the body) and encrypted via HTTPS. The communication between your browser and my website uses a non-critical custom session ID, which allows the web server to retrieve the appropriate access token from its temporary storage. Despite these efforts, I can not guarantee 100% security of your data, so use at your own risk. </td>
+				<td width="50%" valign="top"> Sicherheit und Privatsphäre<br /> Ich habe mir größte Mühe gegeben so viel Sicherheit und Privatsphäre so gut wie möglich zu respektieren und zu schützen:<br /> Sämtliche Kommunikation erfolgt verschlüsselt via HTTPS. Der Zugriff auf Eure Daten erfolgt nicht über die eure Logindaten (diese bekommt meine App nicht zu sehen!), sondern über einen „Accesstoken“, der von Strava nach (temporären) Freigabe von euch für diese App generiert wird. Aus Gründen der Datensparsamkeit und der damit einhergehenden Verantwortung werden diese sensiblen Accesstoken und ebenso wie zwischengespeicherte Strava Inhalte nicht permanent gespeichert, sondern schon nach 1 Stunde (beim nächsten Login durch irgendeinen Besucher) gelöscht (<a href="https://www.strava.com/settings/apps" target=" _blank">Hier</a> zu prüfen.). Als Konsequenz muss der Anwender vor jeder Verwendung meiner App erneut den Zugriff via Strava gewähren. Ferner habe ich einen Button zum manuellen Löschen dieser Daten implementiert. Einzige Ausnahme: Eure Koordinaten zu bekannten Orten lösche ich nicht automatisch, diese könnt ihr durch eine leere Liste ersetzen, dann werden diese gelöscht. Die Accesstoken, die temporären von Strava kommenden JSON Daten der Aktivitäten und eure bekannten Orte liegen außerhalb des Web-Ordners des Servers und sind damit technisch nicht aus dem Internet abrufbar. Die Accesstoken werden nur zur Kommunikation mit Strava (und so wenig wie möglich) über das Netz (und nicht via URL, sondern im Body) und verschlüsselt via HTTPS übertragen. In der Kommunikation zwischen eurem Browser und meiner Webseite wird eine unkritische selbstdefinierte Session-ID verwendet, über die sich der Webserver den passenden Accesstoken aus seinem temporären Speicherort holt. Trotz dieser Aufwände kann ich keine 100% Sicherheit der Daten garantieren, daher erfolgt die Benutzung auf eigenens Risiko. </td>
 			</tr>
 		</table>
 	</small>
 	<i>
 		<center>TL;DR: Use this software on your own risk.</center>
 	</i>
-
-
 	<hr />
-	<a href="/">Home</a>
-	&nbsp;
-	<a href="/contact.php?origin=strava">Contact me</a>
-	&nbsp;
-	<a href="/impressum.php">Website Disclaimer</a>
-
-
+	<a href="/">Home</a> &nbsp; <a href="/contact.php?origin=strava">Contact me</a> &nbsp; <a href="/impressum.php">Website Disclaimer</a>
 </body>
 
 </html>
