@@ -35,8 +35,6 @@ use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 # Modules: My Strava Module Lib
 use lib ('.');
 use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
-use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just for making Visual Studio Code happy
-use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
 use TMsStrava qw( %o %s);
 
 # at entorb.net some modules require use local::lib!!!
@@ -45,8 +43,9 @@ TMsStrava::htmlPrintHeader( $cgi, 'Starred Segments', 1 );
 TMsStrava::initSessionVariables( $cgi->param("session") );
 TMsStrava::htmlPrintNavigation();
 
+say "<p>You can manage your <a href=\"https://www.strava.com/athlete/segments/starred\" target=\"_blank\">starred segments</a> at Strava</p><b>2020-11-17: this feature now requires a paid Strava subscription account :-( </b>";
+
 my @L = TMsStrava::fetchSegmentsStarred( $s{'token'} );
-say "<p>You can manage your <a href=\"https://www.strava.com/athlete/segments/starred\" target=\"_blank\">starred segments</a> at Strava</p>";
 
 say "<table border=\"1\"><tbody align=\"center\">";
 say "<tr>
@@ -56,13 +55,11 @@ say "<tr>
 <th>Distance<br/>(km)</th>
 <th>Elev delta<br/>(m)</th>
 <th>Average Grade</th>
-<th>Athletes</th>
-<th>Record time<br/>(min)</th>
 <th>My time<br/>(min)</th>
 <th>My speed<br/>(km/h)</th>
 <th>My count</th>
-<th>My rel. time</th>
 </tr>";
+
 
 # <th>Elev low</th>
 # <th>Elev high</th>
@@ -70,7 +67,7 @@ say "<tr>
 foreach my $ref (@L) {
 	my %h = %{$ref};
 	next if ( not defined $h{"pr_time"} );    # check if I participate on this segment, if not remove from list
-	my ( $entry_count, $record_time ) = TMsStrava::fetchSegmentRecord( $s{'token'}, $h{"id"} );
+	# removed by Strava :-(   my ( $entry_count, $record_time ) = TMsStrava::fetchSegmentRecord( $s{'token'}, $h{"id"} );
 	my %h2 = TMsStrava::fetchSegment( $s{'token'}, $h{"id"} );
 
 	# say "<code>";
@@ -81,7 +78,15 @@ foreach my $ref (@L) {
 	# say $h2{ 'athlete_segment_stats' }{ 'effort_count' };
 	# say $h2{ 'athlete_segment_stats' }{ 'pr_date' };
 
-	my $relTime = ( $h{"pr_time"} > 0 ? $record_time / $h{"pr_time"} : 0 );    # check if I participate on this segment, set time = 0 if not
+# removed by Strava
+# <th>Athletes</th>
+# <th>Record time<br/>(min)</th>
+# <th>My rel. time</th>
+#   <td>$entry_count</td>
+#   <td>" .                                                                                                        ( TMsStrava::secToMinSec($record_time) ) . "</td>
+
+
+	# my $relTime = ( $h{"pr_time"} > 0 ? $record_time / $h{"pr_time"} : 0 );    # check if I participate on this segment, set time = 0 if not
 	say "<tr>
   <td>$h{\"activity_type\"}</td>
   <td><a href=\"https://www.strava.com/segments/" . $h{"id"} . "\" target=\"_blank\">$h{'name'}</td>
@@ -89,27 +94,25 @@ foreach my $ref (@L) {
   <td>" . ( sprintf "%.1f",   $h{"distance"} / 1000 ) . "</td>
   <td>" . ( sprintf "%d",     $h{"elevation_high"} - $h{"elevation_low"} ) . "</td>
   <td>" . ( sprintf "%.1f%%", $h{"average_grade"} ) . "</td>
-  <td>$entry_count</td>
-  <td>" .                                                                                                        ( TMsStrava::secToMinSec($record_time) ) . "</td>
   <td><a href=\"https://www.strava.com/segment_efforts/$h{ 'athlete_pr_effort' }{ 'id' }\" target=\"_blank\">" . ( TMsStrava::secToMinSec( $h{"pr_time"} ) ) . "</a><br/><small>" . TMsStrava::formatDate( $h{'athlete_pr_effort'}{'start_date_local'}, 'date' ) . "</small></td>
   <td>" .                                                                                                        ( sprintf( '%.1f', ( $h{"distance"} / 1000 ) / ( $h{"pr_time"} / 3600 ) ) ) . "</td>
   <td>$h2{ 'athlete_segment_stats' }{ 'effort_count' }</td>
-  <td>";
+  ";
+#   <td>
+# 	#  <td>$h{\"elevation_low\"}</td>
+# 	#  <td>$h{\"elevation_high\"}</td>
 
-	#  <td>$h{\"elevation_low\"}</td>
-	#  <td>$h{\"elevation_high\"}</td>
-
-	if ( $relTime < 0.5 ) {
-		print '<font color="red">';
-	} elsif ( $relTime > 0.75 ) {
-		print '<font color="green">';
-	}
-	printf "%d%%", 100 * $relTime;
-	if ( $relTime < 0.5 or $relTime > 0.75 ) {
-		print '</font>';
-	}
-	say "</td>
-  </tr>";
+# 	if ( $relTime < 0.5 ) {
+# 		print '<font color="red">';
+# 	} elsif ( $relTime > 0.75 ) {
+# 		print '<font color="green">';
+# 	}
+# 	printf "%d%%", 100 * $relTime;
+# 	if ( $relTime < 0.5 or $relTime > 0.75 ) {
+# 		print '</font>';
+# 	}
+# 	say "</td>
+  say "</tr>";
 } ## end foreach my $ref ( @L )
 say "</tbody></table>";
 
