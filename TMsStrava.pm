@@ -158,6 +158,7 @@ sub clearCache {
   # after modification I cleanup this session's downloadloaded activity list jsons and stored dump files, since they are not up to date any more
   unlink foreach ( <$s{'tmpDataFolder'}/activityList/*.json> );    #
   unlink foreach ( <$s{'tmpDataFolder'}/activityList/*.dmp> );
+  unlink foreach ( <$s{'tmpDownloadFolder'}/*.ics> );
   unlink foreach ( <$s{'tmpDownloadFolder'}/*.xlsx> );
   unlink foreach ( <$s{'tmpDownloadFolder'}/*.zip> );
   # unlink foreach (<$s{'tmpDataFolder'}/activitySingle/*.json>); # TODO after implementing single activity json download
@@ -984,11 +985,19 @@ sub htmlPrintNavigation {
 	</form>
 
 	<form action="activityExcelExport.pl" method="post">
-	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActListExcel" value="Activity List Excel" ' . $missingActivityCacheDisablesButton . ' 
+	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActListExcel" value="Activity Excel Export" ' . $missingActivityCacheDisablesButton . ' 
   title="generate/export activity Excel report
 (requires caching first)"/>
 	<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
 	</form>
+
+	<form action="activityCalExport.pl" method="post">
+	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActCalExcel" value="Activity Calendar Export" ' . $missingActivityCacheDisablesButton . ' 
+  title="generate/export activity Excel report
+(requires caching first)"/>
+	<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
+	</form>
+
 ';
   say '
 	<form action="activityExcelImport.pl" method="post">
