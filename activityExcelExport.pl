@@ -40,7 +40,7 @@ use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just fo
 use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
 use TMsStrava qw( %o %s);                                              # at entorb.net some modules require use local::lib!!!
 
-TMsStrava::htmlPrintHeader( $cgi, 'Export list of activities' );
+TMsStrava::htmlPrintHeader( $cgi, 'Excel export of activities' );
 TMsStrava::initSessionVariables( $cgi->param("session") );
 TMsStrava::htmlPrintNavigation();
 
