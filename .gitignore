@@ -1,10 +1,8 @@
-# by TM: 
-# config files
+download/
+
 TMsStravaSecret.pm
 *.sh
-download
 0-*.pl
 index-*.html
 stats.*
-.vstags
 .vstags
