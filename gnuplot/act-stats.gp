@@ -5,8 +5,8 @@ reset
 
 # global settings
 # font Arial is not installed on uberspace
-myFont = "Arial"
-myFont = "/usr/share/fonts/dejavu/DejaVuLGCSansMono.ttf"
+#myFont = "Arial"
+#myFont = "/usr/share/fonts/dejavu/DejaVuLGCSansMono.ttf"
 
 # settings for data file
 set datafile commentschars '#'
@@ -63,7 +63,7 @@ rangeextender = 0.4 * binwidth # 0.01 # for ensuring that fitHigh is included in
 # exclude last row from fits (current month/quarter/year)
 fitHigh0 = date_max - 1 * binwidth + rangeextender # and extend rage to include pre-last row
 
-# 0 = over year_span_for_slope 
+# 0 = over year_span_for_slope
 fitLow0  = fitHigh0 - year_span_for_slope + binwidth - 2 * rangeextender
 
 # 1 = calendar year ( 4 for date_aggregation=Year)
@@ -115,7 +115,7 @@ set label 1  "Count"
 outfile = outfilebase . "-count"
 load "act-stats-plot1-sum.gp"
 
-# exit 
+# exit
 
 col = 4
 set title activity_type." ".date_aggregation." Time Sum"

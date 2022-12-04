@@ -19,7 +19,7 @@ set terminal unknown
 plot data u 1:3
 year_min = int(GPVAL_DATA_X_MIN)
 year_max = int(GPVAL_DATA_X_MAX + 1)
-fitLow = GPVAL_DATA_X_MIN 
+fitLow = GPVAL_DATA_X_MIN
 fitHigh = GPVAL_DATA_X_MAX - 1.0/12 + 0.01 # remove current month, but extend range by a small amount, so that the per-last month is included the range
 
 # define a function that runs perl since Gnuplot V 4.2 does not have the stats command :-(
@@ -39,9 +39,9 @@ numPointsInRange (datafile, min, max, col) = 0 + system ("perl -e '\
 ' < ". datafile)
 # print numPointsInRange (data, date_min, fitHigh0, 12)
 
-# settings for terminal 
+# settings for terminal
 set terminal png size 1200,600 font myFont
-# crop 
+# crop
 # set terminal png giant size 3*360,3*180
 
 # settings for plot layout
@@ -56,7 +56,7 @@ set style line  1 linetype 1 linewidth 1 linecolor rgb "dark-green" # box old
 set style line  2 linetype 2 linewidth 1 linecolor rgb "light-green" # box new
 set style line  9 linetype 9 linewidth 2 linecolor rgb "blue" # percent
 set style line  10 linetype 10 linewidth 2 linecolor rgb "gray30" # mean
-# TODO: dashtype does not work here 
+# TODO: dashtype does not work here
 # set dashtype 2 " - "
 # set dashtype 2 (2,4,2,6)
 
@@ -70,11 +70,11 @@ set y2label "old/new visitors (%)" offset -0.5 textcolor ls 9
 set y2tics nomirror textcolor ls 9
 set y2tics 25
 # set xtics 4
-# set mxtics 4 
+# set mxtics 4
 
 # settings for key / legend
 set key box top left width +0 samplen 2
-# reverse invert Left 
+# reverse invert Left
 
 # settings for plot range
 # set xrange [*:-0.5]
@@ -106,7 +106,7 @@ set samples 600
 # set fit quiet # do not print the results in the terminal
 av = 0.0
 fitav(x) = av
-fit [fitLow:fitHigh] fitav(x) data using 1:3 via av 
+fit [fitLow:fitHigh] fitav(x) data using 1:3 via av
 print av
 set label 2 sprintf ("%.1f", av) at graph 0.02, first (av* 1.05) left font myFont.",10" textcolor ls 10
 
@@ -146,7 +146,7 @@ system ("del fit.log")
 # fit f(x) data using column(0):2 via m,b
 
 
-# stats data # only working in GP >4.6	
+# stats data # only working in GP >4.6
 # if (STATS_records>=3) \
 #   fit [-slopeDuration:0] f(x) data using 1:2 via m,b
 # if (STATS_records>=3) \

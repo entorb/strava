@@ -3,7 +3,7 @@
 # font Arial was not installed on uberspace
 # svg or png
 set terminal png size 800,400 font myFont
-# crop 
+# crop
 # set terminal png giant size 3*360,3*180 font "Arial,9"
 
 
@@ -13,15 +13,15 @@ set grid
 set label 2 "https://entorb.net/strava" at screen 0.999, screen 0.01 right font myFont.",9"  textcolor rgb "black"
 
 # settings for lines
-# TODO: dashtype does not work here 
+# TODO: dashtype does not work here
 set style increment user # important!!! switch between linetypes (default) and userdefined linestyles
 # set dashtype 2 " - "
 # set dashtype 2 (2,4,2,6)
 set style line  1 linetype 2 linewidth 1 pointsize 1.5 pt 4 linecolor rgb "blue" # ls 1 = boxes and lines
 set style line  2 linetype 6 linewidth 3 linecolor rgb "dark-blue" # slope
-set style line  3 linetype 6 linewidth 3 linecolor rgb "gray60" # mean all data 
+set style line  3 linetype 6 linewidth 3 linecolor rgb "gray60" # mean all data
 set style line  4 linetype 6 linewidth 3 linecolor rgb "gray30" # mean one year
-# dashtype 2 
+# dashtype 2
 
 # settings for labels and tics
 set title "" offset 0,-0.8
@@ -39,11 +39,11 @@ set ytics mirror
 # set y2tics nomirror textcolor ls 2
 # set y2tics 25
 set xtics 1
-set mxtics 4 
+set mxtics 4
 
 # settings for key / legend
 set key box top left width +1 samplen 2
-# reverse invert Left 
+# reverse invert Left
 
 # settings for plot range
 set xrange [int(date_min)-0.5:int(date_max)+1+0.5]
@@ -68,5 +68,3 @@ set lmargin at screen 0.09
 set rmargin at screen 0.9
 set tmargin at screen 0.925
 set bmargin at screen 0.18
-
-

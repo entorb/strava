@@ -88,7 +88,7 @@ foreach my $activity ( @allActivityHashes ) {
   say "<tr class=\"r" . ( ( $rownum % 2 == 1 ) ? '1' : '2' ) . "\">";    # alternating tr class
   say "  <td>
   <input type=\"checkbox\" name=\"activityID\" value=\"$h{'id'}\">
-  </td>	
+  </td>
   <td>$h{'type'}</td><td>" . TMsStrava::formatDate( $h{ 'start_date_local' }, 'datetime' ) . "</td><td>" . TMsStrava::activityUrl( $h{ "id" }, $h{ "name" } ) . "</td><td>" . TMsStrava::secToMinSec( $h{ "moving_time" } ) . "</td><td>$h{'commute'}</td><td>$h{'trainer'}</td><td>$h{'visibility'}</td>
 </tr>";
 } ## end foreach my $activity ( @allActivityHashes)

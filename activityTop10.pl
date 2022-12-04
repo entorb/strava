@@ -103,7 +103,7 @@ foreach my $y (@years) {
 say "</select>
   </td>
   <td>
-  <input type=\"submit\" name=\"submit\" value=\"Submit\"/> 
+  <input type=\"submit\" name=\"submit\" value=\"Submit\"/>
   </td>
   </tr>
 </table>
