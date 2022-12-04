@@ -65,12 +65,12 @@ print '
     <link href="/COVID-19-coronavirus/js/tabulator.min.css" rel="stylesheet">
     <script src="/COVID-19-coronavirus/js/tabulator-4.6.min.js"></script>
     <div id="table-activity-list"></div>
-    <!--  
-    Start JavaScript  
+    <!--
+    Start JavaScript
   -->
     <script>
         // variables
-        const promises = []; // array of promises for async fetching        
+        const promises = []; // array of promises for async fetching
 
         // ASync JQuery fetching
         function fetch_table_data() {

@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
+<!doctype html>
+<html lang="en">
 
 <head>
 	<title>Torben's Strava Äpp - Activity Statistics, Excel export and bulk modify of activities</title>
@@ -9,6 +9,21 @@
 	<meta name="keywords" content="Strava, App, Excel, export, import, report, search, activity list, activities, segment, csv, gps, location, bulk modify" />
 	<link rel="stylesheet" type="text/css" href="/style.css" />
 	<link rel="stylesheet" type="text/css" href="./style-strava.css" />
+	<!-- Matomo -->
+	<script>
+		var _paq = window._paq = window._paq || [];
+		/* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+		_paq.push(['trackPageView']);
+		_paq.push(['enableLinkTracking']);
+		(function () {
+			var u = "https://entorb.net/stats/matomo/";
+			_paq.push(['setTrackerUrl', u + 'matomo.php']);
+			_paq.push(['setSiteId', '1']);
+			var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+			g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
+		})();
+	</script>
+	<!-- End Matomo Code -->
 </head>
 
 <body>
@@ -20,8 +35,12 @@
 	</ul>
 
 	<h1>Welcome to Torben's Strava Äpp</h1>
-	<ul><li>
-	<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write"><b>Quickstart</b></a></li></ul>
+	<ul>
+		<li>
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write"><b>Quickstart</b></a>
+		</li>
+		<li><a href="#UserFeedback">User feedback</a></li>
+	</ul>
 	<!--
 <form action="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write" method="post">
 <input type="submit" class="navButton" id="quickstart" value="Quickstart" title="read&amp;write public&amp;private activities">
@@ -29,7 +48,8 @@
 -->
 
 	<h2>User features</h2>
-<ul>
+	<ul>
+		<li>Export activities to your calendar (<b>new</b>)</li>
 		<li>Detailed activity statistics: sums and averages per activity type and timeslot of parameters distance, elevation, speed ... </li>
 		<li>Excel report/export of your activities for enabling your private advanced analysis (compatible to <a href="https://www.libreoffice.org/" target="_blank">LibreOffice</a>)</li>
 		<li>Import activities from Excel / CSV</li>
@@ -42,7 +62,8 @@
 
 	<h2>Technical features</h2>
 	<ul>
-		<li>OpenSource: source code available at <a href="https://github.com/entorb/strava" target="_blank">GitHub</a></li>
+		<li>OpenSource: source code available at <a href="https://github.com/entorb/strava" target="_blank">GitHub</a>
+		</li>
 		<li>High level of security and privacy (HTTPS encrypted communication, no data is kept in a database, your temporarily cached data is deleted upon logout, a temporary access token to your Strava profile is used and deleted after logout</li>
 		<li>Proudly made without cookies, database and of course free from advertisement</li>
 		<li>No third party api's used (No Google Analytics, Maps, etc)</li>
@@ -59,34 +80,43 @@
 	<p> Custom charts and slicers on a connected analysis sheet<br />
 		<img src="screenshots/ActivitiesAll-Charts.png" alt="ActivitiesAll-Charts.png" width="1290" height="442" />
 	</p>
-
-	<p> Activity statistics table<br />
+	<!-- <p> Activity statistics table<br />
 		<img src="screenshots/Stats-run-qrt.jpg" alt="Stats-run-qrt.jpg" width="1256" height="262" /><br />
-	</p>
+	</p> -->
 
 	<p> Activity statistics chart<br />
 		<img src="screenshots/act-stats-Run-Quarter-elevation-av.png" alt="act-stats-Run-Quarter-elevation-av.png" width="800" height="400" />
 	</p>
-
-	<h2>Start by choosing permission scope for the app</h2>
+	<!--
+	 <h2>Start by choosing permission scope for the app</h2>
 	<ul>
 		<li>
-			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">Quickstart<br />&nbsp;</a>
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">Quickstart</a><br />&nbsp;
 		</li>
 		<li>
 			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read">read public activities</a>
 		</li>
 		<li>
-			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all">read public&amp;private activities</a> (preferred choice for statistics and Excel export of your activities) </li>
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all">read public&amp;private activities</a> (preferred choice for statistics and Excel export of your activities)
+		</li>
 		<li>
 			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read,activity:write">read&amp;write public activities</a>
 		</li>
 		<li>
-			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">read&amp;write public&amp;private activities</a> (preferred choice if you want to modify your activities as well) </li>
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">read&amp;write public&amp;private activities</a> (preferred choice if you want to modify your activities as well)
+		</li>
 	</ul>
+-->
+	<a id="UserFeedback"></a>
 
 	<h2>User feedback</h2>
 	<ul>
+		<li>2022-11-23 Jacob: I cannot thank you enough for this exceptionally useful tool. I was able to upload about 10 years of running data from my Garmin Connect to my Strava account. (even more blessings at <a href="https://twitter.com/SLCPaladin/status/1595473306983231488" target="_blank">Twitter</a>)</li>
+		<li>2022-09-12 Ricardo: Used it to upload data from CSV created by Zepp. I am switching to Polar, so your tool was EXTREMELY helpfull. Thank you so much!! Cheers</li>
+		<li>2022-03-18 Claudia: besten Dank für die Strava Äpp! Genau das, was ich gesucht habe</li>
+		<li>2021-12-20 Stefan: Many thanks for your Strava app. Finally did I find a way to see my Nordic Skiing stats.</li>
+		<li>2021-08-15 Chinmay: Kudos to you. What an app! Thank you so much.</li>
+		<li>2021-05-13 Markus: Thanks for the app, it's very helpful.</li>
 		<li>2021-04-03 Peter: Fantastic stuff, many thanks for this! It converts Strava data from fun to a great analysis base. Have a nice day!</li>
 		<li>2021-03-01 Eugene: This app is amazing and full of useful details.</li>
 		<li>2020-12-27 Mike: Excellent work! Thank YOU!!!</li>
@@ -98,7 +128,7 @@
 		<li>2020-05-23 Mike: Thanks for sharing your great interface with everyone!</li>
 		<li>2020-05-09 Martin: I just want to say BIG THANK you for your great tool. I needed the export to gather my life time sport-related data. I also like statistics a lot. Keep up great work you do!</li>
 		<li>2020-02-25 Tony: Thanks so much for this tool, I've been able to load years of past information in a couple of hours.</li>
-		<li>2020-01-21 Chris: Hi. I love your Strava app. I use the excel export on a regular basis and for my needs</li>
+		<li>2020-01-21 Chris: Hi. I love your Strava app. I use the excel export on a regular basis and for my needs </li>
 		<li>2020-01-19 Mike: Great program. Many thanks! This means a lot to me, and I am sure a lot of other people. Have a great year!</li>
 		<li>2020-01-07 Ben: Awesome set of tools, love all the data!</li>
 		<li>2019-12-30 Jon: Your strava import/export site is excellent! I just imported years of manual data and it worked perfectly. And the export will allow me to recreate my excel pivot charts using the entirety of my training data. Thank you for sharing it!</li>

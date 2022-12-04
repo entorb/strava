@@ -78,8 +78,8 @@ if ( $cgi->param('distanceunit') and $cgi->param('distanceunit') eq 'mile' ) {
 } ## end if ( $cgi->param( 'distanceunit'...))
 
 say "<h2>Feature ideas?</h2>
-<p>Hi folks, I started this app as Excel exporter, but now that I myself use it quite regularly, I find it nice to have the statistics available online without the need to open Excel. 
-Do you have ideas for further nice statistics and analytics I should add for all of us having more fun? (based on the data available in the Excel export) 
+<p>Hi folks, I started this app as Excel exporter, but now that I myself use it quite regularly, I find it nice to have the statistics available online without the need to open Excel.
+Do you have ideas for further nice statistics and analytics I should add for all of us having more fun? (based on the data available in the Excel export)
 If so, please drop me a <a href=\"/contact.php?origin=strava\" target=\"_blank\"> message</a>. <br/>
 P.S.: If you like this tool, please spread the word ;-)
 </p>
@@ -107,7 +107,7 @@ say "<form action=\"activityStats.pl\" method=\"post\">
   </select>
   </td>
   <td>
-  <input type=\"submit\" name=\"submit\" value=\"Submit\"/> 
+  <input type=\"submit\" name=\"submit\" value=\"Submit\"/>
   </td>
   </tr>
 </table>
