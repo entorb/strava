@@ -171,7 +171,7 @@ if ( -f $s{ 'pathToActivityListHashDump' } ) {
   @allActivityHashes = @{ retrieve( $s{ 'pathToActivityListHashDump' } ) };    # retrieve data from file (as ref)
 }
 
-if ( $yearToDL ne '' ) {  
+if ( $yearToDL ne '' ) {
 # all or a certain year -> perform some download
   #
   # DL Mode All
@@ -425,7 +425,7 @@ if ( $yearToDL eq 'all' and $allLastPageReached == 0 ) {
   <input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
   <input type="hidden" name="year" value="all"/>
   <input type="hidden" name="allStartPage" value="' . $allStartPage . '"/>
-  Max number of 1000 activities reached. Press 
+  Max number of 1000 activities reached. Press
   <input type="submit" name=allnext1000" id="allnext1000" value="Next 1000">
   to cache the next 1000 activities.
   </form>';
@@ -452,7 +452,7 @@ say '<table border="1">
 my $year = $_[ 5 ] + 1900;
 while ( $year >= 2000 ) {    # here 2000 as well
   $actPerYear{$year} = 0  unless exists  $actPerYear{$year};
-  
+
   # $_ = "$s{'tmpDataFolder'}/activityList/".$year."_";
   # my @L = <$_*.json>;
   # my $numFiles = 1 + $#L;

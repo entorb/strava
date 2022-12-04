@@ -177,13 +177,13 @@ say " </select><br/>";
 
 say "Duration
 <input type=\"number\" id=\"durationMin\" name=\"durationMin\" style=\"width: 40px\" placeholder=\"0.2\" min=\"0\" max=\"72\" value=\"" . $formparam{'durationMin'} . "\" step=\"0.1\">
- - 
+ -
 <input type=\"number\" id=\"durationMax\" name=\"durationMax\" style=\"width: 40px\" placeholder=\"1.5\" min=\"0\" max=\"72\" value=\"" . $formparam{'durationMax'} . "\" step=\"0.1\">
 hours<br/>";
 
 say "Distance
 <input type=\"number\" id=\"distanceMin\" name=\"distanceMin\" style=\"width: 40px\" placeholder=\"5\" min=\"0\" max=\"999\" value=\"" . $formparam{'distanceMin'} . "\" step=\"1\">
- - 
+ -
 <input type=\"number\" id=\"distanceMax\" name=\"distanceMax\" style=\"width: 40px\" placeholder=\"10\" min=\"0\" max=\"999\" value=\"" . $formparam{'distanceMax'} . "\" step=\"1\">
 km<br/>";
 
@@ -198,7 +198,7 @@ foreach my $thisCity (@cities) {
 	say "<option value=\"$thisCity\" " . ( $formparam{'city'} eq $thisCity ? 'selected' : '' ) . ">$thisCity</option>";
 }
 say "</select>
-plus 
+plus
 <input type=\"number\" id=\"maxcitydistance\" name=\"maxcitydistance\" style=\"width: 40px\" placeholder=\"3\" min=\"0\" max=\"999\" value=\"" . $formparam{'maxcitydistance'} . "\" step=\"1\">
 km <br/>";
 
@@ -216,12 +216,12 @@ km " .
   # <option value=\"kilometer\" " . ( $distanceunit eq 'km'   ? 'selected' : '' ) . ">km</option>
   # <option value=\"mile\"" .       ( $distanceunit eq 'mile' ? 'selected' : '' ) . ">mile</option>
   # </select>
-  "to lat, long: 
-<input type=\"number\" id=\"latitude\" name=\"latitude\" style=\"width: 70px\" placeholder=\"52.518611\" value=\"" . $formparam{'latitude'} . "\" step=\"any\"> 
+  "to lat, long:
+<input type=\"number\" id=\"latitude\" name=\"latitude\" style=\"width: 70px\" placeholder=\"52.518611\" value=\"" . $formparam{'latitude'} . "\" step=\"any\">
 ,
 <input type=\"number\" id=\"logitude\" name=\"logitude\" style=\"width: 70px\" placeholder=\"13.408333\" value=\"" . $formparam{'logitude'} . "\" step=\"any\">
 <br/>
-<input type=\"submit\" name=\"submit\" value=\"Submit\"/> 
+<input type=\"submit\" name=\"submit\" value=\"Submit\"/>
 </form>";
 
 # form was submitted, so the search is performed

@@ -239,4 +239,3 @@ if ( not $cgi->param( "code" ) ) {    # and not $cgi->param("session") ?
 }    # end of token exchange
 
 TMsStrava::htmlPrintFooter( $cgi );
-

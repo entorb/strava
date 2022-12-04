@@ -30,13 +30,13 @@
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
-} 
+}
 */
 
 
 
 /* Style the submit button with a specific background color etc */
-/* input[type=submit] {*/ 
+/* input[type=submit] {*/
 
 .navButton {
 /*  background-color: #4CAF50; */
@@ -45,7 +45,7 @@
 /*   border: none; */
 /*  border-radius: 4px; */
   cursor: pointer;
-  height:30px; 
+  height:30px;
   width:175px
 }
 
@@ -78,7 +78,7 @@ button[disabled]{
   left: 50%;
   margin-left: -60px;
 
-  Fade in tooltip 
+  Fade in tooltip
   opacity: 0;
   transition: opacity 0.3s;
 }

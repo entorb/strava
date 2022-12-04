@@ -28,7 +28,7 @@ use File::Basename;         # for basename, dirname, fileparse
 use File::Path qw(make_path);
 use Date::Parse;
 # use DateTime; # not working on uberspace, could not fix it, so tried POSIX instead
-use POSIX qw(strftime); 
+use POSIX qw(strftime);
 
 # Modules: Web
 use CGI;
@@ -65,14 +65,14 @@ my $pathToICS = "$s{'tmpDownloadFolder'}/ActivityList.ics";
 
 # Generate Excel only if not already done
 unless ( -f $pathToICS ) {
-my $ics_header = 
+my $ics_header =
 "BEGIN:VCALENDAR
 CALSCALE:GREGORIAN
 VERSION:2.0
 X-WR-CALNAME:Strava Activity Export by entorb.net
 METHOD:PUBLISH
 ";
-my $ics_footer = 
+my $ics_footer =
 "END:VCALENDAR
 ";
 
@@ -132,7 +132,8 @@ LAST-MODIFIED:$date_str_now
 DTSTAMP:$date_str_now
 SUMMARY:$h{'type'}: $h{'name'} (Strava)
 LOCATION:$location
-DESCRIPTION:https://www.strava.com/activities/$h{'id'} 
+URL;VALUE=URI:https://www.strava.com/activities/$h{'id'}
+DESCRIPTION:open at Strava: https://www.strava.com/activities/$h{'id'}\\n\\ngenerated via https://entorb.net/strava/
 SEQUENCE:0
 END:VEVENT
 ";

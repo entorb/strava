@@ -1,30 +1,30 @@
 # fit average of all data
-av_all = -10.0 
-fitav_all(x) = av_all ; 
+av_all = -10.0
+fitav_all(x) = av_all ;
 if (fitHigh0 - date_min > 2 * binwidth) fit [:fitHigh0] fitav_all(x) data using 1:col via av_all
 
 # fit slope of last year ( 4 for aggegation = Year)
 b0 = av_all
 m0  = 0.1
-fit0(x) = m0*x + b0 ; 
+fit0(x) = m0*x + b0 ;
 if (numPointsInRange (data, fitLow0, fitHigh0, col) >= 2) fit [fitLow0:fitHigh0] fit0(x)   data using 1:col via m0, b0
 print "0"
 # set terminal png
 set output outfile . ".png"
 # fit average of year -1..-5
-av1 = -10 ; fitav1(x) = av1 ; 
+av1 = -10 ; fitav1(x) = av1 ;
 if (numPointsInRange (data, fitLow1, fitHigh1, col) >= 2) fit [fitLow1:fitHigh1] fitav1(x) data using 1:col via av1
 print "1"
-av2 = -10 ; fitav2(x) = av2 ; 
+av2 = -10 ; fitav2(x) = av2 ;
 if (numPointsInRange (data, fitLow2, fitHigh2, col) >= 2) fit [fitLow2:fitHigh2] fitav2(x) data using 1:col via av2
 print "2"
-av3 = -10 ; fitav3(x) = av3 ; 
+av3 = -10 ; fitav3(x) = av3 ;
 if (numPointsInRange (data, fitLow3, fitHigh3, col) >= 2) fit [fitLow3:fitHigh3] fitav3(x) data using 1:col via av3
 print "3"
-av4 = -10 ; fitav4(x) = av4 ; 
+av4 = -10 ; fitav4(x) = av4 ;
 if (numPointsInRange (data, fitLow4, fitHigh4, col) >= 2) fit [fitLow4:fitHigh4] fitav4(x) data using 1:col via av4
 print "4"
-av5 = -10 ; fitav5(x) = av5 ; 
+av5 = -10 ; fitav5(x) = av5 ;
 if (numPointsInRange (data, fitLow5, fitHigh5, col) >= 2) fit [fitLow5:fitHigh5] fitav5(x) data using 1:col via av5
 print "5"
 plot   \

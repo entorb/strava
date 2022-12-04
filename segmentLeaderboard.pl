@@ -92,7 +92,7 @@ for my $s ( qw( all_age 0_19 20_24 25_34 35_44 45_54 55_64 65_69 70_74 75_plus )
 }
 say "</select>*";
 
-say "<input type=\"submit\" name=\"submit\" value=\"Submit\"/> 
+say "<input type=\"submit\" name=\"submit\" value=\"Submit\"/>
   </form>";
 say "<p>* age filtering requires Strava 'Summit' subscription</p>";
 
