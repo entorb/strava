@@ -41,7 +41,7 @@ use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 use lib ('.');
 use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
 use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just for making Visual Studio Code happy
-use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
+# use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
 use TMsStrava qw( %o %s);                                              # at entorb.net some modules require use local::lib!!!
 
 TMsStrava::htmlPrintHeader( $cgi, 'Activity Top10' );
@@ -181,7 +181,7 @@ foreach my $column (@Reihenfolge) {
 		say "<td>" . ( sprintf '%.1f', $h{'x_km'} ) . "</td>";
 		say "<td>" . ( sprintf '%d',   $h{'x_min'} ) . "</td>";
 		say "</tr>";
-		last if $count == 10;
+		last if $count == 25;
 	} ## end foreach my $ref ( @sorted )
 	say "</table>";
 } ## end foreach my $column ( @Reihenfolge)
