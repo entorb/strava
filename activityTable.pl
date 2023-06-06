@@ -80,6 +80,7 @@ print '
         // define and populate table
         var table = defineTable();
         promises.push(fetch_table_data());
+        table.setSort("x_date", "desc");
 
     </script>
 ';
