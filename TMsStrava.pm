@@ -120,6 +120,9 @@ sub initSessionVariables {
   $s{ 'pathToGearHashDump' }         = "$s{'tmpDataFolder'}/gear.dmp";
   $s{ 'pathToClubsHashDump' }        = "$s{'tmpDataFolder'}/clubs.dmp";
 
+  # update timestamp of temp dir to extent session expire date
+  system( "touch", $s{ 'tmpDataFolder' } );
+
   my $fileIn = "$s{'tmpDataFolder'}/session.txt";
   if ( not -f $fileIn ) {
     say "Uops, it seems your session '$session' has expired. Please start a <a href=\"./index.html\">new session</a>.";
