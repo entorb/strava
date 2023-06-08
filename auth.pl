@@ -4,7 +4,7 @@
 
 # DESCRIPTION
 # Handling of Strava API auth
-# Generaton of access tokens, stores them in folder $s{'tmpDataFolder'}/session.txt
+# Generation of access tokens, stores them in folder $s{'tmpDataFolder'}/session.txt
 # deletes old tmpDataFolders
 
 # TODO - Features
@@ -20,7 +20,7 @@
 # - add a form for modifying activities e.g. set commute and private
 # - provide .zip files containing the jsons?
 # 181026: new Strava scopes implemented
-# - store knownlocations in a separate file
+# - store known locations in a separate file
 
 # Modules: My Default Set
 use strict;
@@ -55,12 +55,14 @@ use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
 # use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
 use TMsStrava qw( %o %s);          # at entorb.net some modules require use local::lib!!!
 
-TMsStrava::htmlPrintHeader( $cgi, 'Authoriziation' );
+TMsStrava::htmlPrintHeader( $cgi, 'Authorization' );
 
 # Parameters for reply to Strava API
 my $url = "https://www.strava.com/oauth/token";
 
 # read from TMsStravaSecret.pm
+# not working...
+# use lib ( '/var/www/virtual/entorb/data-web-pages/strava/' );
 use TMsStravaSecret qw( %secret );
 my $clientId = $secret{ 'clientId' };
 my $secret   = $secret{ 'secret' };
@@ -122,7 +124,7 @@ if ( not $cgi->param( "code" ) ) {    # and not $cgi->param("session") ?
 
   # 1. HTTP Post form data to Strava API (and fetch JSON response)
   #
-  # exampe: curl -X POST $url \ -F client_id=$clientId \ -F client_secret=$secret \ -F code=$exchangecode
+  # example: curl -X POST $url \ -F client_id=$clientId \ -F client_secret=$secret \ -F code=$exchangecode
   #
   my $ua = LWP::UserAgent->new();    # create User Agent using LWP
   my %h;
@@ -159,7 +161,7 @@ if ( not $cgi->param( "code" ) ) {    # and not $cgi->param("session") ?
     die "ERROR: no or bad access_token";
   }
 
-  # 3. generate session from userID and time and store it on the server, Idea: alternative: store in browser cookie NO: since I do not want make it work without cockie support.
+  # 3. generate session from userID and time and store it on the server, Idea: alternative: store in browser cookie NO: since I do not want make it work without cookie support.
   $_ = "$s{'stravaUserID'}" . '_' . time;
   $s{ 'session' } = md5_base64( $_ );
   $s{ 'session' } =~ s/\//-/sg;                    # kein / in ID wegen path
@@ -214,7 +216,7 @@ if ( not $cgi->param( "code" ) ) {    # and not $cgi->param("session") ?
   # <h3>Feature ideas</h3>
   # <ul>
   # <li>find some use for the polymap</li>
-  # <li>stats for starred segments (access to segement leaderboard not possible due to changes in api, premium account required?)</li>
+  # <li>stats for starred segments (access to segment leaderboard not possible due to changes in api, premium account required?)</li>
   # </ul>
 
   say "<p><small>strava user=$s{'stravaUsername'} user id=$s{'stravaUserID'} scope=$s{'scope'} session=$s{'session'}</small></p>";

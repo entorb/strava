@@ -3,7 +3,7 @@
 # by Torben Menke https://entorb.net
 
 # DESCRIPTION
-# seach for activities
+# search for activities
 # displays results as list with links to strava
 
 # TODO
@@ -54,7 +54,7 @@ my %formparam;                                                         # copied 
 
 # some form param get default values
 $formparam{'latitude'}    = 52.518611;                               # Berlin
-$formparam{'logitude'}    = 13.408333;                               # Berlin
+$formparam{'longitude'}    = 13.408333;                               # Berlin
 $formparam{'geoMode'}     = 'start';
 $formparam{'city'}        = 'any';
 $formparam{'competition'} = '';
@@ -66,8 +66,8 @@ $formparam{'competition'} = '';
 if ( $cgi->param('latitude') and $cgi->param('latitude') =~ m /^[\d+\.]+$/ ) {
 	$formparam{'latitude'} = $cgi->param('latitude');
 }
-if ( $cgi->param('logitude') and $cgi->param('logitude') =~ m /^[\d+\.]+$/ ) {
-	$formparam{'logitude'} = $cgi->param('logitude');
+if ( $cgi->param('longitude') and $cgi->param('longitude') =~ m /^[\d+\.]+$/ ) {
+	$formparam{'longitude'} = $cgi->param('longitude');
 }
 if ( $cgi->param('maxgeodistance') and $cgi->param('maxgeodistance') =~ m /^[\d+\.]+$/ ) {
 	$formparam{'maxgeodistance'} = $cgi->param('maxgeodistance');
@@ -219,7 +219,7 @@ km " .
   "to lat, long:
 <input type=\"number\" id=\"latitude\" name=\"latitude\" style=\"width: 70px\" placeholder=\"52.518611\" value=\"" . $formparam{'latitude'} . "\" step=\"any\">
 ,
-<input type=\"number\" id=\"logitude\" name=\"logitude\" style=\"width: 70px\" placeholder=\"13.408333\" value=\"" . $formparam{'logitude'} . "\" step=\"any\">
+<input type=\"number\" id=\"longitude\" name=\"longitude\" style=\"width: 70px\" placeholder=\"13.408333\" value=\"" . $formparam{'longitude'} . "\" step=\"any\">
 <br/>
 <input type=\"submit\" name=\"submit\" value=\"Submit\"/>
 </form>";
@@ -230,7 +230,7 @@ if ( $cgi->param('submit') ) {
 	$maxgeodistance_km *= 1.60934 if $distanceunit eq "mile";    # km -> mile
 	$formparam{'city'} =~ s/ \(\d+\)$//;                       # remove count EU-AT-7-Koessen (5)
 
-	# Seach for nearest city
+	# Search for nearest city
 	if ( $formparam{'maxcitydistance'} > 0 ) {
 
 		# Form: EU-AT-7-Koessen
@@ -244,7 +244,7 @@ if ( $cgi->param('submit') ) {
 			if ( $line =~ m/$s.*/ ) {
 				@_ = split ",", $line;
 				$formparam{'maxcitylatitude'} = $_[4];
-				$formparam{'maxcitylogitude'} = $_[5];
+				$formparam{'maxcitylongitude'} = $_[5];
 				last;
 			} ## end if ( $line =~ m/$s.*/ )
 		} ## end while ( my $line = <$fhIn>)
@@ -302,7 +302,7 @@ if ( $cgi->param('submit') ) {
 				my @a = @{ $h{'start_latlng'} };
 
 				# fetched city coord from data file
-				my @b    = ( $formparam{'maxcitylatitude'}, $formparam{'maxcitylogitude'} );
+				my @b    = ( $formparam{'maxcitylatitude'}, $formparam{'maxcitylongitude'} );
 				my $dist = TMsStrava::geoDistance( $a[0], $a[1], $b[0], $b[1] );
 				next unless $dist <= $formparam{'maxcitydistance'};
 			} ## end else [ if ( $formparam{ 'maxcitydistance'...})]
@@ -313,12 +313,12 @@ if ( $cgi->param('submit') ) {
 			my $dist = 99999;
 			if ( defined $h{'start_latlng'} and ( $formparam{'geoMode'} eq 'start' or $formparam{'geoMode'} eq 'both' ) ) {
 				my @a         = @{ $h{'start_latlng'} };
-				my $distStart = TMsStrava::geoDistance( $a[0], $a[1], $formparam{'latitude'}, $formparam{'logitude'} );
+				my $distStart = TMsStrava::geoDistance( $a[0], $a[1], $formparam{'latitude'}, $formparam{'longitude'} );
 				$dist = $distStart;
 			}
 			if ( defined $h{'end_latlng'} and ( $formparam{'geoMode'} eq 'end' or $formparam{'geoMode'} eq 'both' ) ) {
 				my @a       = @{ $h{'end_latlng'} };
-				my $distEnd = TMsStrava::geoDistance( $a[0], $a[1], $formparam{'latitude'}, $formparam{'logitude'} );
+				my $distEnd = TMsStrava::geoDistance( $a[0], $a[1], $formparam{'latitude'}, $formparam{'longitude'} );
 				$dist = $distEnd if ( $distEnd < $dist );
 			}
 			next if ( $dist == 99999 );               # no dist calculate-able

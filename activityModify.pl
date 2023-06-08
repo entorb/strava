@@ -85,9 +85,9 @@ if ( $cgi->param('submitFromActivityList') ) {                       # from list
 	} elsif ( $trainer eq "1" ) {
 		$h{'trainer'} = 'true';
 	}
-	$name =~ s/[^\w:_!\?\-\+\(\)\[\]\{\}]+//g;    # char whiteliste TODO: Umlaute missing
+	$name =~ s/[^\w:_!\?\-\+\(\)\[\]\{\}]+//g;    # char whitelist TODO: Umlaute missing
 	if ( $name ne "" ) { $h{'name'} = '"' . $name . '"'; }
-	$description =~ s/[^\w:_!\?\-\+\(\)\[\]\{\}]+//g;    # char whiteliste
+	$description =~ s/[^\w:_!\?\-\+\(\)\[\]\{\}]+//g;    # char whitelist
 	if ( $description ne "" ) { $h{'description'} = '"' . $description . '"'; }
 
 	die "ERROR: nothing to do" if ( not %h );
