@@ -82,7 +82,7 @@ if ( not $cgi->param('preview') and not $cgi->param('submit') ) {
 <li>Use <a href="/strava/download/StravaImportTemplate.xlsx" target="_blank">this template</a> to prepare a list of activities in Excel</li>
 <li>Ensure to use the following date format \'YYYY-MM-DD HH:MM:SS\'</li>
 <li>Copy and paste from Excel into the textbox below</li>
-<li>Tipp: Test the import with one activity until everything works as expected, only than add more</li>
+<li>Hint: Test the import with one activity until everything works as expected, only than add more</li>
 <li>Note: The Strava API allows only for <a href="https://developers.strava.com/docs/reference/#api-Activities-createActivity" target="_blank">very few parameters for activity creation</a>, so I am unable to add more</li>
 <li>A list of already used gear_ids can be found below after caching your activities</li>
 <li>Alternatively set a default gear prior to importing the data, and uses "0" as gear ID</li>

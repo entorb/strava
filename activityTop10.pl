@@ -137,26 +137,26 @@ foreach my $ref (@allActivityHashes) {
 
 # my @rankDisciplines = qw (x_min x_km km/h x_min/km total_elevation_gain x_elev_m/km x_dist_start_end_km average_heartrate);
 
-my %parametesToRank;
-$parametesToRank{'x_min'}                = 'Duration (min)';
-$parametesToRank{'x_km'}                 = 'Distance (km)';
-$parametesToRank{'km/h'}                 = 'Speed (km/h)';
-$parametesToRank{'total_elevation_gain'} = 'Elevation Gain (m)';
-$parametesToRank{'x_elev_m/km'}          = 'Elevation Gain per Distance (m/km)';
-$parametesToRank{'x_dist_start_end_km'}  = 'Distance Start-End (km)';
-$parametesToRank{'average_heartrate'}    = 'Average Heartrate (bpm)';
+my %parametersToRank;
+$parametersToRank{'x_min'}                = 'Duration (min)';
+$parametersToRank{'x_km'}                 = 'Distance (km)';
+$parametersToRank{'km/h'}                 = 'Speed (km/h)';
+$parametersToRank{'total_elevation_gain'} = 'Elevation Gain (m)';
+$parametersToRank{'x_elev_m/km'}          = 'Elevation Gain per Distance (m/km)';
+$parametersToRank{'x_dist_start_end_km'}  = 'Distance Start-End (km)';
+$parametersToRank{'average_heartrate'}    = 'Average Heartrate (bpm)';
 
 my @Reihenfolge = qw (x_km x_min total_elevation_gain km/h x_elev_m/km x_dist_start_end_km average_heartrate);
 
 say "<p>Jump to<ul>";
 foreach my $column (@Reihenfolge) {
-	say "<li><a href=#sec_$column>$parametesToRank{ $column }</a></li>";
+	say "<li><a href=#sec_$column>$parametersToRank{ $column }</a></li>";
 }
 say "</ul></p>";
 
 foreach my $column (@Reihenfolge) {
-	die "E: $column is missing in parametesToRank" unless defined( $parametesToRank{$column} );
-	my $columnTitle = $parametesToRank{$column};
+	die "E: $column is missing in parametersToRank" unless defined( $parametersToRank{$column} );
+	my $columnTitle = $parametersToRank{$column};
 	my @sorted      = TMsStrava::sortArrayHashRefsNumDesc( $column, @allActivityHashes );
 
 	say "<h3 id=sec_$column>$columnTitle</h3>";

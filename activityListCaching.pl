@@ -3,7 +3,7 @@
 # by Torben Menke https://entorb.net
 
 # DESCRIPTION
-# perform download and caching of the activitiy list
+# perform download and caching of the activity list
 # 2 modes: all activities, or single year
 # calculates some additional fields per activity e.g. km/h
 
@@ -265,7 +265,7 @@ if ( $yearToDL ne '' ) {
   } ## end if ( -f $s{ 'pathToGearHashDump'...})
 
   # in this hash a database of cityname and coordinates is stored: $latitude, $longitude, $name
-  print "<li>performing geo calcualtions ... ";
+  print "<li>performing geo calculations ... ";
   my $t        = time;
   my %geoBoxes = TMsStrava::geoBoxesFromDataFile( $o{ 'cityGeoDatabase' } );
   printf "done (%.1fs)</li>\n", ( time - $t );

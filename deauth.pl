@@ -37,7 +37,7 @@ use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just fo
 use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
 use TMsStrava qw( %o %s);                                              # at entorb.net some modules require use local::lib!!!
 
-TMsStrava::htmlPrintHeader( $cgi, 'Deauthoriziation');
+TMsStrava::htmlPrintHeader( $cgi, 'Deauthorization');
 
 # Check for present and valid parameter session
 TMsStrava::initSessionVariables( $cgi->param( "session" ) );
@@ -51,7 +51,7 @@ remove_tree( $s{ 'tmpDownloadFolder' } ) if ( -d $s{ 'tmpDownloadFolder' } );
 TMsStrava::deauthorize( $s{ 'token' }, 0 );    # 2nd paramter-> silent or stop on error
 # TMsStrava::htmlPrintNavigation();
 
-say "<p>Deauthoriziation and deletion of temporary files successful. I hope this app helped you $s{'stravaUsername'}</p>";
+say "<p>Deauthorization and deletion of temporary files successful. I hope this app helped you $s{'stravaUsername'}</p>";
 say '<p><a href="index.html">Back to start</a></p>';
 
 TMsStrava::htmlPrintFooter( $cgi );
