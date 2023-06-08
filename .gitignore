@@ -1,9 +1,8 @@
 .vscode/
 download/
 
+.vstags
 TMsStravaSecret.pm
-*.sh
 0-*.pl
 index-*.html
 stats.*
-.vstags
