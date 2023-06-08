@@ -5,7 +5,7 @@ reset
 
 # global settings
 # font Arial is not installed on uberspace
-#myFont = "Arial"
+myFont = "Arial"
 #myFont = "/usr/share/fonts/dejavu/DejaVuLGCSansMono.ttf"
 
 # settings for data file
