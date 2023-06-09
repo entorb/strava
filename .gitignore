@@ -6,3 +6,5 @@ TMsStravaSecret.pm
 0-*.pl
 index-*.html
 stats.*
+*.pl.bak
+*.pm.bak

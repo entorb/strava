@@ -1,0 +1,43 @@
+# deactivated, since GitHub Action's Ubuntu uses an older version than homebrew :-(
+
+name: Check Code
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # - name: Python set up
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: "3.10"
+
+      # - name: Python cache set up
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ env.pythonLocation }}
+      #     key: ${{ env.pythonLocation }}-py-cache
+
+      # - name: Install dependencies
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: install apt packages
+        run: |
+          sudo apt-get install -y perltidy
+      - name: Run pre-commit tests
+        uses: pre-commit/action@v3.0.0
