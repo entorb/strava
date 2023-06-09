@@ -156,14 +156,22 @@ sub initSessionVariables {
 } ## end sub initSessionVariables
 
 
-sub clearCache {
-  logSubStart( 'clearCache' );
-  # after modification I cleanup this session's downloadloaded activity list jsons and stored dump files, since they are not up to date any more
-  unlink foreach ( <$s{'tmpDataFolder'}/activityList/*.json> );    #
-  unlink foreach ( <$s{'tmpDataFolder'}/activityList/*.dmp> );
+sub clearDownload {
+  logSubStart( 'clearDownload' );
   unlink foreach ( <$s{'tmpDownloadFolder'}/*.ics> );
+  unlink foreach ( <$s{'tmpDownloadFolder'}/*.json> );
   unlink foreach ( <$s{'tmpDownloadFolder'}/*.xlsx> );
   unlink foreach ( <$s{'tmpDownloadFolder'}/*.zip> );
+  return;
+} ## end sub clearDownload
+
+
+sub clearCache {
+  logSubStart( 'clearCache' );
+  # after modification I cleanup this session's downloaded activity list jsons and stored dump files, since they are not up to date any more
+  unlink foreach ( <$s{'tmpDataFolder'}/activityList/*.json> );    #
+  unlink foreach ( <$s{'tmpDataFolder'}/activityList/*.dmp> );
+  clearDownload();
   # unlink foreach (<$s{'tmpDataFolder'}/activitySingle/*.json>); # TODO after implementing single activity json download
   return;
 } ## end sub clearCache
