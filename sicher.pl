@@ -13,9 +13,9 @@
 # Modules: My Default Set
 use strict;
 use warnings;
-use 5.010;    # say
+use 5.010;                  # say
 use Data::Dumper;
-use utf8;     # this script is written in UTF-8
+use utf8;                   # this script is written in UTF-8
 binmode STDOUT, ':utf8';    # default encoding for linux print STDOUT
 
 # Modules: Perl Standard
@@ -28,14 +28,15 @@ use Encode qw(encode decode);
 @_ = localtime time;
 
 # ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime (time);
-my $datestr = sprintf "%02d%02d%02d-%02d%02d%02d", $_[ 5 ] + 1900 - 2000, $_[ 4 ] + 1, $_[ 3 ], $_[ 2 ], $_[ 1 ], $_[ 0 ];
+my $datestr = sprintf "%02d%02d%02d-%02d%02d%02d", $_[5] + 1900 - 2000,
+    $_[4] + 1, $_[3], $_[2], $_[1], $_[0];
 
 my $outfile = "/home/entorb/sicher/strava/$datestr.zip";
 
 say $outfile;
 
 my @listOfFiles;
-push @listOfFiles, grep {-f} <*>;    # files only
+push @listOfFiles, grep {-f} <*>;       # files only
 push @listOfFiles, <screenshots/*>;
 push @listOfFiles, <download/*.xlsx>;
 push @listOfFiles, <gnuplot/*.gp>;
@@ -54,9 +55,13 @@ sub zipFiles {
   my ( $pathToZip, @files ) = @_;
   use IO::Compress::Zip qw(zip $ZipError);
   zip \@files  => $pathToZip,
-      TextFlag => 1             # It is used to signal that the data stored in the zip file/buffer is probably text.
-      , CanonicalName => 1                                                           # This option controls whether the filename field in the zip header is normalized into Unix format before being written to the zip file.
-      , ZipComment    => "Created by Torben's Stava App https://entorb.net/strava"
+      TextFlag =>
+      1 # It is used to signal that the data stored in the zip file/buffer is probably text.
+      ,
+      CanonicalName =>
+      1 # This option controls whether the filename field in the zip header is normalized into Unix format before being written to the zip file.
+      ,
+      ZipComment => "Created by Torben's Stava App https://entorb.net/strava"
 
       # , Level => 9 # [0..9], 0=none, 9=best compression
       or die "zip failed: $ZipError\n";

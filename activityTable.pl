@@ -20,9 +20,9 @@
 # Modules: My Default Set
 use strict;
 use warnings;
-use 5.010;    # say
+use 5.010;                  # say
 use Data::Dumper;
-use utf8;     # this script is written in UTF-8
+use utf8;                   # this script is written in UTF-8
 binmode STDOUT, ':utf8';    # default encoding for linux print STDOUT
 
 # Modules: Perl Standard
@@ -44,14 +44,16 @@ my $cgi = CGI->new;
 use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 
 # Modules: My Strava Module Lib
-use lib ( '.' );
-use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
-use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just for making Visual Studio Code happy
+use lib ('.');
+use lib ('/var/www/virtual/entorb/perl5/lib/perl5');
+use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web"
+    ;    # just for making Visual Studio Code happy
 use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
-use TMsStrava qw( %o %s);                                              # at entorb.net some modules require use local::lib!!!
+use TMsStrava qw( %o %s)
+    ;    # at entorb.net some modules require use local::lib!!!
 
 TMsStrava::htmlPrintHeader( $cgi, 'Activity table' );
-TMsStrava::initSessionVariables( $cgi->param( "session" ) );
+TMsStrava::initSessionVariables( $cgi->param("session") );
 TMsStrava::htmlPrintNavigation();
 
 print '
@@ -74,7 +76,8 @@ print '
 
         // ASync JQuery fetching
         function fetch_table_data() {
-            table.setData("https://entorb.net/strava/' . $s{ 'pathToActivityListJsonDump' } . '", {}, "get")
+            table.setData("https://entorb.net/strava/'
+    . $s{'pathToActivityListJsonDump'} . '", {}, "get")
         }
 
         // define and populate table
@@ -85,4 +88,4 @@ print '
     </script>
 ';
 
-TMsStrava::htmlPrintFooter( $cgi );
+TMsStrava::htmlPrintFooter($cgi);
