@@ -1,0 +1,5 @@
+--perl-best-practices
+--blank-lines-before-subs=2
+--closing-side-comments
+--indent-columns=2
+--noblanks-before-comments
