@@ -235,6 +235,9 @@ if ( $yearToDL ne '' ) {
     # delete hash cache
     unlink foreach ( <$s{'tmpDataFolder'}/activityList/*.dmp> );
 
+    # delete cached downloads
+    TMsStrava::clearDownload();
+
     # download data for selected year
     fetchActivityListYear( $s{ 'token' }, $dlActivitiesPerPage, $yearToDL );
 
@@ -393,18 +396,22 @@ if ( $yearToDL ne '' ) {
 
   # print hide_progress_bar;
 
-  # write ActivityHash and geadHash to filesystem for caching
+  # write ActivityList als Perl hash list to filesystem (for caching in the Äpp)
   store \@allActivityHashes, $s{ 'pathToActivityListHashDump' };
 
+  # write ActivityList as Json to filesystem (for download and for later Python Pandas processing)
   my $dir = dirname( $s{ 'pathToActivityListJsonDump' } );
   make_path $dir unless -d $dir;
-
   open my $fhOut, '>:encoding(UTF-8)', $s{ 'pathToActivityListJsonDump' } or die "ERROR: Can't write to file '" . $s{ 'pathToActivityListJsonDump' } . "': $!";
   print { $fhOut } create_json( \@allActivityHashes );
   close $fhOut;
 
+  # write Gear as Perl hash list to filesystem (for caching in the Äpp)
   store \%gear, $s{ 'pathToGearHashDump' };
+
   print "</ul></div>\n";
+
+  # hide processing log once it is done
   print '<script>var x = document.getElementById("div_log_output"); x.style.display = "none"; </script>' . "\n";
 
 } ## end if ( $yearToDL ne '' )

@@ -146,7 +146,7 @@ $parametersToRank{'x_elev_m/km'}          = 'Elevation Gain per Distance (m/km)'
 $parametersToRank{'x_dist_start_end_km'}  = 'Distance Start-End (km)';
 $parametersToRank{'average_heartrate'}    = 'Average Heartrate (bpm)';
 
-my @Reihenfolge = qw (x_km x_min total_elevation_gain km/h x_elev_m/km x_dist_start_end_km average_heartrate);
+my @Reihenfolge = qw (x_km x_min km/h total_elevation_gain x_elev_m/km x_dist_start_end_km average_heartrate);
 
 say "<p>Jump to<ul>";
 foreach my $column (@Reihenfolge) {
