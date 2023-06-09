@@ -17,9 +17,9 @@
 # Modules: My Default Set
 use strict;
 use warnings;
-use 5.010;    # say
+use 5.010;                  # say
 use Data::Dumper;
-use utf8;     # this script is written in UTF-8
+use utf8;                   # this script is written in UTF-8
 binmode STDOUT, ':utf8';    # default encoding for linux print STDOUT
 
 # # Modules: Perl Standard
@@ -41,21 +41,24 @@ use File::Path qw(make_path remove_tree);
 use Storable;          # read/write hash from file system
 
 # Modules: My Strava Module Lib
-use lib ( '.' );
-use lib ( '/var/www/virtual/entorb/perl5/lib/perl5' );
-use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web";    # just for making Visual Studio Code happy
+use lib ('.');
+use lib ('/var/www/virtual/entorb/perl5/lib/perl5');
+use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web"
+    ;                  # just for making Visual Studio Code happy
 use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
-use TMsStrava qw( %o %s);                                              # at entorb.net some modules require use local::lib!!!
+use TMsStrava qw( %o %s)
+    ;                  # at entorb.net some modules require use local::lib!!!
 
-my $runLocal = 0;                                                      # TODO: am I running local or on entorb.net
+my $runLocal = 0;      # TODO: am I running local or on entorb.net
 if ( $runLocal == 0 ) {
   TMsStrava::htmlPrintHeader( $cgi, 'Frequent start/end locations' );
-  TMsStrava::initSessionVariables( $cgi->param( "session" ) );
+  TMsStrava::initSessionVariables( $cgi->param("session") );
   TMsStrava::htmlPrintNavigation();
-} else {
+}
+else {
   my $session = '-e1lFk8GfN4IuXse-wYFHQ';
-  $o{ 'tmpDataFolderBase' } = './temp-data';
-  TMsStrava::initSessionVariables( $session );
+  $o{'tmpDataFolderBase'} = './temp-data';
+  TMsStrava::initSessionVariables($session);
   TMsStrava::htmlPrintNavigation();
 
 } ## end else [ if ( $runLocal == 0 ) ]
@@ -101,8 +104,8 @@ my @allActivityHashes = ();
 
 # if not already done, fetchActivityList, 200 per page into dir activityList
 
-unless ( -f $s{ 'pathToActivityListHashDump' } ) {
-  die( "E: activity cache missing" );
+unless ( -f $s{'pathToActivityListHashDump'} ) {
+  die("E: activity cache missing");
 }
 #   TMsStrava::logIt( "downloading data files" );
 #   TMsStrava::fetchActivityList( $s{ 'token' }, 200, 0 );    # max 200 per page/json file, max X days past
@@ -114,49 +117,51 @@ unless ( -f $s{ 'pathToActivityListHashDump' } ) {
 #   # write hash to file-system
 #   store \@allActivityHashes, $s{ 'pathToActivityListHashDump' };
 # } else {
-TMsStrava::logIt( "reading activity data from .dmp file" );
-my $ref = retrieve( $s{ 'pathToActivityListHashDump' } );
+TMsStrava::logIt("reading activity data from .dmp file");
+my $ref = retrieve( $s{'pathToActivityListHashDump'} );
 # retrieve data from file (as ref)
-@allActivityHashes = @{ $ref };    # convert arrayref to array
+@allActivityHashes = @{$ref};    # convert arrayref to array
 # } ## end else
 
 # remove the locations that are already known
 my @knownLocations = TMsStrava::getKnownLocationsOfUser();
 # @knownLocations = ();
 
-foreach my $activityRef ( @allActivityHashes ) {
-  my %h = %{ $activityRef };
-  next unless defined $h{ 'start_latlng' };
-  my @a        = @{ $h{ 'start_latlng' } };
+foreach my $activityRef (@allActivityHashes) {
+  my %h = %{$activityRef};
+  next unless defined $h{'start_latlng'};
+  my @a        = @{ $h{'start_latlng'} };
   my $iKnowYou = 0;
-  foreach my $kl ( @knownLocations ) {
-    my @kl         = @{ $kl };
-    my $istNachbar = pruefeNachbar( $a[ 0 ], $a[ 1 ], $kl[ 0 ], $kl[ 1 ] );
+  foreach my $kl (@knownLocations) {
+    my @kl         = @{$kl};
+    my $istNachbar = pruefeNachbar( $a[0], $a[1], $kl[0], $kl[1] );
     if ( defined $istNachbar ) {
       $iKnowYou = 1;
       last;
     }
-  } ## end foreach my $kl ( @knownLocations)
+  } ## end foreach my $kl (@knownLocations)
   if ( $iKnowYou == 0 ) {
-    push @ListeDerPunkteStart, [ $a[ 0 ], $a[ 1 ] ];
+    push @ListeDerPunkteStart, [ $a[0], $a[1] ];
   }
 
-  next unless defined $h{ 'end_latlng' };
-  @a        = @{ $h{ 'end_latlng' } };
+  next unless defined $h{'end_latlng'};
+  @a        = @{ $h{'end_latlng'} };
   $iKnowYou = 0;
-  foreach my $kl ( @knownLocations ) {
-    my @kl         = @{ $kl };
-    my $istNachbar = pruefeNachbar( $a[ 0 ], $a[ 1 ], $kl[ 0 ], $kl[ 1 ] );
+  foreach my $kl (@knownLocations) {
+    my @kl         = @{$kl};
+    my $istNachbar = pruefeNachbar( $a[0], $a[1], $kl[0], $kl[1] );
     if ( defined $istNachbar ) {
       $iKnowYou = 1;
       last;
     }
-  } ## end foreach my $kl ( @knownLocations)
+  } ## end foreach my $kl (@knownLocations)
   if ( $iKnowYou == 0 ) {
-    push @ListeDerPunkteEnd, [ $a[ 0 ], $a[ 1 ] ];
+    push @ListeDerPunkteEnd, [ $a[0], $a[1] ];
   }
-  last if ( $#ListeDerPunkteStart + 1 + $#ListeDerPunkteEnd + 1 >= $maxLocationsToCheckForFrequentOnes );
-} ## end foreach my $activityRef ( @allActivityHashes)
+  last
+      if ( $#ListeDerPunkteStart + 1 + $#ListeDerPunkteEnd + 1
+    >= $maxLocationsToCheckForFrequentOnes );
+} ## end foreach my $activityRef (@allActivityHashes)
 
 # hier werden Start und End Punkte zusammen in eine Liste aller Punkte gefügt.
 @ListeDerPunkte = @ListeDerPunkteStart;
@@ -164,8 +169,11 @@ push @ListeDerPunkte, @ListeDerPunkteEnd;
 @ListeDerPunkteStart = undef;
 @ListeDerPunkteEnd   = undef;
 # say '<h1>List of frequently used start and end locations</h1>';
-say "<p>" . ( $#ListeDerPunkte + 1 ) . " not known start/end locations to check for cluster</p>";
-say sprintf( "%.1fs after reading allActivityHashes", ( time - $tsStart ) ) if $debugPrintTiming;
+say "<p>"
+    . ( $#ListeDerPunkte + 1 )
+    . " not known start/end locations to check for cluster</p>";
+say sprintf( "%.1fs after reading allActivityHashes", ( time - $tsStart ) )
+    if $debugPrintTiming;
 
 # # Idee: Zum Beschleunigen Koordinaten runden und Punkte zusammenfassen
 # my %h;
@@ -202,18 +210,22 @@ say sprintf( "%.1fs after reading allActivityHashes", ( time - $tsStart ) ) if $
 # my @MatrixDerDistanzen;
 # $MatrixDerDistanzen[$#ListeDerPunkte][$#ListeDerPunkte] = undef()
 my @MatrixDerNachbarn;
-$MatrixDerNachbarn[ $#ListeDerPunkte ][ $#ListeDerPunkte ] = undef();    # ensure that matrix has the same size as @ListeDerPunkte (at least for the last row)
-my @AnzDerNachbarn = ( 0 ) x ( 1 + $#ListeDerPunkte );
+$MatrixDerNachbarn[$#ListeDerPunkte][$#ListeDerPunkte] = undef()
+    ; # ensure that matrix has the same size as @ListeDerPunkte (at least for the last row)
+my @AnzDerNachbarn = (0) x ( 1 + $#ListeDerPunkte );
 
 # Distanz zwischen allen Punkten berechnen und für jeden Punkt die Anz der Nachbarn zählen
 for ( my $i = 0; $i <= $#ListeDerPunkte; $i++ ) {
   for ( my $j = $i + 1; $j <= $#ListeDerPunkte; $j++ ) {
-    my $istNachbar = pruefeNachbar( $ListeDerPunkte[ $i ][ 0 ], $ListeDerPunkte[ $i ][ 1 ], $ListeDerPunkte[ $j ][ 0 ], $ListeDerPunkte[ $j ][ 1 ] );
+    my $istNachbar = pruefeNachbar(
+      $ListeDerPunkte[$i][0], $ListeDerPunkte[$i][1],
+      $ListeDerPunkte[$j][0], $ListeDerPunkte[$j][1]
+    );
     if ( defined $istNachbar ) {
-      $MatrixDerNachbarn[ $i ][ $j ] = $istNachbar;
-      $MatrixDerNachbarn[ $j ][ $i ] = $istNachbar;
-      $AnzDerNachbarn[ $i ]++;
-      $AnzDerNachbarn[ $j ]++;
+      $MatrixDerNachbarn[$i][$j] = $istNachbar;
+      $MatrixDerNachbarn[$j][$i] = $istNachbar;
+      $AnzDerNachbarn[$i]++;
+      $AnzDerNachbarn[$j]++;
     } ## end if ( defined $istNachbar)
     # my $dist = dist(
     # $ListeDerPunkte[$i][0], $ListeDerPunkte[$i][1],
@@ -225,11 +237,14 @@ for ( my $i = 0; $i <= $#ListeDerPunkte; $i++ ) {
     # }
   } ## end for ( my $j = $i + 1; $j...)
 } ## end for ( my $i = 0; $i <= ...)
-say sprintf( "%.1fs after calc distances", ( time - $tsStart ) ) if $debugPrintTiming;
+say sprintf( "%.1fs after calc distances", ( time - $tsStart ) )
+    if $debugPrintTiming;
 
 # anzDerNachbarnErmitteln(); # initial bereits oben
 removeLocationsWithoutNeighbors();
-say sprintf( "%.1fs after init removeLocationsWithoutNeighbors", ( time - $tsStart ) ) if $debugPrintTiming;
+say sprintf( "%.1fs after init removeLocationsWithoutNeighbors",
+  ( time - $tsStart ) )
+    if $debugPrintTiming;
 say "" . ( $#ListeDerPunkte + 1 ) . " Locations" if $debugPrintTiming;
 
 # TODO: wie weiter?
@@ -242,26 +257,30 @@ say '<p>Clusters of unknown locations:</p>
 my $anzClustersFound = 0;
 
 use List::Util qw( min max );    # or use List::MoreUtils qw( minmax );
-while ( max( @AnzDerNachbarn ) >= 5 ) {
+while ( max(@AnzDerNachbarn) >= 5 ) {
   searchForCluster();
   $anzClustersFound++;
 
-  # Werte in @AnzDerNachbarn sind nun ggf nicht mehr korrekt, daher neu befüllen
+# Werte in @AnzDerNachbarn sind nun ggf nicht mehr korrekt, daher neu befüllen
   anzDerNachbarnErmitteln();
   removeLocationsWithoutNeighbors();
-} ## end while ( max( @AnzDerNachbarn...))
+} ## end while ( max(@AnzDerNachbarn...))
 
 if ( $anzClustersFound == 0 ) {
   say 'none<br/>';
 }
 say "</code>";
-say sprintf( "Duration Total= %.1f", ( time - $tsStart ) ) if $debugPrintTiming;
+say sprintf( "Duration Total= %.1f", ( time - $tsStart ) )
+    if $debugPrintTiming;
 
 if ( $anzClustersFound > 0 ) {
-  say '<p>You might like to copy them to your <a href="knownLocations.pl?session=' . $s{ 'session' } . '">list of known locations</a> or check them at Google Maps or <a href="https://www.openstreetmap.org">OpenStreetmap</a></p>';
-}
+  say
+      '<p>You might like to copy them to your <a href="knownLocations.pl?session='
+      . $s{'session'}
+      . '">list of known locations</a> or check them at Google Maps or <a href="https://www.openstreetmap.org">OpenStreetmap</a></p>';
+} ## end if ( $anzClustersFound...)
 
-TMsStrava::htmlPrintFooter( $cgi );
+TMsStrava::htmlPrintFooter($cgi);
 
 # say "Übrig bleiben: ";
 # say Dumper \@ListeDerPunkte;
@@ -282,14 +301,14 @@ sub anzDerNachbarnErmitteln {
   # @AnzDerNachbarn aus @MatrixDerDistanzen ermitteln
   # initial wird mit 0 befuellt
   # es wird bei $dist < $maxDistance gezählt
-  @AnzDerNachbarn = ( 0 ) x ( 1 + $#ListeDerPunkte );    # fill by 0
+  @AnzDerNachbarn = (0) x ( 1 + $#ListeDerPunkte );    # fill by 0
   for ( my $i = 0; $i <= $#ListeDerPunkte; $i++ ) {
     for ( my $j = $i + 1; $j <= $#ListeDerPunkte; $j++ ) {
       # my $dist = $MatrixDerDistanzen[$i][$j];
-      my $istNachbar = $MatrixDerNachbarn[ $i ][ $j ];
+      my $istNachbar = $MatrixDerNachbarn[$i][$j];
       if ( defined $istNachbar ) {
-        $AnzDerNachbarn[ $i ]++;
-        $AnzDerNachbarn[ $j ]++;
+        $AnzDerNachbarn[$i]++;
+        $AnzDerNachbarn[$j]++;
       }
     } ## end for ( my $j = $i + 1; $j...)
   } ## end for ( my $i = 0; $i <= ...)
@@ -298,19 +317,19 @@ sub anzDerNachbarnErmitteln {
 
 sub removeLocationsWithoutNeighbors {
 
-  # Locations mit weniger als 2 Nachbarn aus der Liste raus, um Rechenzeit zu sparen.
-  # Working on @ListeDerPunkte, @AnzDerNachbarn, @MatrixDerDistanzen
-  # Bringt nur bei der Suche nach vielen Clustern einen Performance Gewinn, da dieses Löschen recht langsam ist.
+# Locations mit weniger als 2 Nachbarn aus der Liste raus, um Rechenzeit zu sparen.
+# Working on @ListeDerPunkte, @AnzDerNachbarn, @MatrixDerDistanzen
+# Bringt nur bei der Suche nach vielen Clustern einen Performance Gewinn, da dieses Löschen recht langsam ist.
   for ( my $i = $#ListeDerPunkte; $i >= 0; $i-- ) {
-    if ( $AnzDerNachbarn[ $i ] <= 1 ) {    # 0 oder 1
-      splice @ListeDerPunkte, $i, 1;       # remove it
-      splice @AnzDerNachbarn, $i, 1;       # remove it
-      # @MatrixDerDistanzen = removeRowColFromMatrix( $i, @MatrixDerDistanzen );
+    if ( $AnzDerNachbarn[$i] <= 1 ) {    # 0 oder 1
+      splice @ListeDerPunkte, $i, 1;     # remove it
+      splice @AnzDerNachbarn, $i, 1;     # remove it
+       # @MatrixDerDistanzen = removeRowColFromMatrix( $i, @MatrixDerDistanzen );
       @MatrixDerNachbarn = removeRowColFromMatrix( $i, @MatrixDerNachbarn );
-    } ## end if ( $AnzDerNachbarn[ ...])
+    } ## end if ( $AnzDerNachbarn[$i...])
   } ## end for ( my $i = $#ListeDerPunkte...)
 
-  # say sprintf ("%.1fs after removing locations without neighbors", (time-$tsStart));
+# say sprintf ("%.1fs after removing locations without neighbors", (time-$tsStart));
 } ## end sub removeLocationsWithoutNeighbors
 
 
@@ -320,19 +339,19 @@ sub searchForCluster {
   my $meisteNachbarnAnz   = 0;
   my $meisteNachbarnIndex = 0;
   for ( my $i = 0; $i <= $#ListeDerPunkte; $i++ ) {
-    if ( $AnzDerNachbarn[ $i ] > $meisteNachbarnAnz ) {
-      $meisteNachbarnAnz   = $AnzDerNachbarn[ $i ];
+    if ( $AnzDerNachbarn[$i] > $meisteNachbarnAnz ) {
+      $meisteNachbarnAnz   = $AnzDerNachbarn[$i];
       $meisteNachbarnIndex = $i;
     }
   } ## end for ( my $i = 0; $i <= ...)
-  # say "Das Cluster um index $meisteNachbarnIndex beinhaltet $meisteNachbarnAnz Nachbarn.";
-  # say sprintf( "%.1fs after searching for cluster members", ( time - $tsStart ) );
+# say "Das Cluster um index $meisteNachbarnIndex beinhaltet $meisteNachbarnAnz Nachbarn.";
+# say sprintf( "%.1fs after searching for cluster members", ( time - $tsStart ) );
 
   # welche sind es?
   my @ImCluster = ();
   for ( my $j = 0; $j <= $#ListeDerPunkte; $j++ ) {
     # my $dist = $MatrixDerDistanzen[$meisteNachbarnIndex][$j];
-    my $istNachbar = $MatrixDerNachbarn[ $meisteNachbarnIndex ][ $j ];
+    my $istNachbar = $MatrixDerNachbarn[$meisteNachbarnIndex][$j];
     if ( defined $istNachbar ) {
       push @ImCluster, $j;
     }
@@ -344,22 +363,26 @@ sub searchForCluster {
 
   # Schwerpunkt bestimmen. Dazu vektoriell Summe bilden und durch Anz teilen.
   my ( $clusterSchwerpunktX, $clusterSchwerpunktY ) = ( 0, 0 );
-  foreach my $i ( @ImCluster ) {
-    $clusterSchwerpunktX += $ListeDerPunkte[ $i ][ 0 ];
-    $clusterSchwerpunktY += $ListeDerPunkte[ $i ][ 1 ];
+  foreach my $i (@ImCluster) {
+    $clusterSchwerpunktX += $ListeDerPunkte[$i][0];
+    $clusterSchwerpunktY += $ListeDerPunkte[$i][1];
   }
   $clusterSchwerpunktX /= ( 1 + $#ImCluster );
   $clusterSchwerpunktY /= ( 1 + $#ImCluster );
   $clusterSchwerpunktX = sprintf '%.6f', $clusterSchwerpunktX;
   $clusterSchwerpunktY = sprintf '%.6f', $clusterSchwerpunktY;
 
-  say sprintf( "<a href=\"https://maps.google.com/?q=$clusterSchwerpunktX,$clusterSchwerpunktY\" target=\"_blank\">%02d: $clusterSchwerpunktX $clusterSchwerpunktY %dx</a><br/>", ( 1 + $anzClustersFound ), ( 1 + $#ImCluster ) );
+  say sprintf(
+    "<a href=\"https://maps.google.com/?q=$clusterSchwerpunktX,$clusterSchwerpunktY\" target=\"_blank\">%02d: $clusterSchwerpunktX $clusterSchwerpunktY %dx</a><br/>",
+    ( 1 + $anzClustersFound ),
+    ( 1 + $#ImCluster )
+  );
 
   # entfernen dieser aus den Orignal Listen
   foreach my $i ( reverse @ImCluster ) {
     splice @ListeDerPunkte, $i, 1;    # remove it
     splice @AnzDerNachbarn, $i, 1;    # remove it
-    # @MatrixDerDistanzen = removeRowColFromMatrix( $i, @MatrixDerDistanzen );
+     # @MatrixDerDistanzen = removeRowColFromMatrix( $i, @MatrixDerDistanzen );
     @MatrixDerNachbarn = removeRowColFromMatrix( $i, @MatrixDerNachbarn );
   } ## end foreach my $i ( reverse @ImCluster)
   say sprintf( "%.01fs", ( time - $tsStart ) ) if $debugPrintTiming;
@@ -368,11 +391,14 @@ sub searchForCluster {
 
 sub pruefeNachbar {
   my ( $x1, $y1, $x2, $y2 ) = @_;
-  return undef() if ( abs( $x1 - $x2 ) > 0.1 or abs( $y1 - $y2 ) > 0.1 );    # an angle of 0.1 is > 10km
+  return undef()
+      if ( abs( $x1 - $x2 ) > 0.1 or abs( $y1 - $y2 ) > 0.1 )
+      ;    # an angle of 0.1 is > 10km
   my $geodist = TMsStrava::geoDistance( $x1, $y1, $x2, $y2 );
   if ( $geodist < $maxDistance ) {
     return 1;
-  } else {
+  }
+  else {
     return undef();
   }
 } ## end sub pruefeNachbar
@@ -381,11 +407,13 @@ sub pruefeNachbar {
 sub dist {
   my ( $x1, $y1, $x2, $y2 ) = @_;
 
-  # die detail-kakulation kann man sich sparen wenn die Koordinaten offensichtlich weit auseinander liegen
-  return undef() if ( abs( $x1 - $x2 ) > 0.1 or abs( $y1 - $y2 ) > 0.1 );    # an angle of 0.1 is > 10km
-  # my $dx = $x2-$x1;
-  # my $dy = $y2-$y1;
-  # my $sqrtdist = sqrt($dx*$dx + $dy*$dy);
+# die detail-kakulation kann man sich sparen wenn die Koordinaten offensichtlich weit auseinander liegen
+  return undef()
+      if ( abs( $x1 - $x2 ) > 0.1 or abs( $y1 - $y2 ) > 0.1 )
+      ;    # an angle of 0.1 is > 10km
+           # my $dx = $x2-$x1;
+           # my $dy = $y2-$y1;
+           # my $sqrtdist = sqrt($dx*$dx + $dy*$dy);
   my $geodist = TMsStrava::geoDistance( $x1, $y1, $x2, $y2 );
 
   # say "sqrtdist=$sqrtdist  geodist=$geodist";
@@ -405,13 +433,13 @@ sub removeRowColFromMatrix {
   splice @matrix, $i, 1;
 
   # remove col $i
-  foreach my $row ( @matrix ) {
+  foreach my $row (@matrix) {
     next unless defined $row;
-    my @L = @{ $row };
+    my @L = @{$row};
     next if ( $#L < $i );
     splice @L, $i, 1;
     $row = \@L;
-  } ## end foreach my $row ( @matrix )
+  } ## end foreach my $row (@matrix)
   return @matrix;
 } ## end sub removeRowColFromMatrix
 
