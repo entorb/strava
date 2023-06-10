@@ -14,11 +14,12 @@
 # Modules: My Default Set
 use strict;
 use warnings;
-use 5.010;                      # say
+use 5.010;                  # say
 use Data::Dumper;
-use utf8;                       # this script is written in UTF-8
-binmode STDOUT, ':utf8';        # default encoding for linux print STDOUT
-use autodie qw (open close);    # Replace functions with ones that succeed or die: e.g. close
+use utf8;                   # this script is written in UTF-8
+binmode STDOUT, ':utf8';    # default encoding for linux print STDOUT
+use autodie qw (open close)
+    ;    # Replace functions with ones that succeed or die: e.g. close
 
 # pp -u -M Excel::Writer::XLSX -o script.exe script.pl & copy script.exe c:\tmp
 
@@ -41,13 +42,13 @@ my $cgi = new CGI;
 #use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 
 print $cgi->header(
-    -type    => 'text/html',
-    -charset => 'utf-8'
+  -type    => 'text/html',
+  -charset => 'utf-8'
 );
 print $cgi->start_html(
-    -title => 'Torben\'s Strava App Stats',
-    -meta  => { 'author' => 'Torben Menke' },
-    -style => { -src     => '/style.css' }
+  -title => 'Torben\'s Strava App Stats',
+  -meta  => { 'author' => 'Torben Menke' },
+  -style => { -src     => '/style.css' }
 );
 
 my %o;
@@ -63,14 +64,14 @@ my %h;    # temp
 # yy-mm-dd<TAB>userid
 
 foreach my $line (<$fhIn>) {
-    chomp $line;                   # remove \n;
-    my ( $date, $userid, $username, $scope ) = split /\t/, $line;
-    $userid += 0;                  # convert to number
-    next if $userid == 7656541;    # that is me
-    $date =~ m/^(\d+)\.(\d+)\.(\d+) .*/;
-    $date = $_ = sprintf "%02d-%02d-%02d", $3 - 2000, $2, $1;
-    $_    = "$date\t$userid";
-    $h{$_}++;
+  chomp $line;                   # remove \n;
+  my ( $date, $userid, $username, $scope ) = split /\t/, $line;
+  $userid += 0;                  # convert to number
+  next if $userid == 7656541;    # that is me
+  $date =~ m/^(\d+)\.(\d+)\.(\d+) .*/;
+  $date = $_ = sprintf "%02d-%02d-%02d", $3 - 2000, $2, $1;
+  $_    = "$date\t$userid";
+  $h{$_}++;
 } ## end foreach my $line (<$fhIn>)
 close $fhIn;
 
@@ -87,19 +88,20 @@ my %newUsersPerMonth = ();
 my @knownUsers;
 
 foreach my $line (@visitingDays) {
-    my ( $day, $userid ) = split "\t", $line;
-    $userid += 0;    # convert to number
-    $userVisitCount{$userid}++;
-    $visitorsPerDay{$day}++;
-    my $month = $day;
-    $month =~ s/\-\d+$//s;
-    $usersPerMonth{$month}++;
-    if ( not grep { $userid eq $_ } @knownUsers ) {
-        push @knownUsers, $userid;
-        $newUsersPerMonth{$month}++;
-    } else {
-        $newUsersPerMonth{$month} += 0;    # initialize if not present
-    }
+  my ( $day, $userid ) = split "\t", $line;
+  $userid += 0;    # convert to number
+  $userVisitCount{$userid}++;
+  $visitorsPerDay{$day}++;
+  my $month = $day;
+  $month =~ s/\-\d+$//s;
+  $usersPerMonth{$month}++;
+  if ( not grep { $userid eq $_ } @knownUsers ) {
+    push @knownUsers, $userid;
+    $newUsersPerMonth{$month}++;
+  }
+  else {
+    $newUsersPerMonth{$month} += 0;    # initialize if not present
+  }
 
 } ## end foreach my $line (@visitingDays)
 
@@ -109,8 +111,8 @@ my $anzUsers             = ( $#_ + 1 );
 my $anzLogins            = 0;
 my $anzRepeatingVisitors = 0;
 foreach my $user ( keys %userVisitCount ) {
-    $anzLogins += $userVisitCount{$user};
-    $anzRepeatingVisitors++ if ( $userVisitCount{$user} ) > 1;
+  $anzLogins += $userVisitCount{$user};
+  $anzRepeatingVisitors++ if ( $userVisitCount{$user} ) > 1;
 }
 say "<p>";
 say
@@ -143,35 +145,35 @@ say
 my @dataforfile;
 foreach my $mon ( reverse sort keys(%h) ) {
 
-    # say "$mon\t$usersPerMonth{$mon}";
-    say
-        "<tr><td>$mon</td><td>$h{$mon}</td><td>$newUsersPerMonth{$mon}</td><td>"
-        . ( $h{$mon} - $newUsersPerMonth{$mon} )
-        . "</td><td>"
-        . sprintf "%d</td></tr>",
-        100 * ( $h{$mon} - $newUsersPerMonth{$mon} ) / $h{$mon};
+  # say "$mon\t$usersPerMonth{$mon}";
+  say
+      "<tr><td>$mon</td><td>$h{$mon}</td><td>$newUsersPerMonth{$mon}</td><td>"
+      . ( $h{$mon} - $newUsersPerMonth{$mon} )
+      . "</td><td>"
+      . sprintf "%d</td></tr>",
+      100 * ( $h{$mon} - $newUsersPerMonth{$mon} ) / $h{$mon};
 
-    # 18-10 -> 2018 + 9/12
-    $_ = $mon;
-    @_ = split "-", $mon;
-    my $month_dec = sprintf "%.02f", 2000 + $_[ 0 ] + ( $_[ 1 ] - 1 ) / 12;
+  # 18-10 -> 2018 + 9/12
+  $_ = $mon;
+  @_ = split "-", $mon;
+  my $month_dec = sprintf "%.02f", 2000 + $_[0] + ( $_[1] - 1 ) / 12;
 
-    # unshift because html table is desc
-    unshift @dataforfile,
-        "$month_dec\t$mon\t$h{$mon}\t$newUsersPerMonth{$mon}\t"
-        . ( $h{$mon} - $newUsersPerMonth{$mon} );
+  # unshift because html table is desc
+  unshift @dataforfile,
+      "$month_dec\t$mon\t$h{$mon}\t$newUsersPerMonth{$mon}\t"
+      . ( $h{$mon} - $newUsersPerMonth{$mon} );
 } ## end foreach my $mon ( reverse sort...)
 say "</table>";
 
 foreach my $line (@dataforfile) {
-    say {$fhOut} $line;
+  say {$fhOut} $line;
 }
 close $fhOut;
 
 # run gnuplot, but only if app-stats.png is older than 15 min
-$_ = ( stat('stats.png') )[ 9 ];    # mtime as timestamp
+$_ = ( stat('stats.png') )[9];    # mtime as timestamp
 if ( time - $_ > 900 ) {
-    `gnuplot gnuplot/app-stats.gp`;
+  `gnuplot gnuplot/app-stats.gp`;
 }
 
 say
