@@ -3,37 +3,250 @@
 ("use strict");
 
 // global variables
-let my_data;
 const html_div_chart = document.getElementById("div_chart");
+const html_sel_date_agg = document.getElementById("sel_date_agg");
+const html_sel_type = document.getElementById("sel_type");
+const html_sel_measure = document.getElementById("sel_measure");
+
+let data_all = [];
+
+// TODO:
+let session = "123";
 
 // array of promises for async fetching
 const promises = [];
 
-// ref dictionary to be fetched: Country Code -> Country Name
-var mapCountryNames = {};
-
-// fetch countries-latest-all.json containing country reference data like code and continent
-function fetch_data() {
-  const url = "download/123/stats-py/ts_types_month.json";
+//
+// Data fetching
+//
+function fetch_data(session, date_agg) {
+  const url = "download/" + session + "/stats-py/ts_types_" + date_agg + ".json";
   return $.getJSON(url, function (data) {
-    console.log("success: data fetched");
+    // console.log("success: data fetched");
   })
     .done(function (data) {
-      console.log("done: data");
-      console.log(data);
+      console.log("done data download " + date_agg);
+
+      data_all[date_agg] = data;
       //   $.each(data, function (key, val) {
       //     mapCountryNames[data[key].Code] = data[key].Country;
       //   });
     })
     .fail(function () {
-      console.log("fail: data download");
+      console.log("failed data download " + date_agg);
     });
 }
 
 // Start the async fetching
-promises.push(fetch_data());
+promises.push(fetch_data(session, "month"));
+promises.push(fetch_data(session, "quarter"));
+promises.push(fetch_data(session, "year"));
 
-// Wait for all async promises to be done (all data is fetched), then print message
+
+
+//
+// Chart functions
+//
+function chart_create(html_div_chart) {
+  const chart = echarts.init(html_div_chart);
+  // https://echarts.apache.org/en/option.html#color
+  // const chart_colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'];
+  chart.setOption({
+    // title: { text: 'Items per Minute' },
+    tooltip: {},
+    legend: {},
+    // grid: {
+    //   // define margins
+    //   containLabel: false,
+    //   left: 50,
+    //   bottom: 20,
+    //   top: 30,
+    //   right: 150,
+    // },
+    grid: {
+      top: '12%',
+      left: '1%',
+      right: '10%',
+      containLabel: true
+    }, xAxis: { type: "time", }, // will be overwritten later by category
+    yAxis: { type: "value", },
+    dataZoom: [
+      {
+        type: 'slider',
+        show: true,
+        start: 50,
+        end: 100,
+        handleSize: 8
+      },]
+  }
+  );
+  return chart;
+}
+
+const chart = chart_create(html_div_chart);
+
+
+function chart_update(data_all) {
+  const date_agg = html_sel_date_agg.value;
+  const type = html_sel_type.value;
+  const measure = html_sel_measure.value;
+
+  let data_echarts_x = [...data_all[date_agg][type]["date"]];
+  let data_echarts_y = [...data_all[date_agg][type][measure]];
+
+  console.log(data_echarts_x[0]);
+  console.log(data_echarts_y[0]);
+  if (date_agg === "month") {
+    addMissingMonthsInPlace(data_echarts_x, data_echarts_y);
+  } else if (date_agg === "year") {
+    addMissingYearsInPlace(data_echarts_x, data_echarts_y);
+  } else if (date_agg === "quarter") {
+    addMissingQuartersInPlace(data_echarts_x, data_echarts_y);
+  }
+  console.log(data_echarts_x[0]);
+  console.log(data_echarts_y[0]);
+  let title = capitalize_words("Strava Stats: " + type + " " + date_agg + " " + measure);
+
+  chart.setOption({
+    xAxis: { type: "category", data: data_echarts_x },
+    series: [
+      {
+        type: "bar",
+        data: data_echarts_y,
+        // smooth: true,
+        // symbolSize: 10,
+        // silent: true,
+        // animation: false,
+      }
+    ],
+    title: {
+      text: title,
+      left: 'center',
+      // subtext: "by Torben https://entorb.net/strava/",
+      // sublink: "https://entorb.net/strava/",
+    },
+  });
+}
+
+
+// Wait for all async promises to be done (all data is fetched)
 Promise.all(promises).then(function () {
   console.log("All data fetched");
+  chart_update(data_all);
+  populate_select_type();
+  // console.log(data_echarts);
 });
+
+
+
+//
+// Small helpers
+//
+// Formats value "Something_Is_HERE" to "Something Is Here"
+function capitalize_words(str, separator) {
+  const allLowerCaseValue = str.split(separator).join(" ").toLowerCase();
+  return allLowerCaseValue.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+}
+
+//
+// addMissing<Months/Quarters/Years
+//
+function addMissingYearsInPlace(data_echarts_x, data_echarts_y) {
+  const minYear = data_echarts_x[0];
+  const maxYear = data_echarts_x[data_echarts_x.length - 1];
+
+  let currentYear = minYear;
+  let currentIndex = 0;
+
+  while (currentYear <= maxYear) {
+    const year = currentYear;
+    const dateString = year;
+
+    if (data_echarts_x[currentIndex] !== dateString) {
+      data_echarts_x.splice(currentIndex, 0, dateString);
+      data_echarts_y.splice(currentIndex, 0, null);
+    }
+
+    currentIndex++;
+    currentYear++;
+  }
+}
+
+function addMissingMonthsInPlace(data_echarts_x, data_echarts_y) {
+  const minMonth = data_echarts_x[0];
+  const maxMonth = data_echarts_x[data_echarts_x.length - 1];
+
+  let currentMonth = new Date(minMonth);
+  let currentIndex = 0;
+
+  while (currentMonth <= new Date(maxMonth)) {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth() + 1; // Adding 1 because getMonth() returns zero-based month index
+    const dateString = `${year}-${month.toString().padStart(2, '0')}`;
+    // 2023-01
+
+    if (data_echarts_x[currentIndex] !== dateString) {
+      data_echarts_x.splice(currentIndex, 0, dateString);
+      data_echarts_y.splice(currentIndex, 0, null);
+    }
+
+    currentIndex++;
+    currentMonth.setMonth(currentMonth.getMonth() + 1);
+  }
+}
+
+function addMissingQuartersInPlace(data_echarts_x, data_echarts_y) {
+  const minQuarter = data_echarts_x[0];
+  const maxQuarter = data_echarts_x[data_echarts_x.length - 1];
+
+  let currentQuarter = minQuarter;
+  let currentIndex = 0;
+
+  while (currentQuarter <= maxQuarter) {
+    if (data_echarts_x[currentIndex] !== currentQuarter) {
+      data_echarts_x.splice(currentIndex, 0, currentQuarter);
+      data_echarts_y.splice(currentIndex, 0, null);
+    }
+    else {
+      console.log(currentQuarter);
+    }
+    currentIndex++;
+    currentQuarter = getNextQuarter(currentQuarter);
+  }
+}
+
+function getNextQuarter(quarter) {
+  const [year, q] = quarter.split('-Q');
+  const nextQuarter = parseInt(q) % 4 + 1;
+  const nextYear = nextQuarter === 1 ? parseInt(year) + 1 : year;
+  return `${nextYear}-Q${nextQuarter}`;
+}
+
+//
+// GUI helpers
+//
+function populate_select_type() {
+  const select = html_sel_type;
+  // remove all
+  L = select.options.length - 1;
+  for (i = L; i >= 0; i--) {
+    select.remove(i);
+  }
+  // populate from array
+  var options = Object.keys(data_all["year"]);
+  for (var i = 0; i < options.length; i++) {
+    var opt = options[i];
+    var el = document.createElement("option");
+    el.textContent = opt;
+    el.value = opt;
+    select.appendChild(el);
+  }
+}
+
+
+//
+// GUI actions
+//
+function action_chart_update() {
+  chart_update(data_all);
+}
