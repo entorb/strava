@@ -20,17 +20,12 @@ const promises = [];
 // Data fetching
 //
 function fetch_data(session, date_agg) {
-  const url = "download/" + session + "/stats-py/ts_types_" + date_agg + ".json";
+  const url = "https://entorb.net/strava/download/" + session + "/stats-py/ts_types_" + date_agg + ".json";
   return $.getJSON(url, function (data) {
-    // console.log("success: data fetched");
   })
     .done(function (data) {
       console.log("done data download " + date_agg);
-
       data_all[date_agg] = data;
-      //   $.each(data, function (key, val) {
-      //     mapCountryNames[data[key].Code] = data[key].Country;
-      //   });
     })
     .fail(function () {
       console.log("failed data download " + date_agg);
@@ -94,8 +89,8 @@ function chart_update(data_all) {
   let data_echarts_x = [...data_all[date_agg][type]["date"]];
   let data_echarts_y = [...data_all[date_agg][type][measure]];
 
-  console.log(data_echarts_x[0]);
-  console.log(data_echarts_y[0]);
+  // console.log(data_echarts_x[0]);
+  // console.log(data_echarts_y[0]);
   if (date_agg === "month") {
     addMissingMonthsInPlace(data_echarts_x, data_echarts_y);
   } else if (date_agg === "year") {
@@ -103,8 +98,8 @@ function chart_update(data_all) {
   } else if (date_agg === "quarter") {
     addMissingQuartersInPlace(data_echarts_x, data_echarts_y);
   }
-  console.log(data_echarts_x[0]);
-  console.log(data_echarts_y[0]);
+  // console.log(data_echarts_x[0]);
+  // console.log(data_echarts_y[0]);
   let title = capitalize_words("Strava Stats: " + type + " " + date_agg + " " + measure);
 
   chart.setOption({
@@ -113,6 +108,7 @@ function chart_update(data_all) {
       {
         type: "bar",
         data: data_echarts_y,
+        barWidth: '100%'
         // smooth: true,
         // symbolSize: 10,
         // silent: true,
@@ -208,7 +204,7 @@ function addMissingQuartersInPlace(data_echarts_x, data_echarts_y) {
       data_echarts_y.splice(currentIndex, 0, null);
     }
     else {
-      console.log(currentQuarter);
+      // console.log(currentQuarter);
     }
     currentIndex++;
     currentQuarter = getNextQuarter(currentQuarter);
