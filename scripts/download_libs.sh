@@ -9,6 +9,7 @@ mkdir -p lib
 # ECharts
 ver=5.4.2
 wget -q https://raw.githubusercontent.com/apache/echarts/$ver/dist/echarts.min.js -O lib/echarts-$ver.min.js
+wget -q https://raw.githubusercontent.com/apache/echarts/$ver/dist/echarts.min.map -O lib/echarts-$ver.min.map
 
 # Tabulator
 ver=5.5.0
@@ -25,4 +26,12 @@ mv tmp-dl/tabulator-$ver/dist/js/tabulator.min.js.map lib/tabulator.min.js.map
 mv tmp-dl/tabulator-$ver/dist/css/tabulator.min.css lib/tabulator.min.css
 mv tmp-dl/tabulator-$ver/dist/css/tabulator.min.css.map lib/tabulator.min.css.map
 
+# JQuery
+ver=3.7.0
+wget -q https://code.jquery.com/jquery-$ver.min.js -O lib/jquery-$ver.min.js
+wget -q https://code.jquery.com/jquery-$ver.min.map -O lib/jquery-$ver.min.map
+
+# Cleanup
 rm -r tmp-dl
+
+rsync -vhu lib/* entorb@entorb.net:html/strava/libs/
