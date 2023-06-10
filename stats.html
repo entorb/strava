@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<!--
+TODOs
+-->
+
+<head>
+    <title>Strava Stats</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Sentry Exception Tracking -->
+    <script src="https://js.sentry-cdn.com/5123b244ffcd41878c7d2a93c6c3b00c.min.js" crossorigin="anonymous"></script>
+    <script>
+        Sentry.onLoad(function () {
+            Sentry.init({
+                release: "1.0.0",
+                environment: "prod",
+                beforeSend(event) {
+                    // Scrubbing user data for privacy reasons
+                    if (event.user) {
+                        // delete event.user.ip;
+                        // delete event.user.email;
+                        delete event.user; // drop all user info
+                    }
+                    return event;
+                },
+            });
+        })
+    </script>
+    <!-- eCharts https://echarts.apache.org/ https://echarts.apache.org/en/option.html-->
+    <script src="lib/echarts-5.4.2.min.js"></script>
+    <script src="stats.js"></script>
+</head>
+
+<body>
+    <!-- eCharts chart -->
+    <div id="div_chart" style="width: 900px;height:400px;"></div>
+</body>
+
+</html>
