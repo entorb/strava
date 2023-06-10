@@ -116,13 +116,12 @@ def types_time_series_json_export(df: pd.DataFrame, freq: str) -> None:
         elif freq == "year":
             data["date"] = data["date"].astype(int)  # year as int # type: ignore
         # using zip instead of data.values.tolist(), since df.values converts all elements to same format # noqa: E501
-        json_data[act_type] = tuple(  # type: ignore
-            zip(
-                data["date"].values.tolist(),  # str|int # type: ignore
-                data["count"].values.tolist(),  # int # type: ignore
-                data["hours"].values.tolist(),  # float # type: ignore
-            )
-        )
+        json_data[act_type] = {  # type: ignore
+            # zip
+            "date": data["date"].values.tolist(),  # str|int # type: ignore
+            "count": data["count"].values.tolist(),  # int # type: ignore
+            "hours": data["hours"].values.tolist(),  # float # type: ignore
+        }
 
     with Path(pathStatsExport / f"ts_types_{freq}.json").open(
         "w", encoding="UTF-8"
@@ -131,7 +130,7 @@ def types_time_series_json_export(df: pd.DataFrame, freq: str) -> None:
             json_data,
             fp=fh,
             ensure_ascii=False,
-            sort_keys=True,
+            sort_keys=False,
             # indent=2,
         )
     return
