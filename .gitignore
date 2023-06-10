@@ -6,6 +6,6 @@ lib/
 TMsStravaSecret.pm
 0-*.pl
 index-*.html
-stats.*
+stats.png
 *.pl.bak
 *.pm.bak
