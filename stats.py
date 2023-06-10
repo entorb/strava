@@ -1,7 +1,13 @@
-import pandas as pd
+"""
+Stats for Strava App.
+"""
+
 import datetime as dt
-from pathlib import Path
 import json
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 # TODO: pass as parameter
 session = "123"
@@ -15,6 +21,7 @@ pathStatsExport.mkdir(parents=False, exist_ok=True)
 def read_activityListJson(pathToActivityListJsonDump: Path) -> pd.DataFrame:
     """
     Read "activityList.json" file.
+
     parse date columns
     return DataFrame
     """
@@ -28,13 +35,13 @@ def read_activityListJson(pathToActivityListJsonDump: Path) -> pd.DataFrame:
     date_cols = ["start_date", "start_date_local", "x_date"]
     for col in date_cols:
         df_all[col] = pd.to_datetime(df_all[col])  # type: ignore
-
     return df_all
 
 
 def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
     """
     Perform GROUP BY aggregation for time_freq (month, quarter, year) and activity_type.
+
     exports resulting df as JSONs to pathStatsExport
     """
     df = df_all[
@@ -43,21 +50,63 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
             "type",
             "x_date",
             "x_min",
+            "x_km",
+            "total_elevation_gain",
+            "x_elev_m/km",
+            "km/h",
         ]
     ]
-    df = df.rename(columns={"x_date": "date", "x_min": "minutes"})  # not inplace here!
+    df = df.rename(
+        columns={
+            "x_date": "date",
+            "x_min": "hours(sum)",
+            "x_km": "km(sum)",
+            "total_elevation_gain": "elevation(sum)",
+            "x_elev_m/km": "elevation_m/km(avg)",
+            "km/h": "km/h(avg)",
+        },
+    )  # not inplace here!
+    df["hours(sum)"] = df["hours(sum)"] / 60
+    df["hours(avg)"] = df["hours(sum)"]
+    df["km(avg)"] = df["km(sum)"]
+    df["elevation(avg)"] = df["elevation(sum)"]
+
+    my_aggregations = {
+        "id": "count",
+        "hours(sum)": "sum",
+        "hours(avg)": "mean",
+        "km(sum)": "sum",
+        "km(avg)": "mean",
+        "elevation(sum)": "sum",
+        "elevation(avg)": "mean",
+        "elevation_m/km(avg)": "mean",
+        "km/h(avg)": "mean",
+    }
 
     # group by month
     df_month = df.groupby(["type", pd.Grouper(key="date", freq="MS")]).agg(  # type: ignore # noqa: E501
-        {"id": "count", "minutes": "sum"}
+        my_aggregations,
     )
     df_month = df_month.rename(columns={"id": "count"})
 
+    # cols_na = (
+    #     "km(sum)",
+    #     "km(avg)",
+    #     "elevation(sum)",
+    #     "elevation(avg)",
+    #     "elevation_m/km(avg)",
+    #     "km/h(avg)",
+    # )
+    # for col in cols_na:
+    #     df_month[col] = df_month[col].fillna(0)
+
     # group by quarter
+    del my_aggregations["id"]
+    my_aggregations["count"] = "sum"
     df_quarter = (
         df_month.reset_index()  # type: ignore
         .groupby(["type", pd.Grouper(key="date", freq="QS")])
-        .agg({"count": "sum", "minutes": "sum"})
+        .agg(my_aggregations)  # type: ignore
     )
 
     # group by year
@@ -66,16 +115,23 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
     df_year = (
         df.reset_index()  # type: ignore
         .groupby(["type", "date"])
-        .agg({"count": "sum", "minutes": "sum"})
+        .agg(my_aggregations)  # type: ignore
     )
 
-    # min -> hour
+    # TODO: round prior to fillna!
     for df in (df_month, df_quarter, df_year):
-        df["hours"] = (df["minutes"] / 60).round(1)  # type: ignore
-        df.drop(
-            columns=["minutes"],
-            inplace=True,
-        )
+        for measure in my_aggregations.keys():
+            if measure in ("count", "elevation(sum)"):
+                df[measure] = df[measure].astype(np.int64)
+            else:
+                df[measure] = df[measure].round(1)
+
+    # fill na value by None
+    # from https://stackoverflow.com/questions/46283312/how-to-proceed-with-none-value-in-pandas-fillna
+    # The first fillna will replace all of (None, NAT, np.nan, etc) with Numpy's NaN, then replace Numpy's NaN with python's None. # noqa: E501
+    df_month = df_month.fillna(np.nan).replace([np.nan], [None])
+    df_quarter = df_quarter.fillna(np.nan).replace([np.nan], [None])
+    df_year = df_year.fillna(np.nan).replace([np.nan], [None])
 
     # # add missing months per activity type
     # # generate index of the desired month-freq:
@@ -94,15 +150,14 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
     # )
     # df_month = df_month.fillna(0).astype({"count": int})
 
-    for df in (df_month, df_quarter, df_year):
-        types_time_series_json_export(df=df_month, freq="month")
-        types_time_series_json_export(df=df_quarter, freq="quarter")
-        types_time_series_json_export(df=df_year, freq="year")
+    types_time_series_json_export(df=df_month, freq="month")
+    types_time_series_json_export(df=df_quarter, freq="quarter")
+    types_time_series_json_export(df=df_year, freq="year")
 
 
 def types_time_series_json_export(df: pd.DataFrame, freq: str) -> None:
     """
-    freq: month, quarter, year
+    Freq: month, quarter, year.
     """
     # Convert DataFrame to JSON with nested lists
     json_data = {}
@@ -110,7 +165,6 @@ def types_time_series_json_export(df: pd.DataFrame, freq: str) -> None:
     for act_type, data in df.groupby(level="type"):  # type: ignore
         data = data.droplevel("type")
         data.reset_index(inplace=True)
-        data["hours"] = data["hours"].round(1)  # fix float issues # type: ignore
         if freq == "month":
             data["date"] = data["date"].dt.strftime("%Y-%m")
         elif freq == "quarter":
@@ -126,11 +180,19 @@ def types_time_series_json_export(df: pd.DataFrame, freq: str) -> None:
             # zip
             "date": data["date"].values.tolist(),  # str|int # type: ignore
             "count": data["count"].values.tolist(),  # int # type: ignore
-            "hours": data["hours"].values.tolist(),  # float # type: ignore
+            "hours(sum)": data["hours(sum)"].values.tolist(),
+            "hours(avg)": data["hours(avg)"].values.tolist(),
+            "km(sum)": data["km(sum)"].values.tolist(),
+            "km(avg)": data["km(avg)"].values.tolist(),
+            "elevation(sum)": data["elevation(sum)"].values.tolist(),
+            "elevation(avg)": data["elevation(avg)"].values.tolist(),
+            "elevation_m/km(avg)": data["elevation_m/km(avg)"].values.tolist(),
+            "km/h(avg)": data["km/h(avg)"].values.tolist(),
         }
 
     with Path(pathStatsExport / f"ts_types_{freq}.json").open(
-        "w", encoding="UTF-8"
+        "w",
+        encoding="UTF-8",
     ) as fh:
         json.dump(
             json_data,
@@ -227,6 +289,6 @@ def get_first_day_of_the_year(date_value: dt.date) -> dt.date:
 
 if __name__ == "__main__":
     df_all = read_activityListJson(
-        pathToActivityListJsonDump=pathToActivityListJsonDump
+        pathToActivityListJsonDump=pathToActivityListJsonDump,
     )
     gen_types_time_series(df_all=df_all, pathStatsExport=pathStatsExport)
