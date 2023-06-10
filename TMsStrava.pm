@@ -1,4 +1,3 @@
-#!/usr/bin/perl -w
 package TMsStrava;
 # by Torben Menke https://entorb.net
 
