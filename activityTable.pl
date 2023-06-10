@@ -57,35 +57,27 @@ TMsStrava::initSessionVariables( $cgi->param("session") );
 TMsStrava::htmlPrintNavigation();
 
 print '
-
     <script src="./activity-tabulator.js"></script>
-    <script src="/COVID-19-coronavirus/js/jquery-3.5.0.min.js"></script>
+    //<script src="lib/jquery-3.7.0.min.js"></script>
     <!-- Polyfiles for IE, suggested by Tabulator : http://tabulator.info/docs/4.6/browsers#ie -->
     <script src="/COVID-19-coronavirus/js/tabulator-polyfill.min.js"></script>
     <script src="/COVID-19-coronavirus/js/tabulator-fetch.umd.js"></script>
     <!-- Tabulator -->
-    <link href="/COVID-19-coronavirus/js/tabulator.min.css" rel="stylesheet">
-    <script src="/COVID-19-coronavirus/js/tabulator-4.6.min.js"></script>
-    <div id="table-activity-list"></div>
-    <!--
-    Start JavaScript
-  -->
-    <script>
-        // variables
-        const promises = []; // array of promises for async fetching
+    <link href="lib/tabulator.min.css" rel="stylesheet">
+    <script src="lib/tabulator-5.4.min.js"></script>
+    <div id="table-activity-list"></div>';
+#  style="width: 900px;height:400px;
 
-        // ASync JQuery fetching
-        function fetch_table_data() {
-            table.setData("https://entorb.net/strava/'
-    . $s{'pathToActivityListJsonDump'} . '", {}, "get")
-        }
-
-        // define and populate table
+print '
+<script>
         var table = defineTable();
-        promises.push(fetch_table_data());
-        table.setSort("x_date", "desc");
+        // table.setSort("x_date", "desc");
 
-    </script>
+        table.on("tableBuilt", function(){
+            table.setData("https://entorb.net/strava/'
+    . $s{'pathToActivityListJsonDump'} . '")
+        });
+</script>
 ';
 
 TMsStrava::htmlPrintFooter($cgi);
