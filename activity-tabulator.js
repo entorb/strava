@@ -3,11 +3,14 @@
 
 function defineTable() {
     var table = new Tabulator("#table-activity-list", {
-        //        height: 600, // set height of table to enable virtual DOM
-        layout: "fitColumns", //fit columns to width of table (optional)
+        height: "100%",
+        //height: 800,
+        layout: "fitDataStretch", //fit columns to width of table (optional)
         // autoColumns: true, // very nice!!!
         tooltipsHeader: true,
-        selectable: true,
+        selectable: false,
+        initialSort: [
+            { column: "x_date", dir: "desc" },],
         columns: [ //Define Table Columns
             { title: "Date", field: "x_date", sorter: "string", headerFilter: true },
             { title: "Type", field: "type", sorter: "string", headerFilter: true },
@@ -97,9 +100,6 @@ function defineTable() {
                     alignEmptyValues: "bottom"
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
-
-
-
         ],
         rowClick: function (e, row) {
             var rowData = row.getData();
@@ -108,9 +108,9 @@ function defineTable() {
         },
     });
 
-    table.setSort([
-        { column: "start_date_local", dir: "asc" },
-    ]);
+    // table.setSort([
+    //     { column: "start_date_local", dir: "asc" },
+    // ]);
 
     return table;
 }
