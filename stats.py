@@ -111,8 +111,14 @@ def types_time_series_json_export(df: pd.DataFrame, freq: str) -> None:
         data = data.droplevel("type")
         data.reset_index(inplace=True)
         data["hours"] = data["hours"].round(1)  # fix float issues # type: ignore
-        if freq in ("month", "quarter"):
-            data["date"] = data["date"].astype(str)  # date as string # type: ignore
+        if freq == "month":
+            data["date"] = data["date"].dt.strftime("%Y-%m")
+        elif freq == "quarter":
+            data["date"] = data["date"].dt.to_period("Q").dt.strftime("%Y-Q%q")
+            # data["date"] = pd.to_datetime(data["date"].astype(str), format="%Y-Q%q")
+            # data["date"] = data["date"].dt.strftime("%Y-Q%q")
+            # data["date"] = data["date"].dt.strftime("%Y-Q%q")
+            # data["date"] = data["date"].astype(str)  # date as string # type: ignore
         elif freq == "year":
             data["date"] = data["date"].astype(int)  # year as int # type: ignore
         # using zip instead of data.values.tolist(), since df.values converts all elements to same format # noqa: E501

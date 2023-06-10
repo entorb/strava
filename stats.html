@@ -30,12 +30,25 @@ TODOs
     <!-- eCharts https://echarts.apache.org/ https://echarts.apache.org/en/option.html-->
     <script src="lib/echarts-5.4.2.min.js"></script>
     <script src="lib/jquery-3.7.0.min.js"></script>
-    <script src="stats.js"></script>
 </head>
 
 <body>
+    <select id="sel_date_agg" onchange="action_chart_update()">
+        <option value="quarter">Quarter</option>
+        <option value="year">Year</option>
+        <option value="month">Month</option>
+    </select>
+    <select id="sel_type" onchange="action_chart_update()">
+        <option value="Run">Run</option>
+        <option value="Ride">Ride</option>
+    </select>
+    <select id="sel_measure" onchange="action_chart_update()">
+        <option value="count">Count</option>
+        <option value="hours">Hours</option>
+    </select>
     <!-- eCharts chart -->
     <div id="div_chart" style="width: 900px;height:400px;"></div>
+    <script src="stats.js"></script>
 </body>
 
 </html>
