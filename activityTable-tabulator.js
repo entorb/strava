@@ -9,19 +9,18 @@ function defineTable() {
         height: "100%",
         // height: 800,
         layout: "fitDataStretch", // fit columns to width of table (optional)
-        // autoColumns: true, // very nice!!!
         tooltipsHeader: true,
-        selectable: false,
+        //        selectable: false, // for row click
         initialSort: [
             { column: "x_date", dir: "desc" },],
         columns: [ // Define Table Columns
             { title: "Date", field: "x_date", sorter: "string", headerFilter: true },
             { title: "Type", field: "type", sorter: "string", headerFilter: true },
-            { title: "Name", field: "name", sorter: "string", headerFilter: true },
-            { title: "City", field: "x_nearest_city_start", sorter: "string", headerFilter: true },
+            { title: "Name", field: "name", sorter: "string", headerFilter: true, width: 120 },
+            { title: "City", field: "x_nearest_city_start", sorter: "string", headerFilter: true, width: 120 },
             { title: "Known location start", field: "x_start_locality", sorter: "string", headerFilter: true },
             { title: "-end", field: "x_end_locality", sorter: "string", headerFilter: true },
-            { title: "Gear", field: "x_gear_name", sorter: "string", headerFilter: true },
+            { title: "Gear", field: "x_gear_name", sorter: "string", headerFilter: true, width: 120 },
             {
                 title: "Minutes", field: "x_min", sorter: "number", hozAlign: "right", sorterParams: {
                     alignEmptyValues: "bottom"
@@ -43,48 +42,52 @@ function defineTable() {
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
             {
-                title: "elev-gain (m)", field: "total_elevation_gain", sorter: "number", hozAlign: "right", sorterParams: {
+                title: "elevation (m)", field: "total_elevation_gain", sorter: "number", hozAlign: "right", sorterParams: {
                     alignEmptyValues: "bottom"
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
             {
-                title: "elev-gain (%)", field: "x_elev_%", sorter: "number", hozAlign: "right", sorterParams: {
-                    alignEmptyValues: "bottom"
-                }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
-            },
-
-            {
-                title: "average_heartrate", field: "average_heartrate", sorter: "number", hozAlign: "right", sorterParams: {
+                title: "elevation (m/km)", field: "x_elev_m/km", sorter: "number", hozAlign: "right", sorterParams: {
                     alignEmptyValues: "bottom"
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
             {
-                title: "max_heartrate", field: "max_heartrate", sorter: "number", hozAlign: "right", sorterParams: {
+                title: "HR avg", field: "average_heartrate", sorter: "number", hozAlign: "right", sorterParams: {
                     alignEmptyValues: "bottom"
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
             {
-                title: "average_cadence", field: "average_cadence", sorter: "number", hozAlign: "right", sorterParams: {
+                title: "HR max", field: "max_heartrate", sorter: "number", hozAlign: "right", sorterParams: {
                     alignEmptyValues: "bottom"
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
             {
-                title: "average_watts", field: "average_watts", sorter: "number", hozAlign: "right", sorterParams: {
+                title: "cadence", field: "average_cadence", sorter: "number", hozAlign: "right", sorterParams: {
                     alignEmptyValues: "bottom"
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
             {
-                title: "kilojoules", field: "kilojoules", sorter: "number", hozAlign: "right", sorterParams: {
+                title: "watts avg", field: "average_watts", sorter: "number", hozAlign: "right", sorterParams: {
                     alignEmptyValues: "bottom"
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
             {
-                title: "visibility", field: "visibility", sorter: "number", hozAlign: "right", sorterParams: {
+                title: "KJ", field: "kilojoules", sorter: "number", hozAlign: "right", sorterParams: {
+                    alignEmptyValues: "bottom"
+                }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
+            },
+            {
+                title: "visible", field: "visibility", sorter: "number", hozAlign: "right", sorterParams: {
                     alignEmptyValues: "bottom"
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
             {
                 title: "athletes", field: "athlete_count", sorter: "number", hozAlign: "right", sorterParams: {
+                    alignEmptyValues: "bottom"
+                }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
+            },
+            {
+                title: "W-Type", field: "workout_type", sorter: "number", hozAlign: "right", sorterParams: {
                     alignEmptyValues: "bottom"
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
@@ -104,16 +107,23 @@ function defineTable() {
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
         ],
-        rowClick: function (_e, row) {
-            const rowData = row.getData();
-            const activityUrl = rowData["x_url"];
-            window.open(activityUrl);
-        },
     });
-
-    // table.setSort([
-    //     { column: "start_date_local", dir: "asc" },
-    // ]);
 
     return table;
 }
+
+var table = defineTable();
+
+table.on("tableBuilt", function () {
+    table.setData("https://entorb.net/strava/./download/" + session + "/activityList.json")
+});
+
+table.on("cellClick", function (e, cell) {
+    const row = cell.getRow();
+    const rowData = row.getData();
+    const activityUrl = rowData["x_url"];
+    window.open(activityUrl);
+});
+
+
+

@@ -235,9 +235,10 @@ if ( $yearToDL ne '' ) {
     # prepend newly downloaded files
     print "<li>merging files ... <br>";
     my $t = time;
+    # reverse -> ASC sorting
     unshift @allActivityHashes,
-        reverse TMsStrava::convertJsonFilesToArrayOfHashes(@listOfNewFiles)
-        ;    # reverse -> ASC sorting
+        reverse TMsStrava::convertJsonFilesToArrayOfHashes(@listOfNewFiles);
+
     printf "done (%.1fs)</li>\n", ( time - $t );
 
     #
