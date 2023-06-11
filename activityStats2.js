@@ -8,10 +8,11 @@ const html_sel_date_agg = document.getElementById("sel_date_agg");
 const html_sel_type = document.getElementById("sel_type");
 const html_sel_measure = document.getElementById("sel_measure");
 
+// eslint-disable-next-line prefer-const
 let data_all = [];
 
 // TODO:
-let session = "123";
+const session = "123";
 
 // array of promises for async fetching
 const promises = [];
@@ -85,8 +86,8 @@ function chart_update(data_all) {
   const type = html_sel_type.value;
   const measure = html_sel_measure.value;
 
-  let data_echarts_x = [...data_all[date_agg][type]["date"]];
-  let data_echarts_y = [...data_all[date_agg][type][measure]];
+  const data_echarts_x = [...data_all[date_agg][type]["date"]];
+  const data_echarts_y = [...data_all[date_agg][type][measure]];
 
   // filter out null values
   const data_echarts_y_non_null = data_echarts_y.filter(value => value !== null);
@@ -103,7 +104,7 @@ function chart_update(data_all) {
   }
   // console.log(data_echarts_x[0]);
   // console.log(data_echarts_y[0]);
-  let title = capitalize_words("Strava Stats: " + type + " " + date_agg + " " + measure);
+  const title = capitalize_words("Strava Stats: " + type + " " + date_agg + " " + measure);
 
   chart.setOption({
     xAxis: { type: "category", data: data_echarts_x, },
@@ -185,7 +186,7 @@ function addMissingMonthsInPlace(data_echarts_x, data_echarts_y) {
   const minMonth = data_echarts_x[0];
   const maxMonth = data_echarts_x[data_echarts_x.length - 1];
 
-  let currentMonth = new Date(minMonth);
+  const currentMonth = new Date(minMonth);
   let currentIndex = 0;
 
   while (currentMonth <= new Date(maxMonth)) {
@@ -243,10 +244,10 @@ function populate_select_type() {
   }
   // populate from array
   let i_of_Run = 0;
-  var options = Object.keys(data_all["year"]);
-  for (var i = 0; i < options.length; i++) {
-    var opt = options[i];
-    var el = document.createElement("option");
+  const options = Object.keys(data_all["year"]);
+  for (let i = 0; i < options.length; i++) {
+    const opt = options[i];
+    const el = document.createElement("option");
     el.textContent = opt;
     el.value = opt;
     select.appendChild(el);
@@ -259,6 +260,7 @@ function populate_select_type() {
 //
 // GUI actions
 //
+// eslint-disable-next-line no-unused-vars
 function action_chart_update() {
   chart_update(data_all);
 }
