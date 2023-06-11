@@ -49,7 +49,7 @@ function chart_create(html_div_chart) {
   chart.setOption({
     // title: { text: 'Items per Minute' },
     tooltip: {},
-    legend: {},
+    legend: { show: false },
     // grid: {
     //   // define margins
     //   containLabel: false,
@@ -72,9 +72,8 @@ function chart_create(html_div_chart) {
         start: 50,
         end: 100,
         handleSize: 8
-      },]
-  }
-  );
+      },],
+  });
   return chart;
 }
 
@@ -89,8 +88,12 @@ function chart_update(data_all) {
   let data_echarts_x = [...data_all[date_agg][type]["date"]];
   let data_echarts_y = [...data_all[date_agg][type][measure]];
 
-  // console.log(data_echarts_x[0]);
-  // console.log(data_echarts_y[0]);
+  // filter out null values
+  const data_echarts_y_non_null = data_echarts_y.filter(value => value !== null);
+  const y_min = Math.min(...data_echarts_y_non_null);
+  const y_max = Math.max(...data_echarts_y_non_null);
+  const y_delta = (y_max > y_min) ? y_max - y_min : 1;
+
   if (date_agg === "month") {
     addMissingMonthsInPlace(data_echarts_x, data_echarts_y);
   } else if (date_agg === "year") {
@@ -103,17 +106,27 @@ function chart_update(data_all) {
   let title = capitalize_words("Strava Stats: " + type + " " + date_agg + " " + measure);
 
   chart.setOption({
-    xAxis: { type: "category", data: data_echarts_x },
+    xAxis: { type: "category", data: data_echarts_x, },
+    yAxis: { min: ((y_min - 0.1 * y_delta) > 0) ? Math.floor(y_min - 0.1 * y_delta) : Math.floor(y_min) },
     series: [
       {
         type: "bar",
+        name: measure,
         data: data_echarts_y,
-        barWidth: '100%'
+        barWidth: '100%',
         // smooth: true,
         // symbolSize: 10,
         // silent: true,
         // animation: false,
-      }
+        markLine: {
+          show: true,
+          animation: false,
+          data: [{
+            name: 'average',
+            type: 'average'
+          }],
+        }
+      },
     ],
     title: {
       text: title,
@@ -229,6 +242,7 @@ function populate_select_type() {
     select.remove(i);
   }
   // populate from array
+  let i_of_Run = 0;
   var options = Object.keys(data_all["year"]);
   for (var i = 0; i < options.length; i++) {
     var opt = options[i];
@@ -236,7 +250,9 @@ function populate_select_type() {
     el.textContent = opt;
     el.value = opt;
     select.appendChild(el);
+    if (opt === "Run") { i_of_Run = i }
   }
+  select.selectedIndex = i_of_Run;
 }
 
 
