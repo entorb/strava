@@ -3,19 +3,13 @@
 # by Torben Menke https://entorb.net
 
 # DESCRIPTION
-# display statistics for cached activities
+# displays tabulator table of cached activities
 
 # TODO
-# For the yearly averages 0 values need to be used to fill the gaps
-#  this is wrong for pace and other averages!!!
-# For the av_all this is wrong!!!
-
-# IDEAS
-# * mark record per date bold
-# * add record activity value
 
 # DONE
-# * add quarter
+# * use html as template
+# * use tabulator JS lib
 
 # Modules: My Default Set
 use strict;
@@ -25,58 +19,29 @@ use Data::Dumper;
 use utf8;                   # this script is written in UTF-8
 binmode STDOUT, ':utf8';    # default encoding for linux print STDOUT
 
-# Modules: Perl Standard
-use Encode qw(encode decode);
-
-# use File::Path qw/remove_tree/;
-use Time::Local;
-use Storable;               # read and write variables to
-use File::Basename;         # for basename, dirname, fileparse
-use File::Copy;
-use Cwd;                    # for my $dir = getcwd;
-
 # Modules: Web
 use CGI;
 my $cgi = CGI->new;
 
-#use CGI ":all";
-#use CGI qw(:standard);
 use CGI::Carp qw(warningsToBrowser fatalsToBrowser);
 
 # Modules: My Strava Module Lib
 use lib ('.');
-use lib ('/var/www/virtual/entorb/perl5/lib/perl5');
-use lib "C:\\Users\\menketrb\\Documents\\Hacken\\Perl\\Strava-Web"
-    ;    # just for making Visual Studio Code happy
-use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
 use TMsStrava qw( %o %s)
     ;    # at entorb.net some modules require use local::lib!!!
 
-TMsStrava::htmlPrintHeader( $cgi, 'Activity table' );
+TMsStrava::htmlPrintHeader( $cgi, 'Activity Table' );
 TMsStrava::initSessionVariables( $cgi->param("session") );
 TMsStrava::htmlPrintNavigation();
 
-print '
-    <script src="./activityTable-tabulator.js"></script>
-    //<script src="lib/jquery-3.7.0.min.js"></script>
-    <!-- Polyfiles for IE, suggested by Tabulator : http://tabulator.info/docs/4.6/browsers#ie -->
-    <script src="/COVID-19-coronavirus/js/tabulator-polyfill.min.js"></script>
-    <script src="/COVID-19-coronavirus/js/tabulator-fetch.umd.js"></script>
-    <!-- Tabulator -->
-    <link href="lib/tabulator.min.css" rel="stylesheet">
-    <script src="lib/tabulator-5.4.min.js"></script>
-    <div id="table-activity-list"></div>';
+my $fileIn = "activityTable.html";
+open my $fhIn, '<:encoding(UTF-8)', $fileIn
+    or die "ERROR: Can't read from file '$fileIn': $!";
+my $cont = do { local $/ = undef; <$fhIn> };
+close $fhIn;
+$cont =~ s/^.*<body>(.*)<\/body>.*/$1/s;
+$cont =~ s/session = "123"/session = "$s{'session'}"/s;
 
-print '
-<script>
-        var table = defineTable();
-        // table.setSort("x_date", "desc");
-
-        table.on("tableBuilt", function(){
-            table.setData("https://entorb.net/strava/'
-    . $s{'pathToActivityListJsonDump'} . '")
-        });
-</script>
-';
+say $cont;
 
 TMsStrava::htmlPrintFooter($cgi);
