@@ -1,17 +1,20 @@
+/* eslint-disable camelcase */
+/* eslint-disable require-jsdoc */
+("use strict");
 
 
-
+// eslint-disable-next-line no-unused-vars
 function defineTable() {
-    var table = new Tabulator("#table-activity-list", {
+    const table = new Tabulator("#table-activity-list", {
         height: "100%",
-        //height: 800,
-        layout: "fitDataStretch", //fit columns to width of table (optional)
+        // height: 800,
+        layout: "fitDataStretch", // fit columns to width of table (optional)
         // autoColumns: true, // very nice!!!
         tooltipsHeader: true,
         selectable: false,
         initialSort: [
             { column: "x_date", dir: "desc" },],
-        columns: [ //Define Table Columns
+        columns: [ // Define Table Columns
             { title: "Date", field: "x_date", sorter: "string", headerFilter: true },
             { title: "Type", field: "type", sorter: "string", headerFilter: true },
             { title: "Name", field: "name", sorter: "string", headerFilter: true },
@@ -101,9 +104,9 @@ function defineTable() {
                 }, headerFilter: true, headerFilterPlaceholder: "filter >=", headerFilterFunc: ">="
             },
         ],
-        rowClick: function (e, row) {
-            var rowData = row.getData();
-            var activityUrl = rowData["x_url"];
+        rowClick: function (_e, row) {
+            const rowData = row.getData();
+            const activityUrl = rowData["x_url"];
             window.open(activityUrl);
         },
     });
