@@ -1,4 +1,4 @@
-#!/usr/bin/python3.10
+#!/usr/bin/env python3.10
 
 """
 Stats for Strava App V2.
@@ -7,6 +7,7 @@ Stats for Strava App V2.
 import datetime as dt
 import json
 from pathlib import Path
+from sys import argv
 
 import numpy as np
 import pandas as pd
@@ -14,8 +15,10 @@ import pandas as pd
 # requirements
 # pip3.10 install numpy pandas
 
-# TODO: pass as parameter
-session = "123"
+if len(argv) == 2:
+    session = argv[1]
+else:
+    session = "123"
 
 # set paths and mkdir activityStats2
 pathToActivityListJsonDump = Path("./download") / session / "activityList.json"
