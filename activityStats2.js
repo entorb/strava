@@ -20,7 +20,7 @@ const promises = [];
 // Data fetching
 //
 function fetch_data(session, date_agg) {
-  const url = "https://entorb.net/strava/download/" + session + "/stats-py/ts_types_" + date_agg + ".json";
+  const url = "https://entorb.net/strava/download/" + session + "/activityStats2_" + date_agg + ".json";
   return $.getJSON(url, function (data) {
   })
     .done(function (data) {

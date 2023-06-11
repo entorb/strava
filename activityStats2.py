@@ -1,5 +1,7 @@
+#!/usr/bin/python3.10
+
 """
-Stats for Strava App.
+Stats for Strava App V2.
 """
 
 import datetime as dt
@@ -9,13 +11,15 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+# requirements
+# pip3.10 install numpy pandas
+
 # TODO: pass as parameter
 session = "123"
 
-# set paths and mkdir stats-py
+# set paths and mkdir activityStats2
 pathToActivityListJsonDump = Path("./download") / session / "activityList.json"
-pathStatsExport = Path("./download") / session / "stats-py"
-pathStatsExport.mkdir(parents=False, exist_ok=True)
+pathStatsExport = Path("./download") / session
 
 
 def read_activityListJson(pathToActivityListJsonDump: Path) -> pd.DataFrame:
@@ -202,7 +206,7 @@ def types_time_series_json_export(
             d[col] = data[col].values.tolist()  # type: ignore
         json_data[act_type] = d
 
-    with Path(pathStatsExport / f"ts_types_{freq}.json").open(
+    with Path(pathStatsExport / f"activityStats2_{freq}.json").open(
         "w",
         encoding="UTF-8",
     ) as fh:
@@ -213,7 +217,6 @@ def types_time_series_json_export(
             sort_keys=False,
             # indent=2,
         )
-    return
 
 
 # old
