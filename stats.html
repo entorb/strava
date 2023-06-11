@@ -34,8 +34,8 @@ TODOs
 
 <body>
     <select id="sel_date_agg" onchange="action_chart_update()">
-        <option value="quarter">Quarter</option>
         <option value="year">Year</option>
+        <option value="quarter">Quarter</option>
         <option value="month">Month</option>
     </select>
     <select id="sel_type" onchange="action_chart_update()">
@@ -46,15 +46,18 @@ TODOs
         <option value="count">Count</option>
         <option value="hours(sum)">Hours (sum)</option>
         <option value="hours(avg)">Hours (avg)</option>
-        <option value="km(sum)">Kilometers (sum)</option>
-        <option value="km(avg)">Kilometers (avg)</option>
+        <option value="kilometers(sum)">Kilometers (sum)</option>
+        <option value="kilometers(avg)">Kilometers (avg)</option>
         <option value="elevation(sum)">Elevation (sum)</option>
         <option value="elevation(avg)">Elevation (avg)</option>
         <option value="elevation_m/km(avg)">Elevation m/km(avg)</option>
-        <option value="km/h(avg)">Speed km/h (avg)</option>
+        <option value="speed_km/h(avg)">Speed km/h (avg)</option>
+        <option value="speed_km/h(max)">Speed km/h (max)</option>
+        <option value="heartrate(avg)">Heartrate (avg)</option>
+        <option value="heartrate(max)">Heartrate (max)</option>
     </select>
     <!-- eCharts chart -->
-    <div id="div_chart" style="width: 900px;height:400px;"></div>
+    <div id="div_chart" style="width: 100%;height:600px;"></div>
     <script src="stats.js"></script>
 </body>
 

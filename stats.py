@@ -54,33 +54,46 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
             "total_elevation_gain",
             "x_elev_m/km",
             "km/h",
+            "average_heartrate",
+            "max_heartrate",
+            "x_max_km/h",
         ]
     ]
+
+    # replace 0 by nan (and later by JSON "none")
+    df = df.replace(0, np.nan, inplace=False)  # type: ignore
+
     df = df.rename(
         columns={
             "x_date": "date",
             "x_min": "hours(sum)",
-            "x_km": "km(sum)",
+            "x_km": "kilometers(sum)",
             "total_elevation_gain": "elevation(sum)",
             "x_elev_m/km": "elevation_m/km(avg)",
-            "km/h": "km/h(avg)",
+            "km/h": "speed_km/h(avg)",
+            "average_heartrate": "heartrate(avg)",
         },
     )  # not inplace here!
     df["hours(sum)"] = df["hours(sum)"] / 60
     df["hours(avg)"] = df["hours(sum)"]
-    df["km(avg)"] = df["km(sum)"]
+    df["kilometers(avg)"] = df["kilometers(sum)"]
     df["elevation(avg)"] = df["elevation(sum)"]
+    df["heartrate(max)"] = df["heartrate(avg)"]
+    df["speed_km/h(max)"] = df["speed_km/h(avg)"]
 
     my_aggregations = {
         "id": "count",
         "hours(sum)": "sum",
         "hours(avg)": "mean",
-        "km(sum)": "sum",
-        "km(avg)": "mean",
+        "kilometers(sum)": "sum",
+        "kilometers(avg)": "mean",
         "elevation(sum)": "sum",
         "elevation(avg)": "mean",
         "elevation_m/km(avg)": "mean",
-        "km/h(avg)": "mean",
+        "speed_km/h(avg)": "mean",
+        "speed_km/h(max)": "max",
+        "heartrate(avg)": "mean",
+        "heartrate(max)": "max",
     }
 
     # group by month
@@ -122,16 +135,21 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
     for df in (df_month, df_quarter, df_year):
         for measure in my_aggregations.keys():
             if measure in ("count", "elevation(sum)"):
-                df[measure] = df[measure].astype(np.int64)
+                df[measure] = df[measure].astype(np.int64)  # type: ignore
             else:
-                df[measure] = df[measure].round(1)
+                df[measure] = df[measure].round(1)  # type: ignore
 
-    # fill na value by None
+    # replace 0 by nan (and later by JSON "null")
+    df_month = df_month.replace(0, np.nan, inplace=False)  # type: ignore
+    df_quarter = df_quarter.replace(0, np.nan, inplace=False)  # type: ignore
+    df_year = df_year.replace(0, np.nan, inplace=False)  # type: ignore
+
+    # fill na value by None for JSON "null" conversion at export
     # from https://stackoverflow.com/questions/46283312/how-to-proceed-with-none-value-in-pandas-fillna
     # The first fillna will replace all of (None, NAT, np.nan, etc) with Numpy's NaN, then replace Numpy's NaN with python's None. # noqa: E501
-    df_month = df_month.fillna(np.nan).replace([np.nan], [None])
-    df_quarter = df_quarter.fillna(np.nan).replace([np.nan], [None])
-    df_year = df_year.fillna(np.nan).replace([np.nan], [None])
+    df_month = df_month.fillna(np.nan).replace([np.nan], [None])  # type: ignore
+    df_quarter = df_quarter.fillna(np.nan).replace([np.nan], [None])  # type: ignore
+    df_year = df_year.fillna(np.nan).replace([np.nan], [None])  # type: ignore
 
     # # add missing months per activity type
     # # generate index of the desired month-freq:
@@ -150,17 +168,25 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
     # )
     # df_month = df_month.fillna(0).astype({"count": int})
 
-    types_time_series_json_export(df=df_month, freq="month")
-    types_time_series_json_export(df=df_quarter, freq="quarter")
-    types_time_series_json_export(df=df_year, freq="year")
+    measures = list(my_aggregations.keys())
+
+    types_time_series_json_export(df=df_month, freq="month", measures=measures)
+    types_time_series_json_export(df=df_quarter, freq="quarter", measures=measures)
+    types_time_series_json_export(df=df_year, freq="year", measures=measures)
 
 
-def types_time_series_json_export(df: pd.DataFrame, freq: str) -> None:
+def types_time_series_json_export(
+    df: pd.DataFrame,
+    freq: str,
+    measures: list[str],
+) -> None:
     """
     Freq: month, quarter, year.
     """
     # Convert DataFrame to JSON with nested lists
     json_data = {}
+    cols = ["date"]
+    cols.extend(measures)
 
     for act_type, data in df.groupby(level="type"):  # type: ignore
         data = data.droplevel("type")
@@ -169,26 +195,12 @@ def types_time_series_json_export(df: pd.DataFrame, freq: str) -> None:
             data["date"] = data["date"].dt.strftime("%Y-%m")
         elif freq == "quarter":
             data["date"] = data["date"].dt.to_period("Q").dt.strftime("%Y-Q%q")
-            # data["date"] = pd.to_datetime(data["date"].astype(str), format="%Y-Q%q")
-            # data["date"] = data["date"].dt.strftime("%Y-Q%q")
-            # data["date"] = data["date"].dt.strftime("%Y-Q%q")
-            # data["date"] = data["date"].astype(str)  # date as string # type: ignore
         elif freq == "year":
             data["date"] = data["date"].astype(int)  # year as int # type: ignore
-        # using zip instead of data.values.tolist(), since df.values converts all elements to same format # noqa: E501
-        json_data[act_type] = {  # type: ignore
-            # zip
-            "date": data["date"].values.tolist(),  # str|int # type: ignore
-            "count": data["count"].values.tolist(),  # int # type: ignore
-            "hours(sum)": data["hours(sum)"].values.tolist(),
-            "hours(avg)": data["hours(avg)"].values.tolist(),
-            "km(sum)": data["km(sum)"].values.tolist(),
-            "km(avg)": data["km(avg)"].values.tolist(),
-            "elevation(sum)": data["elevation(sum)"].values.tolist(),
-            "elevation(avg)": data["elevation(avg)"].values.tolist(),
-            "elevation_m/km(avg)": data["elevation_m/km(avg)"].values.tolist(),
-            "km/h(avg)": data["km/h(avg)"].values.tolist(),
-        }
+        d = {}
+        for col in cols:
+            d[col] = data[col].values.tolist()  # type: ignore
+        json_data[act_type] = d
 
     with Path(pathStatsExport / f"ts_types_{freq}.json").open(
         "w",
