@@ -56,7 +56,7 @@ my $type = 'Run';
 my %actPerYear;
 
 if ( $cgi->param('type') ) {
-  if ( grep { $cgi->param('type') eq $_ } qw (Run Ride) ) {
+  if ( grep { $cgi->param('type') eq $_ } qw (Run Ride Swim) ) {
     $type = $cgi->param('type');
   }
 }
@@ -96,6 +96,8 @@ say "<form action=\"activityTop10.pl\" method=\"post\">
     . ( $type eq 'Run' ? 'selected' : '' ) . ">Run</option>
   <option value=\"Ride\""
     . ( $type eq 'Ride' ? 'selected' : '' ) . ">Ride</option>
+  <option value=\"Swim\""
+    . ( $type eq 'Swim' ? 'selected' : '' ) . ">Swim</option>
   </select>
   </td><td>&nbsp;</td>
   </tr>
