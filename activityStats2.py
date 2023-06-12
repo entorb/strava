@@ -4,13 +4,15 @@
 Stats for Strava App V2.
 """
 
-import datetime as dt
+# import datetime as dt
 import json
 from pathlib import Path
 from sys import argv
 
 import numpy as np
 import pandas as pd
+import sys
+
 
 # requirements
 # pip3.10 install numpy pandas
@@ -20,9 +22,23 @@ if len(argv) == 2:
 else:
     session = "123"
 
-# set paths and mkdir activityStats2
-pathToActivityListJsonDump = Path("./download") / session / "activityList.json"
-pathStatsExport = Path("./download") / session
+# Path(__file__).parents[0] = location of current Python script
+pathStatsExport = Path(__file__).parents[0] / "download" / session
+if not pathStatsExport.is_dir():
+    # raise FileNotFoundError(f"session {session} invalid")
+    sys.stderr.write(f"session {session} invalid")
+    sys.exit(1)
+
+pathToActivityListJsonDump = pathStatsExport / "activityList.json"
+if not pathToActivityListJsonDump.is_file():
+    # raise FileNotFoundError(f"file activityList.json missing")
+    sys.stderr.write(f"file activityList.json missing")
+    sys.exit(1)
+
+p = pathStatsExport / "activityStats2_year.json"
+if p.is_file():
+    # nothing to do
+    exit()
 
 
 def read_activityListJson(pathToActivityListJsonDump: Path) -> pd.DataFrame:
@@ -220,89 +236,6 @@ def types_time_series_json_export(
             sort_keys=False,
             # indent=2,
         )
-
-
-# old
-# df_month.reset_index(inplace=True)
-# # Set names of index levels and convert index to string
-# df_month["date"] = df_month["date"].astype(str)
-# print(df_month)
-
-# # # Convert 'date' column to string format
-# # df_month["date"] = df_month.index.get_level_values("date").strftime("%Y-%m-%d")
-# # print(df_month)
-
-# #    df_month.to_json(pathStatsExport / "ts_types_month.json", orient="split")
-
-# # Convert DataFrame to nested lists
-# json_data = df_month.reset_index().values.tolist()
-# # print(json_data)
-
-# json_str = json.dumps(json_data)
-# print(json_str)
-# exit()
-
-# df["date_month"] = df["x_date"].apply(get_first_day_of_the_month)  # type: ignore
-# df["date_month"] = pd.to_datetime(df["date_month"])  # type: ignore
-# df_month = df.groupby(  # type: ignore
-#     [pd.Grouper(key="type"), pd.Grouper(key="date_month", freq="1M")]
-# ).agg({"id": "count", "x_min": "sum"})
-# # df_month = df.groupby(["type", "date_month"]).agg(  # type: ignore
-# #     {"id": "count", "x_min": "sum"}
-# # )
-# df_month = df_month.rename(columns={"id": "count", "x_min": "minutes"})
-
-# print(df_month)
-
-# # exit()
-# # group by quarter
-# df = df_month.reset_index()
-# df["date_quarter"] = df["date_month"].apply(get_first_day_of_the_quarter)  # type: ignore  # noqa: E501
-# df["date_quarter"] = pd.to_datetime(df["date_quarter"])  # type: ignore
-# df_quarter = df.groupby(["type", "date_quarter"]).agg(  # type: ignore
-#     {"count": "sum", "minutes": "sum"}
-# )
-
-# # group by year
-# df = df_quarter.reset_index()
-# df["date_year"] = df["date_quarter"].apply(get_first_day_of_the_year)  # type: ignore  # noqa: E501
-# df["date_year"] = pd.to_datetime(df["date_year"])  # type: ignore
-# df_year = df.groupby(["type", "date_year"]).agg(  # type: ignore
-#     {"count": "sum", "minutes": "sum"}
-# )
-
-# # min -> hour
-# for df in (df_month, df_quarter, df_year):
-#     df["hours"] = (df["minutes"] / 60).round(1)  # type: ignore
-#     df.drop(
-#         columns=["minutes"],
-#         inplace=True,
-#     )
-
-# df_month = df_month.asfreq("M", fill_value=0)
-# # print results
-# print(df_month)
-# # print(df_quarter)
-# # print(df_year)
-# #
-# df_month.reset_index().to_json(  # type: ignore
-#     pathStatsExport / "ts_types_month.json",
-#     indent=2,
-#     orient="records",
-#     date_format="iso",
-# )
-
-
-def get_first_day_of_the_month(date_value: dt.date) -> dt.date:
-    return dt.date(date_value.year, date_value.month, 1)
-
-
-def get_first_day_of_the_quarter(date_value: dt.date) -> dt.date:
-    return dt.date(date_value.year, 3 * ((date_value.month - 1) // 3) + 1, 1)
-
-
-def get_first_day_of_the_year(date_value: dt.date) -> dt.date:
-    return dt.date(date_value.year, 1, 1)
 
 
 if __name__ == "__main__":
