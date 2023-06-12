@@ -40,7 +40,7 @@ open my $fhIn, '<:encoding(UTF-8)', $fileIn
 my $cont = do { local $/ = undef; <$fhIn> };
 close $fhIn;
 $cont =~ s/^.*<body>(.*)<\/body>.*/$1/s;
-$cont =~ s/session = "123"/session = "$s{'session'}"/s;
+$cont =~ s/session *= *"123"/session = "$s{'session'}"/s;
 
 say $cont;
 
