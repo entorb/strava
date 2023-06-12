@@ -1,6 +1,7 @@
 .vscode/
 download/
 lib/
+tmp/
 
 .vstags
 TMsStravaSecret.pm
