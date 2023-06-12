@@ -38,6 +38,7 @@ use Storable;               # read and write variables to
 # Modules: CPAN
 use LWP::UserAgent; # http requests
 use JSON;           # imports encode_json, decode_json, to_json and from_json.
+# important: install JSON::XS as well, as JSON uses it, if present, and it is MUCH faster
 
 our %o;             # Global Settings / Options, is exported, see above
 our %s;             # Session variables, is exported, see above
@@ -345,12 +346,13 @@ sub convertJSONcont2Hash {
 
 
 sub convertJSONcont2Array {
-  # in: json string, containing a list of json oblects
+  # in: json string, containing a list of json objects
   # out: an array containing hashes
   my ($cont) = @_;    # () important!!!
   logSubStart('convertJSONcont2Array');
-  my $j       = JSON->new->allow_nonref;
-  my $decoded = $j->decode($cont);
+  my $decoded = JSON->new->allow_nonref->decode($cont);
+  # my $j       = JSON->new->allow_nonref;
+  # my $decoded = $j->decode($cont);
   die "E: message '$decoded' is no ARRAYREF"
       if ( not ref($decoded) eq "ARRAY" );
   return @{$decoded};    # ref -> list
@@ -1008,19 +1010,13 @@ sub htmlPrintNavigation {
 (be patient, takes a little while, &asymp;1 min per 1000 activities)"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
 	<input type="hidden" name="year" value="all"/>
-	</form>
+	</form> ';
 
+  say '
 	<form action="activityListCaching.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavCacheYear" value="Cache Activities Year"
   title="download and cache list of activities per year, required for other features
 (use if caching of all activities results in a timeout)"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>';
-
-  say '
-	<form action="segments.pl" method="post">
-	<input type="submit" name="submitFromNav" class="navButton" id="btnSegments" value="Starred Segments"
-  title="Fetch starred segments"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
 	</form>';
 
@@ -1067,24 +1063,27 @@ sub htmlPrintNavigation {
   title="display Top10 activities
 (requires caching first)" />
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
+  say '
 	<form action="activitySearch.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActSearch" value="Search For Activity" '
       . $missingActivityCacheDisablesButton . '
   title="searching for an activity, based on multiple criteria
 (requires caching first)"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
+  say '
 	<form action="activityExcelExport.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActListExcel" value="Activity Excel Export" '
       . $missingActivityCacheDisablesButton . '
   title="generate/export activity Excel report
 (requires caching first)"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
+  say '
 	<form action="activityCalExport.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActCalExcel" value="Activity Calendar Export" '
       . $missingActivityCacheDisablesButton . '
@@ -1110,49 +1109,61 @@ sub htmlPrintNavigation {
   title="list all activities
 (requires caching first)" />
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
+  say '
 	<form action="activityModify.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActModify" value="Modify Activities" '
       . $missingScopeActivityWriteDisablesButton . '
   title="bulk modify activities\' meta data
 (requires write scope)"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
+  say '
 	<form action="frequent-start-end.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavFreqStartEnd" value="Frequent Locations" '
       . $missingActivityCacheDisablesButton . '
   title="list frequently used start and end activity locations
 (requires caching first)"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
+  say '
 	<form action="knownLocations.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavEditKnownLoc" value="Edit Known Locations"
   title="edit list of known start/end locations to enrich Excel activity report"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
+  say '
+	<form action="segments.pl" method="post">
+	<input type="submit" name="submitFromNav" class="navButton" id="btnSegments" value="Starred Segments"
+  title="Fetch starred segments"/>
+	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+	</form>';
+
+  say '
 	<form action="clearCache.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavClearCache" value="Clear Cache"
   title="delete cached activity data"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
+  say '
 	<form action="/contact.php?origin=strava" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavContact" value="Contact"
   title="contact me for bug reports and feature requests"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
-
+  say '
 	<form action="deauth.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavQuit" value="Quit"
   title="quit session: delete the temporary data
 and deauthorize this app from your Strava account"/>
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>  ';
+	</form>';
 
   say '</div>';
   say '<div class="main">';
