@@ -1040,16 +1040,27 @@ sub htmlPrintNavigation {
   title="display statistics of your activities
 (requires caching first)" />
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
-	<form action="activityStats.pl" method="post">
-	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats" value="Activity Statistics" '
+  say '
+	<form action="activityStats2.pl" method="post">
+	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats" value="Activity Statistics V2" '
       . $missingActivityCacheDisablesButton . '
   title="display statistics of your activities
 (requires caching first)" />
 	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	</form>
+	</form>';
 
+  say '
+	<form action="activityStats.pl" method="post">
+	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats" value="Activity Statistics V1" '
+      . $missingActivityCacheDisablesButton . '
+  title="display statistics of your activities
+(requires caching first)" />
+	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+	</form>';
+
+  say '
 	<form action="activityTop10.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActTop10" value="Activity Top10" '
       . $missingActivityCacheDisablesButton . '

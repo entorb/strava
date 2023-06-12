@@ -11,9 +11,6 @@ const html_sel_measure = document.getElementById("sel_measure");
 // eslint-disable-next-line prefer-const
 let data_all = [];
 
-// TODO:
-const session = "123";
-
 // array of promises for async fetching
 const promises = [];
 
