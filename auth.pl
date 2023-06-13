@@ -205,25 +205,29 @@ else {    # param("code") is set -> visitor coming from strava auth page
     "<p>Token for user '$s{'stravaUsername'}' with scope '$s{'scope'}' successfully exchanged</p>"
   );
   say
-      "<p>Please start by clicking on cache activities button to the left. Be patient, it takes a little while (&asymp;1 min per 1000 activities). If you have many activities on Strava, you better use the per year button.</p>";
+      "<p>Please start by clicking on cache activities button to the left. Be patient, it takes a little while (&asymp;30s per 1000 activities). If you have many activities on Strava, you better use the per year button.</p>";
 
+  # copied from index.html
   say '
-<h3>List of changes</h3>
-<ul>
-<li>2020-07-21: fancy activities table</li>
-<li>2019-06-08: top10 activities</li>
-<li>2019-05-21: starred segments overview</li>
-<li>2019-05-21: Excel import of activities</li>
-<li>2019-05-16: limited caching to max 1000 activities per run and optimized performance, to prevent timeouts</li>
-<li>2019-05-05: charts for activity statistics</li>
-<li>2019-04-03: nearest city via an offline database of cities\'s geolocation, created from <a href="https://www.maxmind.com" target="_blank">MaxMind\'s GeoLite2 data</a></li>
-<li>2019-03-20: search for activities</li>
-<li>2019-01-12: activities sorted now ASC by date, statistics extended to record speed and elevation/distance</li>
-<li>2019-01-03: gear name (bike/shoe) in Excel export</li>
-<li>2018-12-05: activity statistics</li>
-<li>2018-11-30: caching of activities per year, besides caching of all at once, to prevent timeout issues</li>
-</ul>
-';
+<h3>List of Changes</h3>
+	<ul>
+		<li>2023-06-12: fancy activity statistics charts</li>
+		<li>2023-06-08: usage stats: 2697 unique and 669 returning users. </li>
+		<li>2020-07-24: usage stats: this tool passed the 1000-unique-users milestone!</li>
+		<li>2020-07-21: fancy activity table</li>
+		<li>2020-01-06: published source code on <a href="https://github.com/entorb/strava/" target="_blank">GitHub</a></li>
+		<li>2019-06-08: top10 activities</li>
+		<li>2019-05-21: starred segments overview</li>
+		<li>2019-05-21: Excel import of activities</li>
+		<li>2019-05-16: limited caching to max 1000 activities per run and optimized performance, to prevent timeouts</li>
+		<li>2019-05-05: charts for activity statistics</li>
+		<li>2019-04-03: nearest city via an offline database of cities\'s geo location, created from <a href="https://www.maxmind.com" target="_blank">MaxMind\'s GeoLite2 data</a></li>
+		<li>2019-03-20: search for activities</li>
+		<li>2019-01-12: activities sorted now ASC by date, statistics extended to record speed and elevation/distance</li>
+		<li>2019-01-03: gear name (bike/shoe) in Excel export</li>
+		<li>2018-12-05: activity statistics</li>
+		<li>2018-11-30: caching of activities per year, besides caching of all at once, to prevent timeout issues</li>
+	</ul>';
 
 # <h3>Feature ideas</h3>
 # <ul>

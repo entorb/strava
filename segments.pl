@@ -6,6 +6,7 @@
 # statistics for my starred segments
 
 # TODO
+# migrate to tabulator table
 
 # IDEAS
 
@@ -44,7 +45,8 @@ TMsStrava::initSessionVariables( $cgi->param("session") );
 TMsStrava::htmlPrintNavigation();
 
 say
-    "<p>You can manage your <a href=\"https://www.strava.com/athlete/segments/starred\" target=\"_blank\">starred segments</a> at Strava</p><b>2020-11-17: this feature now requires a paid Strava subscription account :-( </b>";
+    "<p>You can manage your <a href=\"https://www.strava.com/athlete/segments/starred\" target=\"_blank\">starred segments</a> at Strava</p>";
+# say "<b>2020-11-17: this feature now requires a paid Strava subscription account :-( </b>";
 
 my @L = TMsStrava::fetchSegmentsStarred( $s{'token'} );
 

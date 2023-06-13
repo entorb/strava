@@ -3,12 +3,12 @@
 
 <head>
 	<title>Torben's Strava Äpp - Activity Statistics, Excel export and bulk modify of activities</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="author" content="Torben Menke" />
-	<meta name="description" content="Torben's Strava App: Excel export and more" />
-	<meta name="keywords" content="Strava, App, Excel, export, import, report, search, activity list, activities, segment, csv, gps, location, bulk modify" />
-	<link rel="stylesheet" type="text/css" href="/style.css" />
-	<link rel="stylesheet" type="text/css" href="./style-strava.css" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="author" content="Torben Menke">
+	<meta name="description" content="Torben's Strava App: Excel export and more">
+	<meta name="keywords" content="Strava, App, Excel, export, import, report, search, activity list, activities, segment, csv, gps, location, bulk modify">
+	<link rel="stylesheet" type="text/css" href="/style.css">
+	<link rel="stylesheet" type="text/css" href="./style-strava.css">
 	<!-- Matomo -->
 	<script>
 		var _paq = window._paq = window._paq || [];
@@ -28,12 +28,16 @@
 
 <body>
 
-	<h1>Welcome to Torben's Strava Äpp</h1>
+	<h1 id="top">Welcome to Torben's Strava Äpp</h1>
 	<ul>
 		<li>
 			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write"><b>Quickstart</b></a>
 		</li>
-		<li><a href="#UserFeedback">User feedback</a></li>
+		<li><a href="#UserFeatures">User Features</a></li>
+		<li><a href="#UserFeedback">User Feedback</a></li>
+		<li><a href="#TechFeatures">Technical Features</a></li>
+		<li><a href="#Screenshots">Screenshots</a></li>
+		<li><a href="#ListOfChanges">List of Changes</a></li>
 	</ul>
 	<!--
 <form action="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write" method="post">
@@ -41,54 +45,86 @@
 </form>
 -->
 
-	<h2>User features</h2>
+	<h2 id="UserFeatures">User features</h2>
+	<!-- copied from README using https://markdowntohtml.com/ -->
 	<ul>
-		<li>Export activities to your calendar (<b>new</b>)</li>
-		<li>Detailed activity statistics: sums and averages per activity type and timeslot of parameters distance, elevation, speed ... </li>
-		<li>Excel report/export of your activities for enabling your private advanced analysis (compatible to <a href="https://www.libreoffice.org/" target="_blank">LibreOffice</a>)</li>
-		<li>Import activities from Excel / CSV</li>
-		<li>Search for activities based on many criteria, in particular by geo location</li>
-		<li>Starred segments summary</li>
-		<li>Naming of frequent used start/end locations, for easier filtering in Excel</li>
-		<li>Bulk modify of activity meta data: set name, description, commute-flag, training-machine-flag for multiple activities</li>
-		<li>Export segment leaderboard</li>
+		<li>Import and Export of Activities<ul>
+				<li>Excel/CSV Import</li>
+				<li>Excel Export</li>
+				<li>Calendar (iCal) Export</li>
+			</ul>
+		</li>
+		<li>Analysis<ul>
+				<li>Filterable Table of all Activities</li>
+				<li>Activity Statistics<ul>
+						<li>Per Activity Type: Run, Ride, Swim, ...</li>
+						<li>Measures: Distance, Elevation, Heart Rate, ...</li>
+						<li>Aggregations: Sum and Average</li>
+						<li>Grouped by: Month, Quarter and Year</li>
+					</ul>
+				</li>
+				<li>Top10 Activities Regarding Various Measures</li>
+			</ul>
+		</li>
+		<li>Geo locations<ul>
+				<li>Find and Name Frequent Start/End Geo Locations</li>
+				<li>Search for Activities based on Location</li>
+			</ul>
+		</li>
+		<li>Segments<ul>
+				<li>Table of your Starred Segments</li>
+				<li><del>Segment Leaderboard Table</del> (API endpoint removed by Strava)</li>
+			</ul>
+		</li>
+		<li>Activity Modification<ul>
+				<li>Bulk Modify of Activity Meta Data: <br> set name, description, commute-flag, training-machine-flag for multiple activities</li>
+			</ul>
+		</li>
 	</ul>
+	<a href="#top">back to top</a>
 
-	<h2>Technical features</h2>
+	<h2 id="TechFeatures">Technical Features</h2>
+	<!-- copied from README using https://markdowntohtml.com/ -->
 	<ul>
-		<li>OpenSource: source code available at <a href="https://github.com/entorb/strava" target="_blank">GitHub</a></li>
+		<li>OpenSource: source code available at <a href="https://github.com/entorb/strava">GitHub</a></li>
 		<li>Proudly made without cookies, database and of course free from advertisement</li>
-		<li>High level of security and privacy (HTTPS encrypted communication, no data is kept in a database, your temporarily cached data is deleted upon logout, a temporary access token to your Strava profile is used and deleted after logout</li>
-		<li>No third party APIs used (No Google Analytics, Maps, etc)</li>
 		<li>Plain and simple layout</li>
-		<li>Coded in <a href="/wickie/Perl" target="_blank">Perl</a> and <a href="/wickie/Gnuplot" target="_blank">Gnuplot</a></li>
+		<li>Coded mainly in <a href="/wickie/Perl">Perl</a> and <a href="/wickie/Gnuplot">Gnuplot</a>, recently extended by <a href="/wickie/Python">Python</a> <a href="/wickie/Pandas">Pandas</a> and JavaScript <a href="https://tabulator.info/">Tabulator</a> and <a href="https://echarts.apache.org/">ECharts</a></li>
+		<li>High level of security and privacy<ul>
+				<li>HTTPS encrypted communication</li>
+				<li>no data is kept in a database</li>
+				<li>a temporary access token to your Strava profile is used and deleted after logout</li>
+				<li>your temporarily cached data is deleted upon logout</li>
+				<li>no third party APIs used (no Google Analytics, Maps, etc)</li>
+			</ul>
+		</li>
 	</ul>
+	<a href="#top">back to top</a>
 
-	<h2>Screenshots</h2>
+	<h2 id="Screenshots">Screenshots</h2>
 
-	<p> Generated Excel report<br />
-		<img src="screenshots/ActivitiesAll.png" alt="ActivitiesAll.png" width="895" height="119" />
+	<p> Activity statistics V2<br>
+		<img src="screenshots/actStats2-count.png" alt="actStats2-count.png">
 	</p>
 
-	<p> Custom charts and slicers on a connected analysis sheet<br />
-		<img src="screenshots/ActivitiesAll-Charts.png" alt="ActivitiesAll-Charts.png" width="1290" height="442" />
+	<p> Generated Excel report<br>
+		<img src="screenshots/ActivitiesAll.png" alt="ActivitiesAll.png" width="895" height="119">
 	</p>
-	<!-- <p> Activity statistics table<br />
-		<img src="screenshots/Stats-run-qrt.jpg" alt="Stats-run-qrt.jpg" width="1256" height="262" /><br />
+
+	<p> Custom charts and slicers on a connected analysis sheet<br>
+		<img src="screenshots/ActivitiesAll-Charts.png" alt="ActivitiesAll-Charts.png" width="1290" height="442">
+	</p>
+	<!-- <p> Activity statistics table<br>
+		<img src="screenshots/Stats-run-qrt.jpg" alt="Stats-run-qrt.jpg" width="1256" height="262"><br>
 	</p> -->
-
-	<p> Activity statistics V2<br />
-		<img src="screenshots/actStats2-count.png" alt="actStats2-count.png" />
-	</p>
-
-	<p> Activity statistics chart<br />
-		<img src="screenshots/act-stats-Run-Quarter-elevation-av.png" alt="act-stats-Run-Quarter-elevation-av.png" width="800" height="400" />
-	</p>
+	<!-- <p> Activity statistics chart<br>
+		<img src="screenshots/act-stats-Run-Quarter-elevation-av.png" alt="act-stats-Run-Quarter-elevation-av.png" width="800" height="400">
+	</p> -->
 	<!--
 	 <h2>Start by choosing permission scope for the app</h2>
 	<ul>
 		<li>
-			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">Quickstart</a><br />&nbsp;
+			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">Quickstart</a><br>&nbsp;
 		</li>
 		<li>
 			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read">read public activities</a>
@@ -104,16 +140,31 @@
 		</li>
 	</ul>
 -->
+	<a href="#top">back to top</a>
 
-	<h2>Announcements</h2>
+	<h2 id="ListOfChanges">List of Changes</h2>
+	<!-- copied from README using https://markdowntohtml.com/ -->
 	<ul>
-		<!-- <li>Maybe you want to check out my daily updated <a href="https://entorb.net/COVID-19-coronavirus/" target="_blank">COVID-19 coronavirus disease spread analysis</a>, including a configureable <a href="https://entorb.net/COVID-19-coronavirus/" target="_blank">email alerter for German "Landkreise"</a></li> -->
-		<li>2023-06-08: stats update: 2697 unique and 669 returning users. </li>
-		<li>2020-07-24: I am very proud to announce, that today this tool passed the 1000-unique-users milestone! <br /> In order to thank you for your valuable feedback and for recommendation to your friends, I added a new feature: a "fancy" filterable activity table.</li>
+		<li>2023-06-12: fancy activity statistics charts</li>
+		<li>2023-06-08: usage stats: 2697 unique and 669 returning users. </li>
+		<li>2020-07-24: usage stats: this tool passed the 1000-unique-users milestone!</li>
+		<li>2020-07-21: fancy activity table</li>
+		<li>2020-01-06: published source code on <a href="https://github.com/entorb/strava/" target="_blank">GitHub</a></li>
+		<li>2019-06-08: top10 activities</li>
+		<li>2019-05-21: starred segments overview</li>
+		<li>2019-05-21: Excel import of activities</li>
+		<li>2019-05-16: limited caching to max 1000 activities per run and optimized performance, to prevent timeouts</li>
+		<li>2019-05-05: charts for activity statistics</li>
+		<li>2019-04-03: nearest city via an offline database of cities\'s geolocation, created from <a href="https://www.maxmind.com" target="_blank">MaxMind\'s GeoLite2 data</a></li>
+		<li>2019-03-20: search for activities</li>
+		<li>2019-01-12: activities sorted now ASC by date, statistics extended to record speed and elevation/distance</li>
+		<li>2019-01-03: gear name (bike/shoe) in Excel export</li>
+		<li>2018-12-05: activity statistics</li>
+		<li>2018-11-30: caching of activities per year, besides caching of all at once, to prevent timeout issues</li>
 	</ul>
+	<a href="#top">back to top</a>
 
-	<h2>User feedback</h2>
-	<a id="UserFeedback"></a>
+	<h2 id="UserFeedback">User feedback</h2>
 	<ul>
 		<li> 2022-12-06 Angela: Just wanted to say a huge thank you for your strava upload solution - it seems to be the only one out there. I'm super grateful to you for sharing this. </li>
 		<li>2022-11-23 Jacob: I cannot thank you enough for this exceptionally useful tool. I was able to upload about 10 years of running data from my Garmin Connect to my Strava account. (even more blessings at <a href="https://twitter.com/SLCPaladin/status/1595473306983231488" target="_blank">Twitter</a>)</li>
@@ -163,28 +214,26 @@
 		<li>2018-11-24 Volker: Vielen Dank dafür!</li>
 		<li><a href="https://support.strava.com/hc/en-us/community/posts/208838457/comments/360003041852" target="_blank">2018-11-17 John</a>: Excellent tool. Exactly what everyone is looking for in terms of Excel export. Thank you for your effort!</li>
 	</ul>
+	<a href="#top">back to top</a>
 
-	<h2>Disclaimer</h2>
-	<small>
-		<table width="100%" border="0">
-			<tr>
-				<th width="50%">Disclaimer</th>
-				<th width="50%">Haftungsausschluss</th>
-			</tr>
-			<tr>
-				<td width="50%"> This piece of software is tested extensivly and to the best of my knowledge, but I cannot garanty for error-free operation. Use at your own risk. Developed by Torben Menke, using <a href="https://developers.strava.com/" target="_blank">Strava's API</a>, requires a <a href="https://www.strava.com/" target="_blank">Strava account</a>. </td>
-				<td width="50%"> Diese Software ist ausgiebig und nach bestem Wissen und Gewissen getestet, trotzdem können Fehler nicht ausgeschlossen werden. Ich übernehme keinerlei Haftung für Fehler und garantiere nicht für die korrekte Funktionsweise. Entwicklet von Torben Menke, unter Verwendung der <a href="https://developers.strava.com/" target="_blank">Strava API</a>, erfordert einen <a href="https://www.strava.com/" target="_blank">Strava account</a>. </td>
-			</tr>
-			<tr>
-				<td width="50%" valign="top"> Security and Privacy<br /> I put quite some effort on implementing as much security and privacy issues: All communication is encrypted via HTTPS. The access to your data is not via your login credentials (my app does not see your password!). Instead an "access token" is generated and provided by Strava after you granting (temporary) permission to this app. For reasons of data reduction and data responsibility, these sensitive access tokens as well as your Strava content are not stored permanently but are deleted after 1 hour (at the next login by anyone) and the access token is de-registered at Strava (can be checked <a href="https://www.strava.com/settings/apps" target="_blank">here</a>). As a consequence, the user must grant access again via Strava before each use of my app. Furthermore, I have implemented a button for manually deletion of this data. One exception: I do not delete your coordinates to known locations automatically. In order to do so you can replace the list with an empty list, which leads to deletion of your locations. The access token, the temporary JSON data of your Strava activities and your known locations are outside the server's web folder and are therefore technically not accessible from the internet. The access tokens are only transmitted to communicate with Strava (and as little as possible and not via URL, but in the body) and encrypted via HTTPS. The communication between your browser and my website uses a non-critical custom session ID, which allows the web server to retrieve the appropriate access token from its temporary storage. Despite these efforts, I can not guarantee 100% security of your data, so use at your own risk. </td>
-				<td width="50%" valign="top"> Sicherheit und Privatsphäre<br /> Ich habe mir größte Mühe gegeben so viel Sicherheit und Privatsphäre so gut wie möglich zu respektieren und zu schützen: Sämtliche Kommunikation erfolgt verschlüsselt via HTTPS. Der Zugriff auf Eure Daten erfolgt nicht über die eure Logindaten (diese bekommt meine App nicht zu sehen!), sondern über einen „Accesstoken“, der von Strava nach (temporären) Freigabe von euch für diese App generiert wird. Aus Gründen der Datensparsamkeit und der damit einhergehenden Verantwortung werden diese sensiblen Accesstoken und ebenso wie zwischengespeicherte Strava Inhalte nicht permanent gespeichert, sondern schon nach 1 Stunde (beim nächsten Login durch irgendeinen Besucher) gelöscht (<a href="https://www.strava.com/settings/apps" target=" _blank">Hier</a> zu prüfen.). Als Konsequenz muss der Anwender vor jeder Verwendung meiner App erneut den Zugriff via Strava gewähren. Ferner habe ich einen Button zum manuellen Löschen dieser Daten implementiert. Einzige Ausnahme: Eure Koordinaten zu bekannten Orten lösche ich nicht automatisch, diese könnt ihr durch eine leere Liste ersetzen, dann werden diese gelöscht. Die Accesstoken, die temporären von Strava kommenden JSON Daten der Aktivitäten und eure bekannten Orte liegen außerhalb des Web-Ordners des Servers und sind damit technisch nicht aus dem Internet abrufbar. Die Accesstoken werden nur zur Kommunikation mit Strava (und so wenig wie möglich) über das Netz (und nicht via URL, sondern im Body) und verschlüsselt via HTTPS übertragen. In der Kommunikation zwischen eurem Browser und meiner Webseite wird eine unkritische selbstdefinierte Session-ID verwendet, über die sich der Webserver den passenden Accesstoken aus seinem temporären Speicherort holt. Trotz dieser Aufwände kann ich keine 100% Sicherheit der Daten garantieren, daher erfolgt die Benutzung auf eigenens Risiko. </td>
-			</tr>
-		</table>
-	</small>
-	<i>
-		<center>TL;DR: Use this software on your own risk.</center>
-	</i>
-	<hr />
+	<h2 id="Disclaimer">Disclaimer</h2>
+	<table style="width:50%; border: 0px; font-size: smaller">
+		<tr>
+			<th style="width:50%">Disclaimer</th>
+			<th style="width:50%">Haftungsausschluss</th>
+		</tr>
+		<tr>
+			<td style="width:50%"> This piece of software is tested extensivly and to the best of my knowledge, but I cannot garanty for error-free operation. Use at your own risk. Developed by Torben Menke, using <a href="https://developers.strava.com/" target="_blank">Strava's API</a>, requires a <a href="https://www.strava.com/" target="_blank">Strava account</a>. </td>
+			<td style="width:50%"> Diese Software ist ausgiebig und nach bestem Wissen und Gewissen getestet, trotzdem können Fehler nicht ausgeschlossen werden. Ich übernehme keinerlei Haftung für Fehler und garantiere nicht für die korrekte Funktionsweise. Entwicklet von Torben Menke, unter Verwendung der <a href="https://developers.strava.com/" target="_blank">Strava API</a>, erfordert einen <a href="https://www.strava.com/" target="_blank">Strava account</a>. </td>
+		</tr>
+		<tr>
+			<td style="width:50%; vertical-align:top"> Security and Privacy<br> I put quite some effort on implementing as much security and privacy issues: All communication is encrypted via HTTPS. The access to your data is not via your login credentials (my app does not see your password!). Instead an "access token" is generated and provided by Strava after you granting (temporary) permission to this app. For reasons of data reduction and data responsibility, these sensitive access tokens as well as your Strava content are not stored permanently but are deleted after 1 hour (at the next login by anyone) and the access token is de-registered at Strava (can be checked <a href="https://www.strava.com/settings/apps" target="_blank">here</a>). As a consequence, the user must grant access again via Strava before each use of my app. Furthermore, I have implemented a button for manually deletion of this data. One exception: I do not delete your coordinates to known locations automatically. In order to do so you can replace the list with an empty list, which leads to deletion of your locations. The access token, the temporary JSON data of your Strava activities and your known locations are outside the server's web folder and are therefore technically not accessible from the internet. The access tokens are only transmitted to communicate with Strava (and as little as possible and not via URL, but in the body) and encrypted via HTTPS. The communication between your browser and my website uses a non-critical custom session ID, which allows the web server to retrieve the appropriate access token from its temporary storage. Despite these efforts, I can not guarantee 100% security of your data, so use at your own risk. </td>
+			<td style="width:50%; vertical-align:top"> Sicherheit und Privatsphäre<br> Ich habe mir größte Mühe gegeben so viel Sicherheit und Privatsphäre so gut wie möglich zu respektieren und zu schützen: Sämtliche Kommunikation erfolgt verschlüsselt via HTTPS. Der Zugriff auf Eure Daten erfolgt nicht über die eure Logindaten (diese bekommt meine App nicht zu sehen!), sondern über einen „Accesstoken“, der von Strava nach (temporären) Freigabe von euch für diese App generiert wird. Aus Gründen der Datensparsamkeit und der damit einhergehenden Verantwortung werden diese sensiblen Accesstoken und ebenso wie zwischengespeicherte Strava Inhalte nicht permanent gespeichert, sondern schon nach 1 Stunde (beim nächsten Login durch irgendeinen Besucher) gelöscht (<a href="https://www.strava.com/settings/apps" target=" _blank">Hier</a> zu prüfen.). Als Konsequenz muss der Anwender vor jeder Verwendung meiner App erneut den Zugriff via Strava gewähren. Ferner habe ich einen Button zum manuellen Löschen dieser Daten implementiert. Einzige Ausnahme: Eure Koordinaten zu bekannten Orten lösche ich nicht automatisch, diese könnt ihr durch eine leere Liste ersetzen, dann werden diese gelöscht. Die Accesstoken, die temporären von Strava kommenden JSON Daten der Aktivitäten und eure bekannten Orte liegen außerhalb des Web-Ordners des Servers und sind damit technisch nicht aus dem Internet abrufbar. Die Accesstoken werden nur zur Kommunikation mit Strava (und so wenig wie möglich) über das Netz (und nicht via URL, sondern im Body) und verschlüsselt via HTTPS übertragen. In der Kommunikation zwischen eurem Browser und meiner Webseite wird eine unkritische selbstdefinierte Session-ID verwendet, über die sich der Webserver den passenden Accesstoken aus seinem temporären Speicherort holt. Trotz dieser Aufwände kann ich keine 100% Sicherheit der Daten garantieren, daher erfolgt die Benutzung auf eigenens Risiko. </td>
+		</tr>
+	</table>
+	<i style="text-align:center">TL;DR: Use this software on your own risk. </i>
+	<a href="#top">back to top</a>
+	<hr>
 	<a href="/">Home</a> &nbsp; <a href="/contact.php?origin=strava">Contact me</a> &nbsp; <a href="/impressum.php">Website Disclaimer</a>
 </body>
 
