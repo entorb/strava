@@ -4,12 +4,14 @@
 
 // global variables
 const html_div_chart = document.getElementById("div_chart");
+const html_div_chart_cnt = document.getElementById("div_chart_act_count");
 const html_sel_date_agg = document.getElementById("sel_date_agg");
 const html_sel_type = document.getElementById("sel_type");
 const html_sel_measure = document.getElementById("sel_measure");
 
 // eslint-disable-next-line prefer-const
 let data_all = [];
+const data_all_count_on_gaps = {};
 
 // array of promises for async fetching
 const promises = [];
@@ -48,14 +50,6 @@ function chart_create(html_div_chart) {
     // title: { text: 'Items per Minute' },
     tooltip: {},
     legend: { show: false },
-    // grid: {
-    //   // define margins
-    //   containLabel: false,
-    //   left: 50,
-    //   bottom: 20,
-    //   top: 30,
-    //   right: 150,
-    // },
     grid: {
       top: '12%',
       left: '1%',
@@ -76,6 +70,7 @@ function chart_create(html_div_chart) {
 }
 
 const chart = chart_create(html_div_chart);
+const chart_cnt = chart_create(html_div_chart_cnt);
 
 
 function chart_update(data_all) {
@@ -136,12 +131,104 @@ function chart_update(data_all) {
 }
 
 
+function chart_cnt_update(data_all_count_on_gaps) {
+  const date_agg = html_sel_date_agg.value;
+  const type = html_sel_type.value;
+  const measure = "count";
+
+  const act_types = Object.keys(data_all[date_agg])
+  series = [];
+  for (const type of act_types) {
+    series.push({
+      type: "bar",
+      stack: "x",
+      data: data_all_count_on_gaps[date_agg][type],
+      name: type,
+    },
+    )
+  }
+  chart_cnt.setOption({
+    xAxis: {
+      type: "category",
+      data: data_all_count_on_gaps[date_agg]["date"]
+    },
+    yAxis: {},
+    series: series,
+    title: {
+      text: "Strava Stats: All Activity Count",
+      left: 'center',
+    },
+    legend: {
+      show: true,
+      orient: 'vertical',
+      right: 10,
+      top: 'center',
+    },
+  });
+}
+
+function calc_data_for_act_count(data_all_count_on_gaps) {
+
+  const starts_and_ends = {};
+  for (const date_agg of ["month", "quarter", "year"]) {
+    // console.log(date_agg);
+    const act_types = Object.keys(data_all[date_agg])
+    starts_and_ends[date_agg] = [];
+    data_all_count_on_gaps[date_agg] = {};
+
+    for (const type of act_types) {
+      const myArray = data_all[date_agg][type]["date"]
+      const start = myArray[0];
+      const end = myArray[myArray.length - 1];
+      // console.log(type);
+      // add if not in
+      starts_and_ends[date_agg].indexOf(start) === -1 ? starts_and_ends[date_agg].unshift(start) : 1;
+      starts_and_ends[date_agg].indexOf(end) === -1 ? starts_and_ends[date_agg].push(end) : 1;
+
+    }
+    starts_and_ends[date_agg].sort();
+    const start = starts_and_ends[date_agg][0];
+    const end = starts_and_ends[date_agg][starts_and_ends[date_agg].length - 1];
+    delete starts_and_ends;
+
+    // now add first an last to data
+    for (const type of act_types) {
+      data_all_count_on_gaps[date_agg][type] = []
+      const data_x = [...data_all[date_agg][type]["date"]];
+      const data_y = [...data_all[date_agg][type]["count"]];
+      if (data_x[0] != start) {
+        data_x.unshift(start);
+        data_y.unshift(null);
+      }
+      if (data_x[data_y.length - 1] != end) {
+        data_x.push(end);
+        data_y.push(null);
+      }
+
+      if (date_agg === "month") {
+        addMissingMonthsInPlace(data_x, data_y);
+      } else if (date_agg === "year") {
+        addMissingYearsInPlace(data_x, data_y);
+      } else if (date_agg === "quarter") {
+        addMissingQuartersInPlace(data_x, data_y);
+      }
+      if (!("date" in data_all_count_on_gaps[date_agg])) {
+        data_all_count_on_gaps[date_agg]["date"] = data_x;
+      }
+      data_all_count_on_gaps[date_agg][type] = data_y;
+    }
+  }
+}
+
+
 // Wait for all async promises to be done (all data is fetched)
 Promise.all(promises).then(function () {
   console.log("All data fetched");
   chart_update(data_all);
   populate_select_type();
   // console.log(data_echarts);
+  calc_data_for_act_count(data_all_count_on_gaps);
+  chart_cnt_update(data_all_count_on_gaps);
 });
 
 
@@ -260,4 +347,5 @@ function populate_select_type() {
 // eslint-disable-next-line no-unused-vars
 function action_chart_update() {
   chart_update(data_all);
+  chart_cnt_update(data_all_count_on_gaps);
 }
