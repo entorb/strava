@@ -11,7 +11,7 @@ const html_sel_measure = document.getElementById("sel_measure");
 
 // eslint-disable-next-line prefer-const
 let data_all = [];
-const data_all_count_on_gaps = {};
+const data_all_comparision = {};
 
 // array of promises for async fetching
 const promises = [];
@@ -131,18 +131,20 @@ function chart_update(data_all) {
 }
 
 
-function chart_cnt_update(data_all_count_on_gaps) {
+function chart_cnt_update(data_all_comparision) {
   const date_agg = html_sel_date_agg.value;
-  const type = html_sel_type.value;
-  const measure = "count";
+  let measure = html_sel_measure.value;
 
   const act_types = Object.keys(data_all[date_agg])
   series = [];
   for (const type of act_types) {
+    if (!(measure in data_all_comparision[date_agg][type])) {
+      measure = "count";
+    }
     series.push({
       type: "bar",
       stack: "x",
-      data: data_all_count_on_gaps[date_agg][type],
+      data: data_all_comparision[date_agg][type][measure],
       name: type,
     },
     )
@@ -150,12 +152,12 @@ function chart_cnt_update(data_all_count_on_gaps) {
   chart_cnt.setOption({
     xAxis: {
       type: "category",
-      data: data_all_count_on_gaps[date_agg]["date"]
+      data: data_all_comparision[date_agg]["date"]
     },
     yAxis: {},
     series: series,
     title: {
-      text: "Strava Stats: All Activity Count",
+      text: "Strava Stats: All Activity " + capitalize_words(measure),
       left: 'center',
     },
     legend: {
@@ -167,15 +169,14 @@ function chart_cnt_update(data_all_count_on_gaps) {
   });
 }
 
-function calc_data_for_act_count(data_all_count_on_gaps) {
+function calc_data_for_act_comparison(data_all_comparision) {
 
   const starts_and_ends = {};
   for (const date_agg of ["month", "quarter", "year"]) {
-    // console.log(date_agg);
+    // extract min start and max end date
     const act_types = Object.keys(data_all[date_agg])
     starts_and_ends[date_agg] = [];
-    data_all_count_on_gaps[date_agg] = {};
-
+    data_all_comparision[date_agg] = {};
     for (const type of act_types) {
       const myArray = data_all[date_agg][type]["date"]
       const start = myArray[0];
@@ -193,29 +194,39 @@ function calc_data_for_act_count(data_all_count_on_gaps) {
 
     // now add first an last to data
     for (const type of act_types) {
-      data_all_count_on_gaps[date_agg][type] = []
+      data_all_comparision[date_agg][type] = {}
       const data_x = [...data_all[date_agg][type]["date"]];
       const data_y = [...data_all[date_agg][type]["count"]];
+      const data_y2 = [...data_all[date_agg][type]["hours(sum)"]];
+      const data_y3 = [...data_all[date_agg][type]["kilometers(sum)"]];
       if (data_x[0] != start) {
         data_x.unshift(start);
         data_y.unshift(null);
+        data_y2.unshift(null);
+        data_y3.unshift(null);
       }
-      if (data_x[data_y.length - 1] != end) {
+      if (data_x[data_x.length - 1] != end) {
         data_x.push(end);
         data_y.push(null);
+        data_y2.push(null);
+        data_y3.push(null);
       }
 
       if (date_agg === "month") {
-        addMissingMonthsInPlace(data_x, data_y);
+        addMissingMonthsInPlace(data_x, data_y, data_y2, data_y3);
       } else if (date_agg === "year") {
-        addMissingYearsInPlace(data_x, data_y);
+        addMissingYearsInPlace(data_x, data_y, data_y2, data_y3);
       } else if (date_agg === "quarter") {
-        addMissingQuartersInPlace(data_x, data_y);
+        addMissingQuartersInPlace(data_x, data_y, data_y2, data_y3);
       }
-      if (!("date" in data_all_count_on_gaps[date_agg])) {
-        data_all_count_on_gaps[date_agg]["date"] = data_x;
+
+      // store data to global array
+      if (!("date" in data_all_comparision[date_agg])) {
+        data_all_comparision[date_agg]["date"] = data_x;
       }
-      data_all_count_on_gaps[date_agg][type] = data_y;
+      data_all_comparision[date_agg][type]["count"] = data_y;
+      data_all_comparision[date_agg][type]["hours(sum)"] = data_y2;
+      data_all_comparision[date_agg][type]["kilometers(sum)"] = data_y3;
     }
   }
 }
@@ -227,8 +238,8 @@ Promise.all(promises).then(function () {
   chart_update(data_all);
   populate_select_type();
   // console.log(data_echarts);
-  calc_data_for_act_count(data_all_count_on_gaps);
-  chart_cnt_update(data_all_count_on_gaps);
+  calc_data_for_act_comparison(data_all_comparision);
+  chart_cnt_update(data_all_comparision);
 });
 
 
@@ -245,7 +256,7 @@ function capitalize_words(str, separator) {
 //
 // addMissing<Months/Quarters/Years
 //
-function addMissingYearsInPlace(data_echarts_x, data_echarts_y) {
+function addMissingYearsInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
   const minYear = data_echarts_x[0];
   const maxYear = data_echarts_x[data_echarts_x.length - 1];
 
@@ -259,6 +270,9 @@ function addMissingYearsInPlace(data_echarts_x, data_echarts_y) {
     if (data_echarts_x[currentIndex] !== dateString) {
       data_echarts_x.splice(currentIndex, 0, dateString);
       data_echarts_y.splice(currentIndex, 0, null);
+      if (data_echarts_y2) data_echarts_y2.splice(currentIndex, 0, null);
+      if (data_echarts_y3) data_echarts_y3.splice(currentIndex, 0, null);
+      if (data_echarts_y4) data_echarts_y4.splice(currentIndex, 0, null);
     }
 
     currentIndex++;
@@ -266,7 +280,7 @@ function addMissingYearsInPlace(data_echarts_x, data_echarts_y) {
   }
 }
 
-function addMissingMonthsInPlace(data_echarts_x, data_echarts_y) {
+function addMissingMonthsInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
   const minMonth = data_echarts_x[0];
   const maxMonth = data_echarts_x[data_echarts_x.length - 1];
 
@@ -282,6 +296,10 @@ function addMissingMonthsInPlace(data_echarts_x, data_echarts_y) {
     if (data_echarts_x[currentIndex] !== dateString) {
       data_echarts_x.splice(currentIndex, 0, dateString);
       data_echarts_y.splice(currentIndex, 0, null);
+
+      if (data_echarts_y2) data_echarts_y2.splice(currentIndex, 0, null);
+      if (data_echarts_y3) data_echarts_y3.splice(currentIndex, 0, null);
+      if (data_echarts_y4) data_echarts_y4.splice(currentIndex, 0, null);
     }
 
     currentIndex++;
@@ -289,7 +307,7 @@ function addMissingMonthsInPlace(data_echarts_x, data_echarts_y) {
   }
 }
 
-function addMissingQuartersInPlace(data_echarts_x, data_echarts_y) {
+function addMissingQuartersInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
   const minQuarter = data_echarts_x[0];
   const maxQuarter = data_echarts_x[data_echarts_x.length - 1];
 
@@ -300,6 +318,9 @@ function addMissingQuartersInPlace(data_echarts_x, data_echarts_y) {
     if (data_echarts_x[currentIndex] !== currentQuarter) {
       data_echarts_x.splice(currentIndex, 0, currentQuarter);
       data_echarts_y.splice(currentIndex, 0, null);
+      if (data_echarts_y2) data_echarts_y2.splice(currentIndex, 0, null);
+      if (data_echarts_y3) data_echarts_y3.splice(currentIndex, 0, null);
+      if (data_echarts_y4) data_echarts_y4.splice(currentIndex, 0, null);
     }
     else {
       // console.log(currentQuarter);
@@ -347,5 +368,5 @@ function populate_select_type() {
 // eslint-disable-next-line no-unused-vars
 function action_chart_update() {
   chart_update(data_all);
-  chart_cnt_update(data_all_count_on_gaps);
+  chart_cnt_update(data_all_comparision);
 }
