@@ -69,7 +69,7 @@ if ( $res->code() == 200 ) {
   my $cont = do { local $/ = undef; <$fhIn> };
   close $fhIn;
   $cont =~ s/^.*<body>(.*)<\/body>.*/$1/s;
-  $cont =~ s/session *= *"123"/session = "$s{'session'}"/s;
+  $cont =~ s/SessionIDPlaceholder/$s{'session'}/s;
   say $cont;
 } ## end if ( $res->code() == 200)
 else {
