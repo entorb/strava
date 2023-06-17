@@ -194,6 +194,7 @@ if ( $yearToDL ne '' ) {
   # DL Mode All
   #
   print "<div id=\"div_log_output\"><ul>\n";
+  TMsStrava::clearDownload();
   if ( $yearToDL eq 'all' ) {
 
     # if page = 1 -> delete all cache files
