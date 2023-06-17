@@ -274,7 +274,7 @@ sub getContfromURL {
   my $cont = $res->decoded_content;    # content, decoded if it was zipped
   $cont = decode( 'UTF-8', $cont )
       ; # for some reason this is required and not included in $res->decoded_content
-  logIt("response content:\n$cont");
+        # logIt("response content:\n$cont");
   return $cont;
 } ## end sub getContfromURL
 
