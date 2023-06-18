@@ -20,9 +20,13 @@ const promises = [];
 // Data fetching
 //
 function fetch_data(session, date_agg) {
-  const url = "https://entorb.net/strava/download/" + session + "/activityStats2_" + date_agg + ".json";
-  return $.getJSON(url, function (data) {
-  })
+  const url =
+    "https://entorb.net/strava/download/" +
+    session +
+    "/activityStats2_" +
+    date_agg +
+    ".json";
+  return $.getJSON(url, function (data) {})
     .done(function (data) {
       console.log("done data download " + date_agg);
       data_all[date_agg] = data;
@@ -37,8 +41,6 @@ promises.push(fetch_data(session, "month"));
 promises.push(fetch_data(session, "quarter"));
 promises.push(fetch_data(session, "year"));
 
-
-
 //
 // Chart functions
 //
@@ -51,27 +53,28 @@ function chart_create(html_div_chart) {
     tooltip: {},
     legend: { show: false },
     grid: {
-      top: '12%',
-      left: '1%',
-      right: '10%',
-      containLabel: true
-    }, xAxis: { type: "time", }, // will be overwritten later by category
-    yAxis: { type: "value", },
+      top: "12%",
+      left: "1%",
+      right: "10%",
+      containLabel: true,
+    },
+    xAxis: { type: "time" }, // will be overwritten later by category
+    yAxis: { type: "value" },
     dataZoom: [
       {
-        type: 'slider',
+        type: "slider",
         show: true,
         start: 50,
         end: 100,
-        handleSize: 8
-      },],
+        handleSize: 8,
+      },
+    ],
   });
   return chart;
 }
 
 const chart = chart_create(html_div_chart);
 const chart_cnt = chart_create(html_div_chart_cnt);
-
 
 function chart_update(data_all) {
   const date_agg = html_sel_date_agg.value;
@@ -82,10 +85,12 @@ function chart_update(data_all) {
   const data_echarts_y = [...data_all[date_agg][type][measure]];
 
   // filter out null values
-  const data_echarts_y_non_null = data_echarts_y.filter(value => value !== null);
+  const data_echarts_y_non_null = data_echarts_y.filter(
+    (value) => value !== null
+  );
   const y_min = Math.min(...data_echarts_y_non_null);
   const y_max = Math.max(...data_echarts_y_non_null);
-  const y_delta = (y_max > y_min) ? y_max - y_min : 1;
+  const y_delta = y_max > y_min ? y_max - y_min : 1;
 
   if (date_agg === "month") {
     addMissingMonthsInPlace(data_echarts_x, data_echarts_y);
@@ -96,17 +101,24 @@ function chart_update(data_all) {
   }
   // console.log(data_echarts_x[0]);
   // console.log(data_echarts_y[0]);
-  const title = capitalize_words("Strava Stats: " + type + " " + date_agg + " " + measure);
+  const title = capitalize_words(
+    "Strava Stats: " + type + " " + date_agg + " " + measure
+  );
 
   chart.setOption({
-    xAxis: { type: "category", data: data_echarts_x, },
-    yAxis: { min: ((y_min - 0.1 * y_delta) > 0) ? Math.floor(y_min - 0.1 * y_delta) : Math.floor(y_min) },
+    xAxis: { type: "category", data: data_echarts_x },
+    yAxis: {
+      min:
+        y_min - 0.1 * y_delta > 0
+          ? Math.floor(y_min - 0.1 * y_delta)
+          : Math.floor(y_min),
+    },
     series: [
       {
         type: "bar",
         name: measure,
         data: data_echarts_y,
-        barWidth: '100%',
+        barWidth: "100%",
         // smooth: true,
         // symbolSize: 10,
         // silent: true,
@@ -114,28 +126,29 @@ function chart_update(data_all) {
         markLine: {
           show: true,
           animation: false,
-          data: [{
-            name: 'average',
-            type: 'average'
-          }],
-        }
+          data: [
+            {
+              name: "average",
+              type: "average",
+            },
+          ],
+        },
       },
     ],
     title: {
       text: title,
-      left: 'center',
+      left: "center",
       // subtext: "by Torben https://entorb.net/strava/",
       // sublink: "https://entorb.net/strava/",
     },
   });
 }
 
-
 function chart_cnt_update(data_all_comparision) {
   const date_agg = html_sel_date_agg.value;
   let measure = html_sel_measure.value;
 
-  const act_types = Object.keys(data_all[date_agg])
+  const act_types = Object.keys(data_all[date_agg]);
   series = [];
   for (const type of act_types) {
     if (!(measure in data_all_comparision[date_agg][type])) {
@@ -146,55 +159,56 @@ function chart_cnt_update(data_all_comparision) {
       stack: "x",
       data: data_all_comparision[date_agg][type][measure],
       name: type,
-    },
-    )
+    });
   }
   chart_cnt.setOption({
     xAxis: {
       type: "category",
-      data: data_all_comparision[date_agg]["date"]
+      data: data_all_comparision[date_agg]["date"],
     },
     yAxis: {},
     series: series,
     title: {
       text: "Strava Stats: All Activity " + capitalize_words(measure),
-      left: 'center',
+      left: "center",
     },
     legend: {
       show: true,
-      orient: 'vertical',
+      orient: "vertical",
       right: 10,
-      top: 'center',
+      top: "center",
     },
   });
 }
 
 function calc_data_for_act_comparison(data_all_comparision) {
-
   const starts_and_ends = {};
   for (const date_agg of ["month", "quarter", "year"]) {
     // extract min start and max end date
-    const act_types = Object.keys(data_all[date_agg])
+    const act_types = Object.keys(data_all[date_agg]);
     starts_and_ends[date_agg] = [];
     data_all_comparision[date_agg] = {};
     for (const type of act_types) {
-      const myArray = data_all[date_agg][type]["date"]
+      const myArray = data_all[date_agg][type]["date"];
       const start = myArray[0];
       const end = myArray[myArray.length - 1];
       // console.log(type);
       // add if not in
-      starts_and_ends[date_agg].indexOf(start) === -1 ? starts_and_ends[date_agg].unshift(start) : 1;
-      starts_and_ends[date_agg].indexOf(end) === -1 ? starts_and_ends[date_agg].push(end) : 1;
-
+      starts_and_ends[date_agg].indexOf(start) === -1
+        ? starts_and_ends[date_agg].unshift(start)
+        : 1;
+      starts_and_ends[date_agg].indexOf(end) === -1
+        ? starts_and_ends[date_agg].push(end)
+        : 1;
     }
     starts_and_ends[date_agg].sort();
     const start = starts_and_ends[date_agg][0];
     const end = starts_and_ends[date_agg][starts_and_ends[date_agg].length - 1];
-    delete starts_and_ends;
+    // delete starts_and_ends;
 
     // now add first an last to data
     for (const type of act_types) {
-      data_all_comparision[date_agg][type] = {}
+      data_all_comparision[date_agg][type] = {};
       const data_x = [...data_all[date_agg][type]["date"]];
       const data_y = [...data_all[date_agg][type]["count"]];
       const data_y2 = [...data_all[date_agg][type]["hours(sum)"]];
@@ -231,7 +245,6 @@ function calc_data_for_act_comparison(data_all_comparision) {
   }
 }
 
-
 // Wait for all async promises to be done (all data is fetched)
 Promise.all(promises).then(function () {
   console.log("All data fetched");
@@ -242,21 +255,27 @@ Promise.all(promises).then(function () {
   chart_cnt_update(data_all_comparision);
 });
 
-
-
 //
 // Small helpers
 //
 // Formats value "Something_Is_HERE" to "Something Is Here"
 function capitalize_words(str, separator) {
   const allLowerCaseValue = str.split(separator).join(" ").toLowerCase();
-  return allLowerCaseValue.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+  return allLowerCaseValue.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
 }
 
 //
 // addMissing<Months/Quarters/Years
 //
-function addMissingYearsInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
+function addMissingYearsInPlace(
+  data_echarts_x,
+  data_echarts_y,
+  data_echarts_y2 = [],
+  data_echarts_y3 = [],
+  data_echarts_y4 = []
+) {
   const minYear = data_echarts_x[0];
   const maxYear = data_echarts_x[data_echarts_x.length - 1];
 
@@ -280,7 +299,13 @@ function addMissingYearsInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 
   }
 }
 
-function addMissingMonthsInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
+function addMissingMonthsInPlace(
+  data_echarts_x,
+  data_echarts_y,
+  data_echarts_y2 = [],
+  data_echarts_y3 = [],
+  data_echarts_y4 = []
+) {
   const minMonth = data_echarts_x[0];
   const maxMonth = data_echarts_x[data_echarts_x.length - 1];
 
@@ -290,7 +315,7 @@ function addMissingMonthsInPlace(data_echarts_x, data_echarts_y, data_echarts_y2
   while (currentMonth <= new Date(maxMonth)) {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth() + 1; // Adding 1 because getMonth() returns zero-based month index
-    const dateString = `${year}-${month.toString().padStart(2, '0')}`;
+    const dateString = `${year}-${month.toString().padStart(2, "0")}`;
     // 2023-01
 
     if (data_echarts_x[currentIndex] !== dateString) {
@@ -307,7 +332,13 @@ function addMissingMonthsInPlace(data_echarts_x, data_echarts_y, data_echarts_y2
   }
 }
 
-function addMissingQuartersInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
+function addMissingQuartersInPlace(
+  data_echarts_x,
+  data_echarts_y,
+  data_echarts_y2 = [],
+  data_echarts_y3 = [],
+  data_echarts_y4 = []
+) {
   const minQuarter = data_echarts_x[0];
   const maxQuarter = data_echarts_x[data_echarts_x.length - 1];
 
@@ -321,8 +352,7 @@ function addMissingQuartersInPlace(data_echarts_x, data_echarts_y, data_echarts_
       if (data_echarts_y2) data_echarts_y2.splice(currentIndex, 0, null);
       if (data_echarts_y3) data_echarts_y3.splice(currentIndex, 0, null);
       if (data_echarts_y4) data_echarts_y4.splice(currentIndex, 0, null);
-    }
-    else {
+    } else {
       // console.log(currentQuarter);
     }
     currentIndex++;
@@ -331,8 +361,8 @@ function addMissingQuartersInPlace(data_echarts_x, data_echarts_y, data_echarts_
 }
 
 function getNextQuarter(quarter) {
-  const [year, q] = quarter.split('-Q');
-  const nextQuarter = parseInt(q) % 4 + 1;
+  const [year, q] = quarter.split("-Q");
+  const nextQuarter = (parseInt(q) % 4) + 1;
   const nextYear = nextQuarter === 1 ? parseInt(year) + 1 : year;
   return `${nextYear}-Q${nextQuarter}`;
 }
@@ -356,11 +386,12 @@ function populate_select_type() {
     el.textContent = opt;
     el.value = opt;
     select.appendChild(el);
-    if (opt === "Run") { i_of_Run = i }
+    if (opt === "Run") {
+      i_of_Run = i;
+    }
   }
   select.selectedIndex = i_of_Run;
 }
-
 
 //
 // GUI actions
