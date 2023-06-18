@@ -33,11 +33,11 @@
 		<li>
 			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write"><b>Quickstart</b></a>
 		</li>
-		<li><a href="#UserFeatures">User Features</a></li>
-		<li><a href="#UserFeedback">User Feedback</a></li>
-		<li><a href="#TechFeatures">Technical Features</a></li>
+		<li><a href="#UserFeatures">Features</a></li>
 		<li><a href="#Screenshots">Screenshots</a></li>
+		<li><a href="#TechFeatures">Technical Features</a></li>
 		<li><a href="#ListOfChanges">List of Changes</a></li>
+		<li><a href="#UserFeedback">Feedback</a></li>
 	</ul>
 	<!--
 <form action="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write" method="post">
@@ -83,24 +83,6 @@
 	</ul>
 	<a href="#top">back to top</a>
 
-	<h2 id="TechFeatures">Technical Features</h2>
-	<!-- copied from README using https://markdowntohtml.com/ -->
-	<ul>
-		<li>OpenSource: source code available at <a href="https://github.com/entorb/strava">GitHub</a></li>
-		<li>Proudly made without cookies, database and of course free from advertisement</li>
-		<li>Plain and simple layout</li>
-		<li>Coded mainly in <a href="/wickie/Perl">Perl</a> and <a href="/wickie/Gnuplot">Gnuplot</a>, recently extended by <a href="/wickie/Python">Python</a> <a href="/wickie/Pandas">Pandas</a> and JavaScript <a href="https://tabulator.info/">Tabulator</a> and <a href="https://echarts.apache.org/">ECharts</a></li>
-		<li>High level of security and privacy<ul>
-				<li>HTTPS encrypted communication</li>
-				<li>no data is kept in a database</li>
-				<li>a temporary access token to your Strava profile is used and deleted after logout</li>
-				<li>your temporarily cached data is deleted upon logout</li>
-				<li>no third party APIs used (no Google Analytics, Maps, etc)</li>
-			</ul>
-		</li>
-	</ul>
-	<a href="#top">back to top</a>
-
 	<h2 id="Screenshots">Screenshots</h2>
 
 	<p> Activity statistics V2<br>
@@ -140,6 +122,24 @@
 		</li>
 	</ul>
 -->
+	<a href="#top">back to top</a>
+
+	<h2 id="TechFeatures">Technical Features</h2>
+	<!-- copied from README using https://markdowntohtml.com/ -->
+	<ul>
+		<li>OpenSource: source code available at <a href="https://github.com/entorb/strava">GitHub</a></li>
+		<li>Proudly made without cookies, database and of course free from advertisement</li>
+		<li>Plain and simple layout</li>
+		<li>Coded mainly in <a href="/wickie/Perl">Perl</a> and <a href="/wickie/Gnuplot">Gnuplot</a>, recently extended by <a href="/wickie/Python">Python</a> <a href="/wickie/Pandas">Pandas</a> and JavaScript <a href="https://tabulator.info/">Tabulator</a> and <a href="https://echarts.apache.org/">ECharts</a></li>
+		<li>High level of security and privacy<ul>
+				<li>HTTPS encrypted communication</li>
+				<li>no data is kept in a database</li>
+				<li>a temporary access token to your Strava profile is used and deleted after logout</li>
+				<li>your temporarily cached data is deleted upon logout</li>
+				<li>no third party APIs used (no Google Analytics, Maps, etc)</li>
+			</ul>
+		</li>
+	</ul>
 	<a href="#top">back to top</a>
 
 	<h2 id="ListOfChanges">List of Changes</h2>
@@ -223,15 +223,16 @@
 			<th style="width:50%">Haftungsausschluss</th>
 		</tr>
 		<tr>
-			<td style="width:50%"> This piece of software is tested extensivly and to the best of my knowledge, but I cannot garanty for error-free operation. Use at your own risk. Developed by Torben Menke, using <a href="https://developers.strava.com/" target="_blank">Strava's API</a>, requires a <a href="https://www.strava.com/" target="_blank">Strava account</a>. </td>
-			<td style="width:50%"> Diese Software ist ausgiebig und nach bestem Wissen und Gewissen getestet, trotzdem können Fehler nicht ausgeschlossen werden. Ich übernehme keinerlei Haftung für Fehler und garantiere nicht für die korrekte Funktionsweise. Entwicklet von Torben Menke, unter Verwendung der <a href="https://developers.strava.com/" target="_blank">Strava API</a>, erfordert einen <a href="https://www.strava.com/" target="_blank">Strava account</a>. </td>
+			<td style="width:50%"> This piece of software is tested extensively and to the best of my knowledge, but I cannot garanty for error-free operation. Use at your own risk. Developed by Torben Menke, using <a href="https://developers.strava.com/" target="_blank">Strava's API</a>, requires a <a href="https://www.strava.com/" target="_blank">Strava account</a>. </td>
+			<td style="width:50%"> Diese Software ist ausgiebig und nach bestem Wissen und Gewissen getestet, trotzdem können Fehler nicht ausgeschlossen werden. Ich übernehme keinerlei Haftung für Fehler und garantiere nicht für die korrekte Funktionsweise. Entwickelt von Torben Menke, unter Verwendung der <a href="https://developers.strava.com/" target="_blank">Strava API</a>, erfordert einen <a href="https://www.strava.com/" target="_blank">Strava Account</a>. </td>
 		</tr>
 		<tr>
-			<td style="width:50%; vertical-align:top"> Security and Privacy<br> I put quite some effort on implementing as much security and privacy issues: All communication is encrypted via HTTPS. The access to your data is not via your login credentials (my app does not see your password!). Instead an "access token" is generated and provided by Strava after you granting (temporary) permission to this app. For reasons of data reduction and data responsibility, these sensitive access tokens as well as your Strava content are not stored permanently but are deleted after 1 hour (at the next login by anyone) and the access token is de-registered at Strava (can be checked <a href="https://www.strava.com/settings/apps" target="_blank">here</a>). As a consequence, the user must grant access again via Strava before each use of my app. Furthermore, I have implemented a button for manually deletion of this data. One exception: I do not delete your coordinates to known locations automatically. In order to do so you can replace the list with an empty list, which leads to deletion of your locations. The access token, the temporary JSON data of your Strava activities and your known locations are outside the server's web folder and are therefore technically not accessible from the internet. The access tokens are only transmitted to communicate with Strava (and as little as possible and not via URL, but in the body) and encrypted via HTTPS. The communication between your browser and my website uses a non-critical custom session ID, which allows the web server to retrieve the appropriate access token from its temporary storage. Despite these efforts, I can not guarantee 100% security of your data, so use at your own risk. </td>
-			<td style="width:50%; vertical-align:top"> Sicherheit und Privatsphäre<br> Ich habe mir größte Mühe gegeben so viel Sicherheit und Privatsphäre so gut wie möglich zu respektieren und zu schützen: Sämtliche Kommunikation erfolgt verschlüsselt via HTTPS. Der Zugriff auf Eure Daten erfolgt nicht über die eure Logindaten (diese bekommt meine App nicht zu sehen!), sondern über einen „Accesstoken“, der von Strava nach (temporären) Freigabe von euch für diese App generiert wird. Aus Gründen der Datensparsamkeit und der damit einhergehenden Verantwortung werden diese sensiblen Accesstoken und ebenso wie zwischengespeicherte Strava Inhalte nicht permanent gespeichert, sondern schon nach 1 Stunde (beim nächsten Login durch irgendeinen Besucher) gelöscht (<a href="https://www.strava.com/settings/apps" target=" _blank">Hier</a> zu prüfen.). Als Konsequenz muss der Anwender vor jeder Verwendung meiner App erneut den Zugriff via Strava gewähren. Ferner habe ich einen Button zum manuellen Löschen dieser Daten implementiert. Einzige Ausnahme: Eure Koordinaten zu bekannten Orten lösche ich nicht automatisch, diese könnt ihr durch eine leere Liste ersetzen, dann werden diese gelöscht. Die Accesstoken, die temporären von Strava kommenden JSON Daten der Aktivitäten und eure bekannten Orte liegen außerhalb des Web-Ordners des Servers und sind damit technisch nicht aus dem Internet abrufbar. Die Accesstoken werden nur zur Kommunikation mit Strava (und so wenig wie möglich) über das Netz (und nicht via URL, sondern im Body) und verschlüsselt via HTTPS übertragen. In der Kommunikation zwischen eurem Browser und meiner Webseite wird eine unkritische selbstdefinierte Session-ID verwendet, über die sich der Webserver den passenden Accesstoken aus seinem temporären Speicherort holt. Trotz dieser Aufwände kann ich keine 100% Sicherheit der Daten garantieren, daher erfolgt die Benutzung auf eigenens Risiko. </td>
+			<td style="width:50%; vertical-align:top"> Security and Privacy<br> I put quite some effort on implementing as much security and privacy issues: All communication is encrypted via HTTPS. The access to your data is not via your login credentials (my app does not see your password!). Instead, an "access token" is generated and provided by Strava after you granting (temporary) permission to this app. For reasons of data reduction and data responsibility, these sensitive access tokens as well as your Strava content are not stored permanently but are deleted after 1 hour (at the next login by anyone) and the access token is de-registered at Strava (can be checked <a href="https://www.strava.com/settings/apps" target="_blank">here</a>). As a consequence, the user must grant access again via Strava before each use of my app. Furthermore, I have implemented a button for manually deletion of this data. One exception: I do not delete your coordinates to known locations automatically. In order to do so you can replace the list with an empty list, which leads to deletion of your locations. The access token, the temporary JSON data of your Strava activities and your known locations are outside the server's web folder and are therefore technically not accessible from the internet. The access tokens are only transmitted to communicate with Strava (and as little as possible and not via URL, but in the body) and encrypted via HTTPS. The communication between your browser and my website uses a non-critical custom session ID, which allows the web server to retrieve the appropriate access token from its temporary storage. Despite these efforts, I cannot guarantee 100% security of your data, so use at your own risk. </td>
+			<td style="width:50%; vertical-align:top"> Sicherheit und Privatsphäre<br> Ich habe mir größte Mühe gegeben so viel Sicherheit und Privatsphäre so gut wie möglich zu respektieren und zu schützen: Sämtliche Kommunikation erfolgt verschlüsselt via HTTPS. Der Zugriff auf Eure Daten erfolgt nicht über die eure Logindaten (diese bekommt meine App nicht zu sehen!), sondern über einen „Accesstoken“, der von Strava nach (temporären) Freigabe von euch für diese App generiert wird. Aus Gründen der Datensparsamkeit und der damit einhergehenden Verantwortung werden diese sensiblen Accesstoken und ebenso wie zwischengespeicherte Strava Inhalte nicht permanent gespeichert, sondern schon nach 1 Stunde (beim nächsten Login durch irgendeinen Besucher) gelöscht (<a href="https://www.strava.com/settings/apps" target=" _blank">Hier</a> zu prüfen.). Als Konsequenz muss der Anwender vor jeder Verwendung meiner App erneut den Zugriff via Strava gewähren. Ferner habe ich einen Button zum manuellen Löschen dieser Daten implementiert. Einzige Ausnahme: Eure Koordinaten zu bekannten Orten lösche ich nicht automatisch, diese könnt ihr durch eine leere Liste ersetzen, dann werden diese gelöscht. Die Accesstoken, die temporären von Strava kommenden JSON-Daten der Aktivitäten und eure bekannten Orte liegen außerhalb des Web-Ordners des Servers und sind damit technisch nicht aus dem Internet abrufbar. Die Accesstoken werden nur zur Kommunikation mit Strava (und so wenig wie möglich) über das Netz (und nicht via URL, sondern im Body) und verschlüsselt via HTTPS übertragen. In der Kommunikation zwischen eurem Browser und meiner Webseite wird eine unkritische selbstdefinierte Session-ID verwendet, über die sich der Webserver den passenden Accesstoken aus seinem temporären Speicherort holt. Trotz dieser Aufwände kann ich keine 100% Sicherheit der Daten garantieren, daher erfolgt die Benutzung auf eigenes Risiko. </td>
 		</tr>
 	</table>
-	<i style="text-align:center">TL;DR: Use this software on your own risk. </i>
+
+	<p><i style="text-align:center">TL;DR: Use this software on your own risk. </i></p>
 	<a href="#top">back to top</a>
 	<hr>
 	<a href="/">Home</a> &nbsp; <a href="/contact.php?origin=strava">Contact me</a> &nbsp; <a href="/impressum.php">Website Disclaimer</a>
