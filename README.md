@@ -2,6 +2,8 @@
 
 Source code of Torben's Strava Äpp hosted at <https://entorb.net/strava/>
 
+[OpenSource](https://github.com/entorb/strava) Äpp using [Strava™'s](http://www.strava.com) [API](https://developers.strava.com/) to visualize your activity data.
+
 ## User Features
 
 * Import and Export of Activities
