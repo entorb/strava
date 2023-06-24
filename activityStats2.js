@@ -1,32 +1,30 @@
 /* eslint-disable camelcase */
 /* eslint-disable require-jsdoc */
-("use strict");
+"use strict";
 
-// global variables
-const html_div_chart = document.getElementById("div_chart");
-const html_div_chart_cnt = document.getElementById("div_chart_act_count");
-const html_sel_date_agg = document.getElementById("sel_date_agg");
-const html_sel_type = document.getElementById("sel_type");
-const html_sel_measure = document.getElementById("sel_measure");
+//
+// DOM elements
+//
+const html_div_chart = document.getElementById("div-chart");
+const html_div_chart_cnt = document.getElementById("div-chart-act-count");
+const html_sel_date_agg = document.getElementById("sel-date-agg");
+const html_sel_type = document.getElementById("sel-type");
+const html_sel_measure = document.getElementById("sel-measure");
 
+//
+// Global variables
+//
 // eslint-disable-next-line prefer-const
-let data_all = [];
-const data_all_comparision = {};
-
-// array of promises for async fetching
-const promises = [];
+const data_all = [];
+const data_all_comparison = {};
+const promises = []; // array of promises for async fetching
 
 //
 // Data fetching
 //
 function fetch_data(session, date_agg) {
-  const url =
-    "https://entorb.net/strava/download/" +
-    session +
-    "/activityStats2_" +
-    date_agg +
-    ".json";
-  return $.getJSON(url, function (data) {})
+  const url = `https://entorb.net/strava/download/${session}/activityStats2_${date_agg}.json`;
+  return $.getJSON(url)
     .done(function (data) {
       console.log("done data download " + date_agg);
       data_all[date_agg] = data;
@@ -144,27 +142,27 @@ function chart_update(data_all) {
   });
 }
 
-function chart_cnt_update(data_all_comparision) {
+function chart_cnt_update(data_all_comparison) {
   const date_agg = html_sel_date_agg.value;
   let measure = html_sel_measure.value;
 
   const act_types = Object.keys(data_all[date_agg]);
-  series = [];
+  const series = [];
   for (const type of act_types) {
-    if (!(measure in data_all_comparision[date_agg][type])) {
+    if (!(measure in data_all_comparison[date_agg][type])) {
       measure = "count";
     }
     series.push({
       type: "bar",
       stack: "x",
-      data: data_all_comparision[date_agg][type][measure],
+      data: data_all_comparison[date_agg][type][measure],
       name: type,
     });
   }
   chart_cnt.setOption({
     xAxis: {
       type: "category",
-      data: data_all_comparision[date_agg]["date"],
+      data: data_all_comparison[date_agg]["date"],
     },
     yAxis: {},
     series: series,
@@ -181,13 +179,13 @@ function chart_cnt_update(data_all_comparision) {
   });
 }
 
-function calc_data_for_act_comparison(data_all_comparision) {
+function calc_data_for_act_comparison(data_all_comparison) {
   const starts_and_ends = {};
   for (const date_agg of ["month", "quarter", "year"]) {
     // extract min start and max end date
     const act_types = Object.keys(data_all[date_agg]);
     starts_and_ends[date_agg] = [];
-    data_all_comparision[date_agg] = {};
+    data_all_comparison[date_agg] = {};
     for (const type of act_types) {
       const myArray = data_all[date_agg][type]["date"];
       const start = myArray[0];
@@ -208,7 +206,7 @@ function calc_data_for_act_comparison(data_all_comparision) {
 
     // now add first an last to data
     for (const type of act_types) {
-      data_all_comparision[date_agg][type] = {};
+      data_all_comparison[date_agg][type] = {};
       const data_x = [...data_all[date_agg][type]["date"]];
       const data_y = [...data_all[date_agg][type]["count"]];
       const data_y2 = [...data_all[date_agg][type]["hours(sum)"]];
@@ -235,25 +233,16 @@ function calc_data_for_act_comparison(data_all_comparision) {
       }
 
       // store data to global array
-      if (!("date" in data_all_comparision[date_agg])) {
-        data_all_comparision[date_agg]["date"] = data_x;
+      if (!("date" in data_all_comparison[date_agg])) {
+        data_all_comparison[date_agg]["date"] = data_x;
       }
-      data_all_comparision[date_agg][type]["count"] = data_y;
-      data_all_comparision[date_agg][type]["hours(sum)"] = data_y2;
-      data_all_comparision[date_agg][type]["kilometers(sum)"] = data_y3;
+      data_all_comparison[date_agg][type]["count"] = data_y;
+      data_all_comparison[date_agg][type]["hours(sum)"] = data_y2;
+      data_all_comparison[date_agg][type]["kilometers(sum)"] = data_y3;
     }
   }
 }
 
-// Wait for all async promises to be done (all data is fetched)
-Promise.all(promises).then(function () {
-  console.log("All data fetched");
-  chart_update(data_all);
-  populate_select_type();
-  // console.log(data_echarts);
-  calc_data_for_act_comparison(data_all_comparision);
-  chart_cnt_update(data_all_comparision);
-});
 
 //
 // Small helpers
@@ -373,8 +362,8 @@ function getNextQuarter(quarter) {
 function populate_select_type() {
   const select = html_sel_type;
   // remove all
-  L = select.options.length - 1;
-  for (i = L; i >= 0; i--) {
+  const L = select.options.length - 1;
+  for (let i = L; i >= 0; i--) {
     select.remove(i);
   }
   // populate from array
@@ -397,7 +386,35 @@ function populate_select_type() {
 // GUI actions
 //
 // eslint-disable-next-line no-unused-vars
-function action_chart_update() {
+function charts_update() {
   chart_update(data_all);
-  chart_cnt_update(data_all_comparision);
+  chart_cnt_update(data_all_comparison);
 }
+
+//
+// Event listeners
+//
+html_sel_date_agg.addEventListener("change", () => {
+  charts_update();
+});
+
+html_sel_type.addEventListener("change", () => {
+  charts_update();
+});
+
+html_sel_measure.addEventListener("change", () => {
+  charts_update();
+});
+
+//
+// Initialize the chart after all data is fetched
+//
+// Wait for all async promises to be done (all data is fetched)
+Promise.all(promises).then(function () {
+  console.log("All data fetched");
+  populate_select_type();
+  // console.log(data_echarts);
+  calc_data_for_act_comparison(data_all_comparison);
+  chart_update(data_all);
+  chart_cnt_update(data_all_comparison);
+});
