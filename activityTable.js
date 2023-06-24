@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable require-jsdoc */
-("use strict");
+"use strict";
 
 // eslint-disable-next-line no-unused-vars
 function defineTable() {
@@ -260,15 +260,13 @@ function defineTable() {
 
 const table = defineTable();
 
-table.on("tableBuilt", function () {
-  table.setData(
-    "https://entorb.net/strava/./download/" + session + "/activityList.json"
-  );
+table.on("tableBuilt", () => {
+  table.setData(`https://entorb.net/strava/download/${session}/activityList.json`);
 });
 
-table.on("cellClick", function (e, cell) {
+table.on("cellClick", (e, cell) => {
   const row = cell.getRow();
   const rowData = row.getData();
-  const activityUrl = rowData["x_url"];
+  const activityUrl = rowData.x_url;
   window.open(activityUrl);
 });

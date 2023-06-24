@@ -22,17 +22,17 @@ const promises = []; // array of promises for async fetching
 //
 // Data fetching
 //
-function fetch_data(session, date_agg) {
+const fetch_data = async (session, date_agg) => {
   const url = `https://entorb.net/strava/download/${session}/activityStats2_${date_agg}.json`;
-  return $.getJSON(url)
-    .done(function (data) {
-      console.log("done data download " + date_agg);
-      data_all[date_agg] = data;
-    })
-    .fail(function () {
-      console.log("failed data download " + date_agg);
-    });
-}
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(`done data download ${date_agg}`);
+    data_all[date_agg] = data;
+  } catch (error) {
+    console.log(`failed data download ${date_agg}`);
+  }
+};
 
 // Start the async fetching
 promises.push(fetch_data(session, "month"));
