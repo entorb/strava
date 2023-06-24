@@ -90,7 +90,7 @@ function chart_update(data_all) {
   const y_max = Math.max(...data_echarts_y_non_null);
   const y_delta = y_max > y_min ? y_max - y_min : 1;
 
-  addMissingDateDataInPlace(data_echarts_x, data_echarts_y)
+  fillGapsInDateDataInPlace(data_echarts_x, data_echarts_y)
 
   const title = capitalize_words(
     "Strava Stats: " + type + " " + date_agg + " " + measure
@@ -178,42 +178,45 @@ function charts_update() {
 
 
 function calc_data_for_act_comparison(data_all_comparison) {
-  const starts_and_ends = {};
   for (const date_agg of ["month", "quarter", "year"]) {
-    // extract min start and max end date of all act_types
-    const act_types = Object.keys(data_all[date_agg]);
-    starts_and_ends[date_agg] = [];
+
     data_all_comparison[date_agg] = {};
+
+    // loop over act_types and extract min start and max end date
+    let start = '';
+    let end = '';
+    const act_types = Object.keys(data_all[date_agg]);
     for (const type of act_types) {
+
       const myArray = data_all[date_agg][type]["date"];
-      const start = myArray[0];
-      const end = myArray[myArray.length - 1];
-      // console.log(type);
-      // add if not in
-      if (!starts_and_ends[date_agg].includes(start)) {
-        starts_and_ends[date_agg].unshift(start);
+      const currentStart = myArray[0];
+      const currentEnd = myArray[myArray.length - 1];
+
+      if (start === '' || currentStart < start) {
+        start = currentStart;
       }
-      if (!starts_and_ends[date_agg].includes(end)) {
-        starts_and_ends[date_agg].push(end);
+      if (end === '' || currentEnd > end) {
+        end = currentEnd;
       }
     }
-    starts_and_ends[date_agg].sort();
-    const start = starts_and_ends[date_agg][0];
-    const end = starts_and_ends[date_agg][starts_and_ends[date_agg].length - 1];
 
-    // now add first and last to data
+    // now add min start and max end to data for each act_type and fill the gaps
     for (const type of act_types) {
       data_all_comparison[date_agg][type] = {};
       const data_x = [...data_all[date_agg][type]["date"]];
       const data_y = [...data_all[date_agg][type]["count"]];
       const data_y2 = [...data_all[date_agg][type]["hours(sum)"]];
       const data_y3 = [...data_all[date_agg][type]["kilometers(sum)"]];
+
+      // add start
       if (data_x[0] != start) {
         data_x.unshift(start);
         data_y.unshift(null);
         data_y2.unshift(null);
         data_y3.unshift(null);
       }
+
+      // add end
       if (data_x[data_x.length - 1] != end) {
         data_x.push(end);
         data_y.push(null);
@@ -221,7 +224,8 @@ function calc_data_for_act_comparison(data_all_comparison) {
         data_y3.push(null);
       }
 
-      addMissingDateDataInPlace(data_x, data_y, data_y2, data_y3)
+      // fill gaps
+      fillGapsInDateDataInPlace(data_x, data_y, data_y2, data_y3)
 
       // store data to global array
       if (!("date" in data_all_comparison[date_agg])) {
@@ -233,6 +237,7 @@ function calc_data_for_act_comparison(data_all_comparison) {
     }
   }
 }
+
 
 
 //
@@ -248,7 +253,7 @@ function capitalize_words(str, separator) {
 
 // fill gaps in the data
 // supports x data of years (integer), quarters ("2023-Q2"), month "2023-03"
-function addMissingDateDataInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
+function fillGapsInDateDataInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
   const minDate = data_echarts_x[0];
   const maxDate = data_echarts_x[data_echarts_x.length - 1];
 
