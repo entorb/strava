@@ -26,10 +26,10 @@ mv tmp-dl/tabulator-$ver/dist/js/tabulator.min.js.map lib/tabulator.min.js.map
 mv tmp-dl/tabulator-$ver/dist/css/tabulator.min.css lib/tabulator.min.css
 mv tmp-dl/tabulator-$ver/dist/css/tabulator.min.css.map lib/tabulator.min.css.map
 
-# JQuery
-ver=3.7.0
-wget -q https://code.jquery.com/jquery-$ver.min.js -O lib/jquery-$ver.min.js
-wget -q https://code.jquery.com/jquery-$ver.min.map -O lib/jquery-$ver.min.map
+# # JQuery
+# ver=3.7.0
+# wget -q https://code.jquery.com/jquery-$ver.min.js -O lib/jquery-$ver.min.js
+# wget -q https://code.jquery.com/jquery-$ver.min.map -O lib/jquery-$ver.min.map
 
 # Cleanup
 rm -r tmp-dl
