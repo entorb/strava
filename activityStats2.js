@@ -90,7 +90,7 @@ function chart_update(data_all) {
   const y_max = Math.max(...data_echarts_y_non_null);
   const y_delta = y_max > y_min ? y_max - y_min : 1;
 
-  fillGapsInDateDataInPlace(data_echarts_x, data_echarts_y)
+  fillGapsInDateDataInPlace(data_echarts_x, data_echarts_y);
 
   const title = capitalize_words(
     "Strava Stats: " + type + " " + date_agg + " " + measure
@@ -176,26 +176,23 @@ function charts_update() {
   chart_cnt_update(data_all_comparison);
 }
 
-
 function calc_data_for_act_comparison(data_all_comparison) {
   for (const date_agg of ["month", "quarter", "year"]) {
-
     data_all_comparison[date_agg] = {};
 
     // loop over act_types and extract min start and max end date
-    let start = '';
-    let end = '';
+    let start = "";
+    let end = "";
     const act_types = Object.keys(data_all[date_agg]);
     for (const type of act_types) {
-
       const myArray = data_all[date_agg][type]["date"];
       const currentStart = myArray[0];
       const currentEnd = myArray[myArray.length - 1];
 
-      if (start === '' || currentStart < start) {
+      if (start === "" || currentStart < start) {
         start = currentStart;
       }
-      if (end === '' || currentEnd > end) {
+      if (end === "" || currentEnd > end) {
         end = currentEnd;
       }
     }
@@ -225,7 +222,7 @@ function calc_data_for_act_comparison(data_all_comparison) {
       }
 
       // fill gaps
-      fillGapsInDateDataInPlace(data_x, data_y, data_y2, data_y3)
+      fillGapsInDateDataInPlace(data_x, data_y, data_y2, data_y3);
 
       // store data to global array
       if (!("date" in data_all_comparison[date_agg])) {
@@ -237,8 +234,6 @@ function calc_data_for_act_comparison(data_all_comparison) {
     }
   }
 }
-
-
 
 //
 // Small helpers
@@ -253,7 +248,13 @@ function capitalize_words(str, separator) {
 
 // fill gaps in the data
 // supports x data of years (integer), quarters ("2023-Q2"), month "2023-03"
-function fillGapsInDateDataInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
+function fillGapsInDateDataInPlace(
+  data_echarts_x,
+  data_echarts_y,
+  data_echarts_y2 = [],
+  data_echarts_y3 = [],
+  data_echarts_y4 = []
+) {
   const minDate = data_echarts_x[0];
   const maxDate = data_echarts_x[data_echarts_x.length - 1];
 
@@ -264,11 +265,11 @@ function fillGapsInDateDataInPlace(data_echarts_x, data_echarts_y, data_echarts_
     const isDateMissing = data_echarts_x[currentIndex] !== currentDate;
 
     if (isDateMissing) {
-      data_echarts_x.splice(currentIndex, 0, currentDate);  // start, deleteCount, item)
+      data_echarts_x.splice(currentIndex, 0, currentDate); // start, deleteCount, item)
       // loop over all 4 (optional) y data sets
       [data_echarts_y, data_echarts_y2, data_echarts_y3, data_echarts_y4]
-        .filter(data => data.length > 0) // only work on the non-empty data sets
-        .forEach(data => data.splice(currentIndex, 0, null)); // insert data
+        .filter((data) => data.length > 0) // only work on the non-empty data sets
+        .forEach((data) => data.splice(currentIndex, 0, null)); // insert data
     }
 
     currentIndex++;
@@ -279,21 +280,23 @@ function fillGapsInDateDataInPlace(data_echarts_x, data_echarts_y, data_echarts_
 // calculate the next date for my period
 // supports x data of years (integer), quarters ("2023-Q2"), month "2023-03"
 function getNextDate(data) {
-  if (typeof data === "number") {  // 2023
+  if (typeof data === "number") {
+    // 2023
     return data + 1;
-  } else if (data.includes("Q")) { // "2023-Q2"
+  } else if (data.includes("Q")) {
+    // "2023-Q2"
     const [year, quarter] = data.split("-Q").map(Number);
     const nextQuarter = ((quarter - 1) % 4) + 1;
     const nextYear = nextQuarter === 1 ? year + 1 : year;
     return `${nextYear}-Q${nextQuarter}`;
-  } else if (data.includes("-")) { // "2023-02"
+  } else if (data.includes("-")) {
+    // "2023-02"
     const [year, month] = data.split("-").map(Number);
     const nextMonth = month === 12 ? 1 : month + 1;
     const nextYear = nextMonth === 1 ? year + 1 : year;
-    return `${nextYear}-${nextMonth.toString().padStart(2, "0")}`;  // 2 digit month
+    return `${nextYear}-${nextMonth.toString().padStart(2, "0")}`; // 2 digit month
   }
 }
-
 
 //
 // GUI helpers
@@ -341,5 +344,5 @@ Promise.all(promises).then(function () {
   populate_select_type();
   // console.log(data_echarts);
   calc_data_for_act_comparison(data_all_comparison);
-  charts_update()
+  charts_update();
 });
