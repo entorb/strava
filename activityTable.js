@@ -261,7 +261,9 @@ function defineTable() {
 const table = defineTable();
 
 table.on("tableBuilt", () => {
-  table.setData(`https://entorb.net/strava/download/${session}/activityList.json`);
+  table.setData(
+    `https://entorb.net/strava/download/${session}/activityList.json`
+  );
 });
 
 table.on("cellClick", (e, cell) => {
