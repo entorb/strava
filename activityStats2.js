@@ -192,12 +192,12 @@ function calc_data_for_act_comparison(data_all_comparison) {
       const end = myArray[myArray.length - 1];
       // console.log(type);
       // add if not in
-      starts_and_ends[date_agg].indexOf(start) === -1
-        ? starts_and_ends[date_agg].unshift(start)
-        : 1;
-      starts_and_ends[date_agg].indexOf(end) === -1
-        ? starts_and_ends[date_agg].push(end)
-        : 1;
+      if (!starts_and_ends[date_agg].includes(start)) {
+        starts_and_ends[date_agg].unshift(start);
+      }
+      if (!starts_and_ends[date_agg].includes(end)) {
+        starts_and_ends[date_agg].push(end);
+      }
     }
     starts_and_ends[date_agg].sort();
     const start = starts_and_ends[date_agg][0];
@@ -277,10 +277,12 @@ function addMissingYearsInPlace(
 
     if (data_echarts_x[currentIndex] !== dateString) {
       data_echarts_x.splice(currentIndex, 0, dateString);
-      data_echarts_y.splice(currentIndex, 0, null);
-      if (data_echarts_y2) data_echarts_y2.splice(currentIndex, 0, null);
-      if (data_echarts_y3) data_echarts_y3.splice(currentIndex, 0, null);
-      if (data_echarts_y4) data_echarts_y4.splice(currentIndex, 0, null);
+
+      // data_echarts_y.splice(currentIndex, 0, null);
+      [data_echarts_y, data_echarts_y2, data_echarts_y3, data_echarts_y4]
+        .filter(data => data.length > 0) // only work on the ones not empty
+        .forEach(data => data.splice(currentIndex, 0, null)); // insert data
+
     }
 
     currentIndex++;
@@ -309,11 +311,10 @@ function addMissingMonthsInPlace(
 
     if (data_echarts_x[currentIndex] !== dateString) {
       data_echarts_x.splice(currentIndex, 0, dateString);
-      data_echarts_y.splice(currentIndex, 0, null);
-
-      if (data_echarts_y2) data_echarts_y2.splice(currentIndex, 0, null);
-      if (data_echarts_y3) data_echarts_y3.splice(currentIndex, 0, null);
-      if (data_echarts_y4) data_echarts_y4.splice(currentIndex, 0, null);
+      // data_echarts_y.splice(currentIndex, 0, null);
+      [data_echarts_y, data_echarts_y2, data_echarts_y3, data_echarts_y4]
+        .filter(data => data.length > 0) // only work on the ones not empty
+        .forEach(data => data.splice(currentIndex, 0, null)); // insert data
     }
 
     currentIndex++;
@@ -337,12 +338,10 @@ function addMissingQuartersInPlace(
   while (currentQuarter <= maxQuarter) {
     if (data_echarts_x[currentIndex] !== currentQuarter) {
       data_echarts_x.splice(currentIndex, 0, currentQuarter);
-      data_echarts_y.splice(currentIndex, 0, null);
-      if (data_echarts_y2) data_echarts_y2.splice(currentIndex, 0, null);
-      if (data_echarts_y3) data_echarts_y3.splice(currentIndex, 0, null);
-      if (data_echarts_y4) data_echarts_y4.splice(currentIndex, 0, null);
-    } else {
-      // console.log(currentQuarter);
+      // data_echarts_y.splice(currentIndex, 0, null);
+      [data_echarts_y, data_echarts_y2, data_echarts_y3, data_echarts_y4]
+        .filter(data => data.length > 0) // only work on the ones not empty
+        .forEach(data => data.splice(currentIndex, 0, null)); // insert data
     }
     currentIndex++;
     currentQuarter = getNextQuarter(currentQuarter);
