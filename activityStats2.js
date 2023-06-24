@@ -90,15 +90,8 @@ function chart_update(data_all) {
   const y_max = Math.max(...data_echarts_y_non_null);
   const y_delta = y_max > y_min ? y_max - y_min : 1;
 
-  if (date_agg === "month") {
-    addMissingMonthsInPlace(data_echarts_x, data_echarts_y);
-  } else if (date_agg === "year") {
-    addMissingYearsInPlace(data_echarts_x, data_echarts_y);
-  } else if (date_agg === "quarter") {
-    addMissingQuartersInPlace(data_echarts_x, data_echarts_y);
-  }
-  // console.log(data_echarts_x[0]);
-  // console.log(data_echarts_y[0]);
+  addMissingDateDataInPlace(data_echarts_x, data_echarts_y)
+
   const title = capitalize_words(
     "Strava Stats: " + type + " " + date_agg + " " + measure
   );
@@ -136,8 +129,6 @@ function chart_update(data_all) {
     title: {
       text: title,
       left: "center",
-      // subtext: "by Torben https://entorb.net/strava/",
-      // sublink: "https://entorb.net/strava/",
     },
   });
 }
@@ -179,10 +170,17 @@ function chart_cnt_update(data_all_comparison) {
   });
 }
 
+// eslint-disable-next-line no-unused-vars
+function charts_update() {
+  chart_update(data_all);
+  chart_cnt_update(data_all_comparison);
+}
+
+
 function calc_data_for_act_comparison(data_all_comparison) {
   const starts_and_ends = {};
   for (const date_agg of ["month", "quarter", "year"]) {
-    // extract min start and max end date
+    // extract min start and max end date of all act_types
     const act_types = Object.keys(data_all[date_agg]);
     starts_and_ends[date_agg] = [];
     data_all_comparison[date_agg] = {};
@@ -202,9 +200,8 @@ function calc_data_for_act_comparison(data_all_comparison) {
     starts_and_ends[date_agg].sort();
     const start = starts_and_ends[date_agg][0];
     const end = starts_and_ends[date_agg][starts_and_ends[date_agg].length - 1];
-    // delete starts_and_ends;
 
-    // now add first an last to data
+    // now add first and last to data
     for (const type of act_types) {
       data_all_comparison[date_agg][type] = {};
       const data_x = [...data_all[date_agg][type]["date"]];
@@ -224,13 +221,7 @@ function calc_data_for_act_comparison(data_all_comparison) {
         data_y3.push(null);
       }
 
-      if (date_agg === "month") {
-        addMissingMonthsInPlace(data_x, data_y, data_y2, data_y3);
-      } else if (date_agg === "year") {
-        addMissingYearsInPlace(data_x, data_y, data_y2, data_y3);
-      } else if (date_agg === "quarter") {
-        addMissingQuartersInPlace(data_x, data_y, data_y2, data_y3);
-      }
+      addMissingDateDataInPlace(data_x, data_y, data_y2, data_y3)
 
       // store data to global array
       if (!("date" in data_all_comparison[date_agg])) {
@@ -255,105 +246,49 @@ function capitalize_words(str, separator) {
   });
 }
 
-//
-// addMissing<Months/Quarters/Years
-//
-function addMissingYearsInPlace(
-  data_echarts_x,
-  data_echarts_y,
-  data_echarts_y2 = [],
-  data_echarts_y3 = [],
-  data_echarts_y4 = []
-) {
-  const minYear = data_echarts_x[0];
-  const maxYear = data_echarts_x[data_echarts_x.length - 1];
+// fill gaps in the data
+// supports x data of years (integer), quarters ("2023-Q2"), month "2023-03"
+function addMissingDateDataInPlace(data_echarts_x, data_echarts_y, data_echarts_y2 = [], data_echarts_y3 = [], data_echarts_y4 = []) {
+  const minDate = data_echarts_x[0];
+  const maxDate = data_echarts_x[data_echarts_x.length - 1];
 
-  let currentYear = minYear;
+  let currentDate = minDate;
   let currentIndex = 0;
 
-  while (currentYear <= maxYear) {
-    const year = currentYear;
-    const dateString = year;
+  while (currentDate <= maxDate) {
+    const isDateMissing = data_echarts_x[currentIndex] !== currentDate;
 
-    if (data_echarts_x[currentIndex] !== dateString) {
-      data_echarts_x.splice(currentIndex, 0, dateString);
-
-      // data_echarts_y.splice(currentIndex, 0, null);
+    if (isDateMissing) {
+      data_echarts_x.splice(currentIndex, 0, currentDate);  // start, deleteCount, item)
+      // loop over all 4 (optional) y data sets
       [data_echarts_y, data_echarts_y2, data_echarts_y3, data_echarts_y4]
-        .filter(data => data.length > 0) // only work on the ones not empty
-        .forEach(data => data.splice(currentIndex, 0, null)); // insert data
-
-    }
-
-    currentIndex++;
-    currentYear++;
-  }
-}
-
-function addMissingMonthsInPlace(
-  data_echarts_x,
-  data_echarts_y,
-  data_echarts_y2 = [],
-  data_echarts_y3 = [],
-  data_echarts_y4 = []
-) {
-  const minMonth = data_echarts_x[0];
-  const maxMonth = data_echarts_x[data_echarts_x.length - 1];
-
-  const currentMonth = new Date(minMonth);
-  let currentIndex = 0;
-
-  while (currentMonth <= new Date(maxMonth)) {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth() + 1; // Adding 1 because getMonth() returns zero-based month index
-    const dateString = `${year}-${month.toString().padStart(2, "0")}`;
-    // 2023-01
-
-    if (data_echarts_x[currentIndex] !== dateString) {
-      data_echarts_x.splice(currentIndex, 0, dateString);
-      // data_echarts_y.splice(currentIndex, 0, null);
-      [data_echarts_y, data_echarts_y2, data_echarts_y3, data_echarts_y4]
-        .filter(data => data.length > 0) // only work on the ones not empty
+        .filter(data => data.length > 0) // only work on the non-empty data sets
         .forEach(data => data.splice(currentIndex, 0, null)); // insert data
     }
 
     currentIndex++;
-    currentMonth.setMonth(currentMonth.getMonth() + 1);
+    currentDate = getNextDate(currentDate);
   }
 }
 
-function addMissingQuartersInPlace(
-  data_echarts_x,
-  data_echarts_y,
-  data_echarts_y2 = [],
-  data_echarts_y3 = [],
-  data_echarts_y4 = []
-) {
-  const minQuarter = data_echarts_x[0];
-  const maxQuarter = data_echarts_x[data_echarts_x.length - 1];
-
-  let currentQuarter = minQuarter;
-  let currentIndex = 0;
-
-  while (currentQuarter <= maxQuarter) {
-    if (data_echarts_x[currentIndex] !== currentQuarter) {
-      data_echarts_x.splice(currentIndex, 0, currentQuarter);
-      // data_echarts_y.splice(currentIndex, 0, null);
-      [data_echarts_y, data_echarts_y2, data_echarts_y3, data_echarts_y4]
-        .filter(data => data.length > 0) // only work on the ones not empty
-        .forEach(data => data.splice(currentIndex, 0, null)); // insert data
-    }
-    currentIndex++;
-    currentQuarter = getNextQuarter(currentQuarter);
+// calculate the next date for my period
+// supports x data of years (integer), quarters ("2023-Q2"), month "2023-03"
+function getNextDate(data) {
+  if (typeof data === "number") {  // 2023
+    return data + 1;
+  } else if (data.includes("Q")) { // "2023-Q2"
+    const [year, quarter] = data.split("-Q").map(Number);
+    const nextQuarter = ((quarter - 1) % 4) + 1;
+    const nextYear = nextQuarter === 1 ? year + 1 : year;
+    return `${nextYear}-Q${nextQuarter}`;
+  } else if (data.includes("-")) { // "2023-02"
+    const [year, month] = data.split("-").map(Number);
+    const nextMonth = month === 12 ? 1 : month + 1;
+    const nextYear = nextMonth === 1 ? year + 1 : year;
+    return `${nextYear}-${nextMonth.toString().padStart(2, "0")}`;  // 2 digit month
   }
 }
 
-function getNextQuarter(quarter) {
-  const [year, q] = quarter.split("-Q");
-  const nextQuarter = (parseInt(q) % 4) + 1;
-  const nextYear = nextQuarter === 1 ? parseInt(year) + 1 : year;
-  return `${nextYear}-Q${nextQuarter}`;
-}
 
 //
 // GUI helpers
@@ -361,15 +296,11 @@ function getNextQuarter(quarter) {
 function populate_select_type() {
   const select = html_sel_type;
   // remove all
-  const L = select.options.length - 1;
-  for (let i = L; i >= 0; i--) {
-    select.remove(i);
-  }
-  // populate from array
+  [...select.options].forEach((option) => option.remove());
+  // populate from data_all
   let i_of_Run = 0;
   const options = Object.keys(data_all["year"]);
-  for (let i = 0; i < options.length; i++) {
-    const opt = options[i];
+  options.map((opt, i) => {
     const el = document.createElement("option");
     el.textContent = opt;
     el.value = opt;
@@ -377,17 +308,8 @@ function populate_select_type() {
     if (opt === "Run") {
       i_of_Run = i;
     }
-  }
+  });
   select.selectedIndex = i_of_Run;
-}
-
-//
-// GUI actions
-//
-// eslint-disable-next-line no-unused-vars
-function charts_update() {
-  chart_update(data_all);
-  chart_cnt_update(data_all_comparison);
 }
 
 //
@@ -414,6 +336,5 @@ Promise.all(promises).then(function () {
   populate_select_type();
   // console.log(data_echarts);
   calc_data_for_act_comparison(data_all_comparison);
-  chart_update(data_all);
-  chart_cnt_update(data_all_comparison);
+  charts_update()
 });
