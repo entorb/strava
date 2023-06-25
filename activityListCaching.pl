@@ -17,7 +17,7 @@
 # Modules: My Default Set
 use strict;
 use warnings;
-use 5.010;                  # say
+use 5.010;                  # say requires 5.010
 use Data::Dumper;
 use utf8;                   # this script is written in UTF-8
 binmode STDOUT, ':utf8';    # default encoding for linux print STDOUT
@@ -43,6 +43,7 @@ use File::Path qw(make_path);
 
 # use local::lib;
 use JSON::Create 'create_json';
+# use JSON::Create;
 # use CGI::ProgressBar qw/:standard/;
 
 # Modules: Web
@@ -456,7 +457,15 @@ if ( $yearToDL ne '' ) {
   open my $fhOut, '>:encoding(UTF-8)', $s{'pathToActivityListJsonDump'}
       or die "ERROR: Can't write to file '"
       . $s{'pathToActivityListJsonDump'} . "': $!";
-  print {$fhOut} create_json( \@allActivityHashes );
+  my $json_string = create_json( \@allActivityHashes );
+# floats: str to float. done here manually, since in Perl < 5.18 the JSON::Create behaved funny
+  $json_string =~ s/"((\d+)\.(\d+))"/$1/g;
+  print {$fhOut} $json_string;
+  # my $json = JSON::Create->new;
+  # $json->no_stringify(1)
+  #     ;    # Enable the no_stringify option -> keep floats as floats
+  # my $json_string = $json->run( \@allActivityHashes );
+  # print {$fhOut} $json_string;
   close $fhOut;
 
   # write Gear as Perl hash list to filesystem (for caching in the Äpp)
