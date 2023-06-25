@@ -57,16 +57,16 @@ if ( $cgi->param('importtext') or $cgi->param('submit') ) {
 
 my $tableheader = '
 <tr>
-<th>Type<br/><small>Run/<br/>Ride/<br/>Swim</small></th>
-<th>Date<br/><small>YYYY-MM-DD HH:MM:SS<br/>2019-05-14 20:45:00</small></th>
-<th>Duration<br/><small>seconds<br/>3600</small></th>
-<th>Distance*<br/><small>meter<br/>12000</small></th>
-<th>Name<br/><small>Activity title<br/>&nbsp;</small></th>
-<th>Description*<br/><small>Some description<br/>&nbsp;</small></th>
-<th>Commute*<br/><small>1/0<br/>&nbsp;</small></th>
-<th>OnTrainer*<br/><small>1/0<br/>&nbsp;</small></th>
-<th>Elevation gain*<br/><small>meter<br/>123</small></th>
-<th>Gear ID*<br/><small>&nbsp;<br/>g1195471</small></th>
+<th>Type<br><small>Run/<br>Ride/<br>Swim</small></th>
+<th>Date<br><small>YYYY-MM-DD HH:MM:SS<br>2019-05-14 20:45:00</small></th>
+<th>Duration<br><small>seconds<br>3600</small></th>
+<th>Distance*<br><small>meter<br>12000</small></th>
+<th>Name<br><small>Activity title<br>&nbsp;</small></th>
+<th>Description*<br><small>Some description<br>&nbsp;</small></th>
+<th>Commute*<br><small>1/0<br>&nbsp;</small></th>
+<th>OnTrainer*<br><small>1/0<br>&nbsp;</small></th>
+<th>Elevation gain*<br><small>meter<br>123</small></th>
+<th>Gear ID*<br><small>&nbsp;<br>g1195471</small></th>
 </tr>
 ';
 
@@ -95,16 +95,16 @@ if ( not $cgi->param('preview') and not $cgi->param('submit') ) {
   say '<form action="activityExcelImport.pl?session='
       . $s{'session'}
       . '" method="post">
-<table border="1">
+<table>
 ' . $tableheader . '
 </table>
-<small>* = optional, columns separated by tab, duration and distance without decimals, gear_id can be found in a table below <u>after</u> caching you activities first</small><br/>
-<p>Example:<br/>
+<small>* = optional, columns separated by tab, duration and distance without decimals, gear_id can be found in a table below <u>after</u> caching you activities first</small><br>
+<p>Example:<br>
 <code>Run[tab]2012-02-14 09:00:00[tab]1800[tab]5000[tab]Mit Hans im schoenen Skiurlaub[tab][tab]0[tab]0[tab]20[tab]g1195471[linebreak]</code></p>
 <textarea name="importtext" cols="90" rows="20">' . $importtext . '</textarea>
-<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-<br/>
-<input type="submit" name="preview" value="Preview"/>
+<input type="hidden" name="session" value="' . $s{'session'} . '">
+<br>
+<input type="submit" name="preview" value="Preview">
 </form>
 ';
 
@@ -115,7 +115,7 @@ if ( not $cgi->param('preview') and not $cgi->param('submit') ) {
   }
   if (%gear) {    # gear hash is not empty
     say '<h3>List of gear used in cached activities</h3>
-<table border="1">
+<table>
 <tr><th>Gear ID</th><th>Gear Name</th></tr>';
     foreach my $gear_id ( sort keys %gear ) {
       say "<tr><td>$gear_id</td><td>$gear{$gear_id}</td></tr>";
@@ -138,7 +138,7 @@ if ( $cgi->param('preview') ) {
   my @lines = split /\r?\n/, $importtext;
   say '
 <h2>Preview</h2>
-<table border="1">
+<table>
 ' . $tableheader . '
 <tbody align="center">';
   my $lineNo = 0;
@@ -156,7 +156,7 @@ if ( $cgi->param('preview') ) {
 
     @_ = split "\t", $line;
     if ( $#_ != ( 10 - 1 ) ) {
-      $error .= "<br/>10 columns expected, " . ( $#_ + 1 ) . " found";
+      $error .= "<br>10 columns expected, " . ( $#_ + 1 ) . " found";
     }
     my (
       $type, $date,    $duration, $dist,      $name,
@@ -168,7 +168,7 @@ if ( $cgi->param('preview') ) {
     );
 
     if ( $error ne '' ) {
-      $error = "Error in line $lineNo:<br/>'$line'$error";
+      $error = "Error in line $lineNo:<br>'$line'$error";
       last;
     }
     else {
@@ -197,13 +197,13 @@ if ( $cgi->param('preview') ) {
   say '
 <form action="activityExcelImport.pl?session='
       . $s{'session'} . '" method="post">
-<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-<input type="hidden" name="importtext" value="' . $importtext . '"/>
-<br/>
-<input type="submit" name="back" value="Back"/>
+<input type="hidden" name="session" value="' . $s{'session'} . '">
+<input type="hidden" name="importtext" value="' . $importtext . '">
+<br>
+<input type="submit" name="back" value="Back">
 ';
   if ( $error eq '' ) {
-    say '<input type="submit" name="submit" value="Submit"/>';
+    say '<input type="submit" name="submit" value="Submit">';
   }
   say '</form>';
 } ## end if ( $cgi->param('preview'...))
@@ -214,7 +214,7 @@ if ( $cgi->param('preview') ) {
 if ( $cgi->param('submit') ) {
   say '<h2>Submit</h2>';
   my @lines = split /\r?\n/, $importtext;
-  say '<table border="1">
+  say '<table>
 ' . $tableheader . '
 <tbody align="center">';
   foreach my $line (@lines) {
@@ -238,7 +238,7 @@ if ( $cgi->param('submit') ) {
     my $param
         = "name=$name&type=$type&start_date_local=$date&elapsed_time=$duration&description=$desc&distance=$dist&gear_id=$gear_id&trainer=$trainer&commute=$commute&elev_gain=$elev_gain";
 
-    # say "<p><code>debug for Dave 1:<br/>param= '$param'</code></p>";
+    # say "<p><code>debug for Dave 1:<br>param= '$param'</code></p>";
 
     # say "<p>param = $param</p>";
     # say "<p>token = $s{ 'token' }</p>";
@@ -250,14 +250,14 @@ if ( $cgi->param('submit') ) {
         ;    # = silent: (1-> do not die on http error)
     if ( $htmlcode != 201 ) {
       say
-          "<p><font color=\"red\">ERROR $htmlcode at line<br/>'$line'<br/>url: $url<br/>return: $cont</font></p>";
+          "<p><font color=\"red\">ERROR $htmlcode at line<br>'$line'<br>url: $url<br>return: $cont</font></p>";
     }
     else {
 
-      # say "Strava answers:<br/>$htmlcode: $cont";
+      # say "Strava answers:<br>$htmlcode: $cont";
       my %h = TMsStrava::convertJSONcont2Hash($cont);
 
-      # say "<p><code>debug for Dave 3 - hash:<br/>";
+      # say "<p><code>debug for Dave 3 - hash:<br>";
       # say Dumper %h;
       # say "</code></p>";
       say '<tr>
@@ -357,46 +357,46 @@ sub check {
   # 	Yoga
   # 	)
   # ) {
-  # 	$error .= "<br/>Type '$type' unknown.";
+  # 	$error .= "<br>Type '$type' unknown.";
   # }
   if ( not $date =~ m/^(\d{4})\-(\d{2})\-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/ )
   {    # YYYY-MM-DD HH:MM:SS
-    $error .= "<br/>Date '$date' must be formatted YYYY-MM-DD HH:MM:SS.";
+    $error .= "<br>Date '$date' must be formatted YYYY-MM-DD HH:MM:SS.";
   }
   else {
     my ( $y, $m, $d, $h, $mi, $s ) = ( $1, $2, $3, $4, $5, $6 );
     if ( $m > 12 ) {
-      $error .= "<br/>Month '$m' must be <= 12";
+      $error .= "<br>Month '$m' must be <= 12";
     }
   } ## end else [ if ( not $date =~ ...)]
   if ( not $duration =~ m/^\d+$/ ) {
     $error
-        .= "<br/>Duration '$duration' can only contain numbers (no ',' or '.').";
+        .= "<br>Duration '$duration' can only contain numbers (no ',' or '.').";
   }
   if ( not $dist =~ m/^\d*$/ ) {
     $error
-        .= "<br/>Distance '$dist' can only contain numbers (no ',' or '.').";
+        .= "<br>Distance '$dist' can only contain numbers (no ',' or '.').";
   }
   if ( not $elev_gain =~ m/^\d*$/ ) {
     $error
-        .= "<br/>Elevation gain '$elev_gain' can only contain numbers (no ',' or '.').";
+        .= "<br>Elevation gain '$elev_gain' can only contain numbers (no ',' or '.').";
   }
   if ( not $name =~ m/^[ a-zA-Z0-9:;,\.!\?\(\)\[\]<>\{\}]+$/ ) {
     $error
-        .= "<br/>Name '$name' shall only contain 'a-z A-Z 0-9:;,.!?()[]<>{}'.";
+        .= "<br>Name '$name' shall only contain 'a-z A-Z 0-9:;,.!?()[]<>{}'.";
   }
   if ( not $desc =~ m/^[ a-zA-Z0-9:;,\.!\?\(\)\[\]<>\{\}]*$/ ) {
     $error
-        .= "<br/>Description '$desc' shall only contain 'a-z A-Z 0-9:;,.!?()[]<>{}'.";
+        .= "<br>Description '$desc' shall only contain 'a-z A-Z 0-9:;,.!?()[]<>{}'.";
   }
   if ( not grep { $commute eq $_ } ( '1', '0', '' ) ) {
-    $error .= "<br/>Commute '$commute' shall be 1 or 0.";
+    $error .= "<br>Commute '$commute' shall be 1 or 0.";
   }
   if ( not grep { $trainer eq $_ } ( '1', '0', '' ) ) {
-    $error .= "<br/>Trainer '$trainer' shall be 1 or 0.";
+    $error .= "<br>Trainer '$trainer' shall be 1 or 0.";
   }
   if ( not $gear_id =~ m/^[a-zA-Z0-9]*$/ ) {
-    $error .= "<br/>Gear ID '$gear_id' shall only contain 'a-z A-Z 0-9";
+    $error .= "<br>Gear ID '$gear_id' shall only contain 'a-z A-Z 0-9";
   }
   return $error;
 } ## end sub check

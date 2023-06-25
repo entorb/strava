@@ -87,8 +87,8 @@ unshift @years, 'all';
 TMsStrava::logIt("done");
 
 say "<form action=\"activityTop10.pl\" method=\"post\">
-  <input type=\"hidden\" name=\"session\" value=\"$s{ 'session' }\"/>
-  <table border=\"0\">
+  <input type=\"hidden\" name=\"session\" value=\"$s{ 'session' }\">
+  <table>
   <tr><td>Activity Type</td>
   <td>
   <select name=\"type\">
@@ -113,7 +113,7 @@ foreach my $y (@years) {
 say "</select>
   </td>
   <td>
-  <input type=\"submit\" name=\"submit\" value=\"Submit\"/>
+  <input type=\"submit\" name=\"submit\" value=\"Submit\">
   </td>
   </tr>
 </table>
@@ -174,13 +174,13 @@ foreach my $column (@Reihenfolge) {
 
   say "<h3 id=sec_$column>$columnTitle</h3>";
   my $count = 0;
-  say '<table width="100%" border="1" cellpadding="2" cellspacing="0">';
+  say '<table width="100%" cellpadding="2" cellspacing="0">';
 
   say "<tr><th>Rank</th><th>Date</th><th>Name</th>";
   say "<th>$columnTitle</th>" if ( $column ne 'x_min' and $column ne 'x_km' );
   say "<th>Pace (min/km)"
       if ( $column eq 'km/h' );    # pace only for km/h ranking
-  say "<th>Distance<br/>(km)</th><th>Duration (min)</th></tr>";
+  say "<th>Distance<br>(km)</th><th>Duration (min)</th></tr>";
 
   foreach my $ref (@sorted) {
     my %h = %{$ref};

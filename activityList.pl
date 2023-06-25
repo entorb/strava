@@ -74,9 +74,9 @@ say
 
 say '
 <form action="activityModify.pl?session=' . $s{'session'} . '" method="post">
-<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-<table width="100%" border="1" cellpadding="2" cellspacing="0">
-<input type="submit" name="submitFromActivityList" value="Edit selected"/>
+<input type="hidden" name="session" value="' . $s{'session'} . '">
+<table width="100%" cellpadding="2" cellspacing="0">
+<input type="submit" name="submitFromActivityList" value="Edit selected">
 <tr>
 <th>&nbsp;</th><th>Type</th><th>Date</th><th>Name</th><th>Minutes</th><th>Commute</th><th>Training Machine</th><th>Visibility</th>
 </tr>

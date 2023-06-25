@@ -84,15 +84,15 @@ if ( $cgi->param('distanceunit') and $cgi->param('distanceunit') eq 'mile' ) {
 # say "<h2>Feature ideas?</h2>
 # <p>Hi folks, I started this app as Excel exporter, but now that I myself use it quite regularly, I find it nice to have the statistics available online without the need to open Excel.
 # Do you have ideas for further nice statistics and analytics I should add for all of us having more fun? (based on the data available in the Excel export)
-# If so, please drop me a <a href=\"/contact.php?origin=strava\" target=\"_blank\"> message</a>. <br/>
+# If so, please drop me a <a href=\"/contact.php?origin=strava\" target=\"_blank\"> message</a>. <br>
 # P.S.: If you like this tool, please spread the word ;-)
 # </p>
-# <hr/>
+# <hr>
 # ";
 
 say "<form action=\"activityStats.pl\" method=\"post\">
-  <input type=\"hidden\" name=\"session\" value=\"$s{ 'session' }\"/>
-  <table border=\"0\">
+  <input type=\"hidden\" name=\"session\" value=\"$s{ 'session' }\">
+  <table>
   <tr><td>date format</td>
   <td>
   <select name=\"dateresolution\">
@@ -118,7 +118,7 @@ say "<form action=\"activityStats.pl\" method=\"post\">
   </select>
   </td>
   <td>
-  <input type=\"submit\" name=\"submit\" value=\"Submit\"/>
+  <input type=\"submit\" name=\"submit\" value=\"Submit\">
   </td>
   </tr>
 </table>
@@ -253,7 +253,7 @@ say "</p>";
 
 foreach my $type ( sort keys %database ) {
   say "<h2 id=\"type$type\">$type</h2>";
-  say "<table border=\"1\">
+  say "<table>
   <tr class=\"r0\">
     <th colspan=\"2\">&nbsp;</th>
     <th colspan=\"3\">sum</th>
@@ -261,22 +261,22 @@ foreach my $type ( sort keys %database ) {
     <th colspan=\"5\">record activities</th>
   </tr>
   <tr class=\"r0\">
-  <th>date<br/><small>&nbsp;</small></th>
-  <th>count<br/><small>&nbsp;</small></th>
-   <th>time<br/><small>(h)</small></th>
-    <th>distance<br/><small>($tableHeaderUnits{'distance'})</small></th>
-    <th>elev. gain<br/><small>($tableHeaderUnits{'elev'})</small></th>
-   <th>time<br/><small>(min)</small></th>
-    <th>distance<br/><small>($tableHeaderUnits{'distance'})</small></th>
-    <th>elev. gain<br/><small>($tableHeaderUnits{'elev'})</small></th>
-    <th>speed<br/><small>($tableHeaderUnits{'speed'})</small></th>
-    <th>pace<br/><small>($tableHeaderUnits{'pace'})</small></th>
-    <th>elev/dist<br/><small>($tableHeaderUnits{'elev'}/$tableHeaderUnits{'distance'})</small></th>
-   <th>time<br/><small>(min)</small></th>
-    <th>distance<br/><small>($tableHeaderUnits{'distance'})</small></th>
-    <th>elev. gain<br/><small>($tableHeaderUnits{'elev'})</small></th>
-    <th>speed<br/><small>($tableHeaderUnits{'speed'})</small></th>
-    <th>elev/dist<br/><small>($tableHeaderUnits{'elev'}/$tableHeaderUnits{'distance'})</small></th>
+  <th>date<br><small>&nbsp;</small></th>
+  <th>count<br><small>&nbsp;</small></th>
+   <th>time<br><small>(h)</small></th>
+    <th>distance<br><small>($tableHeaderUnits{'distance'})</small></th>
+    <th>elev. gain<br><small>($tableHeaderUnits{'elev'})</small></th>
+   <th>time<br><small>(min)</small></th>
+    <th>distance<br><small>($tableHeaderUnits{'distance'})</small></th>
+    <th>elev. gain<br><small>($tableHeaderUnits{'elev'})</small></th>
+    <th>speed<br><small>($tableHeaderUnits{'speed'})</small></th>
+    <th>pace<br><small>($tableHeaderUnits{'pace'})</small></th>
+    <th>elev/dist<br><small>($tableHeaderUnits{'elev'}/$tableHeaderUnits{'distance'})</small></th>
+   <th>time<br><small>(min)</small></th>
+    <th>distance<br><small>($tableHeaderUnits{'distance'})</small></th>
+    <th>elev. gain<br><small>($tableHeaderUnits{'elev'})</small></th>
+    <th>speed<br><small>($tableHeaderUnits{'speed'})</small></th>
+    <th>elev/dist<br><small>($tableHeaderUnits{'elev'}/$tableHeaderUnits{'distance'})</small></th>
   </tr>";
   my %h      = %{ $database{$type} };
   my $rownum = 0;

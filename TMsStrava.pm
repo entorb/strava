@@ -333,7 +333,7 @@ sub convertJSONcont2Hash {
   # out: a single hash (multidimensional)
   my ($cont) = @_;    # () important!!!
   logSubStart('convertJSONcont2Hash');
-  # say "<p><code>debug for Dave 2:<br/>json= '$cont'</code></p>";
+  # say "<p><code>debug for Dave 2:<br>json= '$cont'</code></p>";
   my $j       = JSON->new->allow_nonref;
   my $decoded = {};                        # empty hash ref
   if ( length($cont) > 0 ) {
@@ -959,7 +959,7 @@ sub htmlPrintHeader {
     -type    => 'text/html',
     -charset => 'utf-8'
   );
-  print $cgi->start_html(
+  my $html = $cgi->start_html(
     -title => $titleLong,
     -meta  => { 'author' => 'Torben Menke' }
         # ,-author=>'Torben Menke' # generates mailto:
@@ -967,6 +967,10 @@ sub htmlPrintHeader {
     -style => { -src => [ '/style.css', './style-strava.css' ] }
         #    -style => { -src => './style-strava.css' }
   );
+  # CGI.pm doesn't support HTML5 DTD; replace the one it puts in.
+  $html =~ s{<!DOCTYPE.*?>}{<!DOCTYPE html>}s;
+  $html =~ s{ */>}{>}sg;
+  say $html;
   say "<h1>$title</h1>";
   return;
 } ## end sub htmlPrintHeader
@@ -1001,50 +1005,50 @@ sub htmlPrintNavigation {
     undef @allActivityHashes;
   } ## end if ( -f $s{'pathToActivityListHashDump'...})
   say
-      "<center><p><small>cached activities: $countActCached</small></p></center>";
+      "<p style=\"text-align:center\"><small>cached activities: $countActCached</small></p>";
 
   say '
 	<form action="activityListCaching.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavCacheAll" value="Cache Activities All"
   title="download and cache list of all activities, required for other features
-(be patient, takes a little while, &asymp;1 min per 1000 activities)"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-	<input type="hidden" name="year" value="all"/>
+(be patient, takes a little while, &asymp;1 min per 1000 activities)">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
+	<input type="hidden" name="year" value="all">
 	</form> ';
 
   say '
 	<form action="activityListCaching.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavCacheYear" value="Cache Activities Year"
   title="download and cache list of activities per year, required for other features
-(use if caching of all activities results in a timeout)"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(use if caching of all activities results in a timeout)">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
 # 17.11.2020: Strava disabled this feature
 #  say '
 #	<form action="segmentLeaderboard.pl" method="post">
 #	<input type="submit" name="submitFromNav" class="navButton" id="btnSegmentLeaderboard" value="Segment Leaderboard"
-#  title="Fetch a segment\'s Leaderboard"/>
-#	<input type="hidden" name="session" value="' . $s{ 'session' } . '"/>
+#  title="Fetch a segment\'s Leaderboard">
+#	<input type="hidden" name="session" value="' . $s{ 'session' } . '">
 #	</form>';
 #
 #
   say '
 	<form action="activityTable.pl" method="post">
-	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats" value="Activity Table" '
+	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActTable" value="Activity Table" '
       . $missingActivityCacheDisablesButton . '
   title="display statistics of your activities
-(requires caching first)" />
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)" >
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
 	<form action="activityStats2.pl" method="post">
-	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats" value="Activity Statistics V2" '
+	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats2" value="Activity Statistics V2" '
       . $missingActivityCacheDisablesButton . '
   title="display statistics of your activities
-(requires caching first)" />
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)" >
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
@@ -1052,8 +1056,8 @@ sub htmlPrintNavigation {
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActStats" value="Activity Statistics V1" '
       . $missingActivityCacheDisablesButton . '
   title="display statistics of your activities
-(requires caching first)" />
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)" >
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
@@ -1061,8 +1065,8 @@ sub htmlPrintNavigation {
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActTop10" value="Activity Top10" '
       . $missingActivityCacheDisablesButton . '
   title="display Top10 activities
-(requires caching first)" />
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)" >
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
@@ -1070,8 +1074,8 @@ sub htmlPrintNavigation {
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActSearch" value="Search For Activity" '
       . $missingActivityCacheDisablesButton . '
   title="searching for an activity, based on multiple criteria
-(requires caching first)"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
@@ -1079,8 +1083,8 @@ sub htmlPrintNavigation {
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActListExcel" value="Activity Excel Export" '
       . $missingActivityCacheDisablesButton . '
   title="generate/export activity Excel report
-(requires caching first)"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
@@ -1088,8 +1092,8 @@ sub htmlPrintNavigation {
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActCalExcel" value="Activity Calendar Export" '
       . $missingActivityCacheDisablesButton . '
   title="generate/export activity Excel report
-(requires caching first)"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>
 
 ';
@@ -1098,8 +1102,8 @@ sub htmlPrintNavigation {
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActListExcelImport" value="Activity Excel Import" '
       . $missingScopeActivityWriteDisablesButton . '
   title="generate/export activity Excel report
-(requires caching first)"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>
 ';
   say '
@@ -1107,8 +1111,8 @@ sub htmlPrintNavigation {
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActList" value="Activity List " '
       . $missingActivityCacheDisablesButton . '
   title="list all activities
-(requires caching first)" />
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)" >
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
@@ -1116,8 +1120,8 @@ sub htmlPrintNavigation {
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActModify" value="Modify Activities" '
       . $missingScopeActivityWriteDisablesButton . '
   title="bulk modify activities\' meta data
-(requires write scope)"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires write scope)">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
@@ -1125,44 +1129,44 @@ sub htmlPrintNavigation {
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavFreqStartEnd" value="Frequent Locations" '
       . $missingActivityCacheDisablesButton . '
   title="list frequently used start and end activity locations
-(requires caching first)"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+(requires caching first)">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
 	<form action="knownLocations.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavEditKnownLoc" value="Edit Known Locations"
-  title="edit list of known start/end locations to enrich Excel activity report"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+  title="edit list of known start/end locations to enrich Excel activity report">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
 	<form action="segments.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnSegments" value="Starred Segments"
-  title="Fetch starred segments"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+  title="Fetch starred segments">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
 	<form action="clearCache.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavClearCache" value="Clear Cache"
-  title="delete cached activity data"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+  title="delete cached activity data">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
 	<form action="/contact.php?origin=strava" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavContact" value="Contact"
-  title="contact me for bug reports and feature requests"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+  title="contact me for bug reports and feature requests">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '
 	<form action="deauth.pl" method="post">
 	<input type="submit" name="submitFromNav" class="navButton" id="btnNavQuit" value="Quit"
   title="quit session: delete the temporary data
-and deauthorize this app from your Strava account"/>
-	<input type="hidden" name="session" value="' . $s{'session'} . '"/>
+and deauthorize this app from your Strava account">
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
   say '</div>';

@@ -50,16 +50,16 @@ say
 
 my @L = TMsStrava::fetchSegmentsStarred( $s{'token'} );
 
-say "<table border=\"1\"><tbody align=\"center\">";
+say "<table><tbody align=\"center\">";
 say "<tr>
 <th>Type</th>
 <th>Name</th>
 <th>City</th>
-<th>Distance<br/>(km)</th>
-<th>Elev delta<br/>(m)</th>
+<th>Distance<br>(km)</th>
+<th>Elev delta<br>(m)</th>
 <th>Average Grade</th>
-<th>My time<br/>(min)</th>
-<th>My speed<br/>(km/h)</th>
+<th>My time<br>(min)</th>
+<th>My speed<br>(km/h)</th>
 <th>My count</th>
 </tr>";
 
@@ -84,7 +84,7 @@ foreach my $ref (@L) {
 
 # removed by Strava
 # <th>Athletes</th>
-# <th>Record time<br/>(min)</th>
+# <th>Record time<br>(min)</th>
 # <th>My rel. time</th>
 #   <td>$entry_count</td>
 #   <td>" .                                                                                                        ( TMsStrava::secToMinSec($record_time) ) . "</td>
@@ -94,14 +94,14 @@ foreach my $ref (@L) {
   <td>$h{\"activity_type\"}</td>
   <td><a href=\"https://www.strava.com/segments/"
       . $h{"id"} . "\" target=\"_blank\">$h{'name'}</td>
-  <td>$h{\"state\"}<br/>$h{\"city\"}</td>
+  <td>$h{\"state\"}<br>$h{\"city\"}</td>
   <td>" . ( sprintf "%.1f", $h{"distance"} / 1000 ) . "</td>
   <td>"
       . ( sprintf "%d", $h{"elevation_high"} - $h{"elevation_low"} ) . "</td>
   <td>" . ( sprintf "%.1f%%", $h{"average_grade"} ) . "</td>
   <td><a href=\"https://www.strava.com/segment_efforts/$h{ 'athlete_pr_effort' }{ 'id' }\" target=\"_blank\">"
       . ( TMsStrava::secToMinSec( $h{"pr_time"} ) )
-      . "</a><br/><small>"
+      . "</a><br><small>"
       . TMsStrava::formatDate( $h{'athlete_pr_effort'}{'start_date_local'},
     'date' )
       . "</small></td>
