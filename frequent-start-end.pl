@@ -267,7 +267,7 @@ while ( max(@AnzDerNachbarn) >= 5 ) {
 } ## end while ( max(@AnzDerNachbarn...))
 
 if ( $anzClustersFound == 0 ) {
-  say 'none<br/>';
+  say 'none<br>';
 }
 say "</code>";
 say sprintf( "Duration Total= %.1f", ( time - $tsStart ) )
@@ -373,7 +373,7 @@ sub searchForCluster {
   $clusterSchwerpunktY = sprintf '%.6f', $clusterSchwerpunktY;
 
   say sprintf(
-    "<a href=\"https://maps.google.com/?q=$clusterSchwerpunktX,$clusterSchwerpunktY\" target=\"_blank\">%02d: $clusterSchwerpunktX $clusterSchwerpunktY %dx</a><br/>",
+    "<a href=\"https://maps.google.com/?q=$clusterSchwerpunktX,$clusterSchwerpunktY\" target=\"_blank\">%02d: $clusterSchwerpunktX $clusterSchwerpunktY %dx</a><br>",
     ( 1 + $anzClustersFound ),
     ( 1 + $#ImCluster )
   );

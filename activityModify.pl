@@ -114,7 +114,7 @@ elsif ( $cgi->param('submitFromModify') ) {    # form below
   $json .= "}";
 
   # print resulting table, bad IDs result in empty row
-  say '<table border=1>
+  say '<table>
   <tr><th>
   ID</th><th>
   date</th><th>
@@ -158,31 +158,31 @@ elsif ( $cgi->param('submitFromModify') ) {    # form below
 # display form always
 say '
 <form action="activityModify.pl?session=' . $s{'session'} . '" method="post">
-<table border="1">
+<table>
 <tr><th>Activity IDs</th><th>Settings</th></tr>
 <tr><td>
 <textarea name="activityIDs" cols="10" rows="20">'
     . join( "\n", @activityIDs ) . '</textarea>
 </td><td>
-<table border="1">
+<table>
 <tr align="center"><td>&nbsp;</td><td>1</td><td>0</td></tr>
 <tr align="center"><td>commute</td>
- <td><input type="radio" name="commute" value="1"/></td>
- <td><input type="radio" name="commute" value="0"/></td>
+ <td><input type="radio" name="commute" value="1"></td>
+ <td><input type="radio" name="commute" value="0"></td>
 </tr>
 <tr align="center"><td>training machine</td>
- <td><input type="radio" name="trainer" value="1"/></td>
- <td><input type="radio" name="trainer" value="0"/></td>
+ <td><input type="radio" name="trainer" value="1"></td>
+ <td><input type="radio" name="trainer" value="0"></td>
 </tr>
 <tr align="center"><td>name</td>
- <td colspan="2"><input type="text" name="name" value=""/></td>
+ <td colspan="2"><input type="text" name="name" value=""></td>
 </tr>
 <tr align="center"><td>description</td>
- <td colspan="2"><input type="text" name="description" value=""/></td>
+ <td colspan="2"><input type="text" name="description" value=""></td>
 </tr>
 </table>
-<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-<input type="submit" name="submitFromModify" value="Submit"/>
+<input type="hidden" name="session" value="' . $s{'session'} . '">
+<input type="submit" name="submitFromModify" value="Submit">
 </td></tr>
 </table>
 </form>

@@ -108,16 +108,16 @@ foreach my $item (@knownLocations) {
 
 say '
 <form action="knownLocations.pl?session=' . $s{'session'} . '" method="post">
-<table border="1">
-<tr><th>Locations<br/><small>example: 51.070298 13.760067 DD-Alaunpark</small></th></tr>
+<table>
+<tr><th>Locations<br><small>example: 51.070298 13.760067 DD-Alaunpark</small></th></tr>
 <tr><td>
 <textarea name="knownLocations" cols="60" rows="20">
 ' . join( "\n", @knownLocations ) . '
 </textarea>
 </td></tr>
 </table>
-<input type="hidden" name="session" value="' . $s{'session'} . '"/>
-<input type="submit" name="submit" value="Submit"/>
+<input type="hidden" name="session" value="' . $s{'session'} . '">
+<input type="submit" name="submit" value="Submit">
 </form>
 ';
 

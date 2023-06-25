@@ -56,7 +56,7 @@ function chart_create(html_div_chart) {
       right: "10%",
       containLabel: true,
     },
-    xAxis: { type: "time" }, // will be overwritten later by category
+    xAxis: { type: "category" },
     yAxis: { type: "value" },
     dataZoom: [
       {
@@ -92,12 +92,8 @@ function chart_update(data_all) {
 
   fillGapsInDateDataInPlace(data_echarts_x, data_echarts_y);
 
-  const title = capitalize_words(
-    "Strava Stats: " + type + " " + date_agg + " " + measure
-  );
-
   chart.setOption({
-    xAxis: { type: "category", data: data_echarts_x },
+    xAxis: { data: data_echarts_x },
     yAxis: {
       min:
         y_min - 0.1 * y_delta > 0
@@ -127,7 +123,7 @@ function chart_update(data_all) {
       },
     ],
     title: {
-      text: title,
+      text: `Strava Stats: ${type} ${date_agg} ${measure}`,
       left: "center",
     },
   });
@@ -152,7 +148,6 @@ function chart_cnt_update(data_all_comparison) {
   }
   chart_cnt.setOption({
     xAxis: {
-      type: "category",
       data: data_all_comparison[date_agg]["date"],
     },
     yAxis: {},
@@ -170,7 +165,6 @@ function chart_cnt_update(data_all_comparison) {
   });
 }
 
-// eslint-disable-next-line no-unused-vars
 function charts_update() {
   chart_update(data_all);
   chart_cnt_update(data_all_comparison);
@@ -283,7 +277,7 @@ function getNextDate(data) {
   if (typeof data === "number") {
     // 2023
     return data + 1;
-  } else if (data.includes("Q")) {
+  } else if (data.includes("-Q")) {
     // "2023-Q2"
     const [year, quarter] = data.split("-Q").map(Number);
     const nextQuarter = ((quarter - 1) % 4) + 1;
@@ -342,7 +336,6 @@ html_sel_measure.addEventListener("change", () => {
 Promise.all(promises).then(function () {
   console.log("All data fetched");
   populate_select_type();
-  // console.log(data_echarts);
   calc_data_for_act_comparison(data_all_comparison);
   charts_update();
 });

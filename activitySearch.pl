@@ -166,7 +166,7 @@ unshift @cities, 'any';
 
 # display the form
 say "<form action=\"activitySearch.pl\" method=\"post\">
-  <input type=\"hidden\" name=\"session\" value=\"$s{ 'session' }\"/>";
+  <input type=\"hidden\" name=\"session\" value=\"$s{ 'session' }\">";
 
 say "Type
 <select name=\"actType\">
@@ -176,12 +176,11 @@ foreach my $type (@types) {
       . ( $formparam{'actType'} eq $type ? 'selected' : '' )
       . ">$type</option>";
 }
-say " </select><br/>";
+say " </select><br>";
 
 say
     "Competition/race<input type=\"checkbox\" name=\"competition\" value=\"1\""
-    . ( $formparam{'competition'} == 1 ? ' checked' : '' )
-    . "><br/>";
+    . ( $formparam{'competition'} == 1 ? ' checked' : '' ) . "><br>";
 
 say "Date range
 <select name=\"yearMin\">
@@ -200,7 +199,7 @@ foreach my $year (@years) {
       . ( $formparam{'yearMax'} eq $year ? 'selected' : '' )
       . ">$year</option>";
 }
-say " </select><br/>";
+say " </select><br>";
 
 say "Duration
 <input type=\"number\" id=\"durationMin\" name=\"durationMin\" style=\"width: 40px\" placeholder=\"0.2\" min=\"0\" max=\"72\" value=\""
@@ -208,7 +207,7 @@ say "Duration
  -
 <input type=\"number\" id=\"durationMax\" name=\"durationMax\" style=\"width: 40px\" placeholder=\"1.5\" min=\"0\" max=\"72\" value=\""
     . $formparam{'durationMax'} . "\" step=\"0.1\">
-hours<br/>";
+hours<br>";
 
 say "Distance
 <input type=\"number\" id=\"distanceMin\" name=\"distanceMin\" style=\"width: 40px\" placeholder=\"5\" min=\"0\" max=\"999\" value=\""
@@ -216,11 +215,11 @@ say "Distance
  -
 <input type=\"number\" id=\"distanceMax\" name=\"distanceMax\" style=\"width: 40px\" placeholder=\"10\" min=\"0\" max=\"999\" value=\""
     . $formparam{'distanceMax'} . "\" step=\"1\">
-km<br/>";
+km<br>";
 
 say "Name
-<input name=\"name\" value=\"$formparam{ 'name'}\"/>
-<br/>
+<input name=\"name\" value=\"$formparam{ 'name'}\">
+<br>
 ";
 
 say "Nearest city (start)
@@ -234,7 +233,7 @@ say "</select>
 plus
 <input type=\"number\" id=\"maxcitydistance\" name=\"maxcitydistance\" style=\"width: 40px\" placeholder=\"3\" min=\"0\" max=\"999\" value=\""
     . $formparam{'maxcitydistance'} . "\" step=\"1\">
-km <br/>";
+km <br>";
 
 say "Distance to gps
 <select name=\"geoMode\">
@@ -262,8 +261,8 @@ km " .
 ,
 <input type=\"number\" id=\"longitude\" name=\"longitude\" style=\"width: 70px\" placeholder=\"13.408333\" value=\""
     . $formparam{'longitude'} . "\" step=\"any\">
-<br/>
-<input type=\"submit\" name=\"submit\" value=\"Submit\"/>
+<br>
+<input type=\"submit\" name=\"submit\" value=\"Submit\">
 </form>";
 
 # form was submitted, so the search is performed
@@ -295,7 +294,7 @@ if ( $cgi->param('submit') ) {
   } ## end if ( $formparam{'maxcitydistance'...})
 
   # print header of results table
-  say '<table width="100%" border="1" cellpadding="2" cellspacing="0">';
+  say '<table width="100%" cellpadding="2" cellspacing="0">';
   say
       '<tr><th>Type</th><th>Date</th><th>Name</th><th>Duration</th><th>Distance</th></tr>';
   foreach my $ref (@allActivityHashes) {

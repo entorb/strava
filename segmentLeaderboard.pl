@@ -71,7 +71,7 @@ my @clubs = TMsStrava::fetchClubs( $s{'token'} );
 
 # display the form
 say "<form action=\"segmentLeaderboard.pl\" method=\"post\">
-  <input type=\"hidden\" name=\"session\" value=\"$s{ 'session' }\"/>
+  <input type=\"hidden\" name=\"session\" value=\"$s{ 'session' }\">
   <input type=\"text\" id=\"durationMin\" name=\"segment_id\" style=\"width: 100px\" value=\""
     . $formparam{'segment_id'} . "\" >";
 
@@ -113,7 +113,7 @@ for my $s (
 } ## end for my $s (...)
 say "</select>*";
 
-say "<input type=\"submit\" name=\"submit\" value=\"Submit\"/>
+say "<input type=\"submit\" name=\"submit\" value=\"Submit\">
   </form>";
 say "<p>* age filtering requires Strava 'Summit' subscription</p>";
 
@@ -126,7 +126,7 @@ if ( $cgi->param('submit') ) {
     $formparam{'gender'},     $formparam{'age_group'}
   );
 
-  say "<table border='1'>";
+  say "<table>";
   say "<tr><th>Rank</th><th>Time (s)</th><th>Name</th><th>Date</th></tr>";
   foreach my $ref (@list) {
     my @l = @{$ref};
