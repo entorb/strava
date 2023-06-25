@@ -122,7 +122,7 @@ say "</p>";
 # # due to privacy reasons: not printed on web!
 # %h = %userVisitCount;
 # say "<h2>recurring user ranking</h2>";
-# say "<table border=1>";
+# say "<table";
 # say "<tr><th>user</th><th>total</th></tr>";
 # foreach my $k ( sort { $h{ $b } <=> $h{ $a } } keys %h ) {
 #   last if $h{ $k } == 1;
@@ -137,7 +137,7 @@ say {$fhOut} "# month_dec\tmonth\ttotal\tnew\treturning";
 
 %h = %usersPerMonth;
 say "<h2>users per month</h2>";
-say "<table border=1>";
+say "<table>";
 say
     "<tr><th>month</th><th>total</th><th>new</th><th>returning</th><th>% returning</th></tr>";
 
@@ -177,11 +177,11 @@ if ( time - $_ > 900 ) {
 }
 
 say
-    "<p><img src=\"stats.png\" alt=\"stats.png\" width=\"1200\" height=\"600\" /></p>";
+    "<p><img src=\"stats.png\" alt=\"stats.png\" width=\"1200\" height=\"600\" ></p>";
 
 # %h = %visitorsPerDay;
 # say "<h2>users per day</h2>";
-# say "<table border=1>";
+# say "<table>";
 # say "<tr><th>day</th><th>total</th></tr>";
 # foreach my $k ( reverse sort keys(%h) ) {
 #     ## say "$k\t$usersPerMonth{$k}";

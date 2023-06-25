@@ -484,9 +484,9 @@ foreach my $activity (@allActivityHashes) {
 # if DL mode = all and not $allLastPageReached, than print a form for download next 1000 activities
 if ( $yearToDL eq 'all' and $allLastPageReached == 0 ) {
   say '<form action="activityListCaching.pl" method="post">
-  <input type="hidden" name="session" value="' . $s{'session'} . '"/>
-  <input type="hidden" name="year" value="all"/>
-  <input type="hidden" name="allStartPage" value="' . $allStartPage . '"/>
+  <input type="hidden" name="session" value="' . $s{'session'} . '">
+  <input type="hidden" name="year" value="all">
+  <input type="hidden" name="allStartPage" value="' . $allStartPage . '">
   Max number of 1000 activities reached. Press
   <input type="submit" name=allnext1000" id="allnext1000" value="Next 1000">
   to cache the next 1000 activities.
@@ -504,9 +504,9 @@ $allActivitiesCached = 1 if ( $#_ >= 0 );
 if ( $allActivitiesCached == 0 ) {
   say '
   <form action="activityListCaching.pl" method="post">
-  <input type="hidden" name="session" value="' . $s{'session'} . '"/>';
+  <input type="hidden" name="session" value="' . $s{'session'} . '">';
 }
-say '<table border="1">
+say '<table>
 <tr><th>Year</th><th>Activities</th></tr>';
 @_ = localtime time;
 
