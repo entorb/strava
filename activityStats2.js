@@ -75,6 +75,7 @@ const chart = chart_create(html_div_chart);
 const chart_cnt = chart_create(html_div_chart_cnt);
 
 function chart_update(data_all) {
+  console.log("fnc chart_update()");
   const date_agg = html_sel_date_agg.value;
   const type = html_sel_type.value;
   const measure = html_sel_measure.value;
@@ -130,6 +131,7 @@ function chart_update(data_all) {
 }
 
 function chart_cnt_update(data_all_comparison) {
+  console.log("fnc chart_cnt_update()");
   const date_agg = html_sel_date_agg.value;
   let measure = html_sel_measure.value;
 
@@ -166,11 +168,13 @@ function chart_cnt_update(data_all_comparison) {
 }
 
 function charts_update() {
+  console.log("fnc charts_update()");
   chart_update(data_all);
   chart_cnt_update(data_all_comparison);
 }
 
 function calc_data_for_act_comparison(data_all_comparison) {
+  console.log("fnc calc_data_for_act_comparison()");
   for (const date_agg of ["month", "quarter", "year"]) {
     data_all_comparison[date_agg] = {};
 
@@ -193,6 +197,7 @@ function calc_data_for_act_comparison(data_all_comparison) {
 
     // now add min start and max end to data for each act_type and fill the gaps
     for (const type of act_types) {
+
       data_all_comparison[date_agg][type] = {};
       const data_x = [...data_all[date_agg][type]["date"]];
       const data_y = [...data_all[date_agg][type]["count"]];
@@ -234,6 +239,7 @@ function calc_data_for_act_comparison(data_all_comparison) {
 //
 // Formats value "Something_Is_HERE" to "Something Is Here"
 function capitalize_words(str, separator) {
+  console.log("fnc capitalize_words()");
   const allLowerCaseValue = str.split(separator).join(" ").toLowerCase();
   return allLowerCaseValue.replace(/\w\S*/g, function (txt) {
     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
@@ -249,7 +255,9 @@ function fillGapsInDateDataInPlace(
   data_echarts_y3 = [],
   data_echarts_y4 = []
 ) {
+  console.log("fnc fillGapsInDateDataInPlace()");
   const minDate = data_echarts_x[0];
+
   const maxDate = data_echarts_x[data_echarts_x.length - 1];
 
   let currentDate = minDate;
@@ -268,24 +276,26 @@ function fillGapsInDateDataInPlace(
 
     currentIndex++;
     currentDate = getNextDate(currentDate);
+    // if (currentIndex > 100) { return }// TODO
   }
 }
 
 // calculate the next date for my period
 // supports x data of years (integer), quarters ("2023-Q2"), month "2023-03"
-function getNextDate(data) {
-  if (typeof data === "number") {
+function getNextDate(date) {
+  //  console.log(["fnc getNextDate()", date]);
+  if (typeof date === "number") {
     // 2023
-    return data + 1;
-  } else if (data.includes("-Q")) {
+    return date + 1;
+  } else if (date.includes("-Q")) {
     // "2023-Q2"
-    const [year, quarter] = data.split("-Q").map(Number);
-    const nextQuarter = ((quarter - 1) % 4) + 1;
+    const [year, quarter] = date.split("-Q").map(Number);
+    const nextQuarter = (quarter % 4) + 1;
     const nextYear = nextQuarter === 1 ? year + 1 : year;
     return `${nextYear}-Q${nextQuarter}`;
-  } else if (data.includes("-")) {
+  } else if (date.includes("-")) {
     // "2023-02"
-    const [year, month] = data.split("-").map(Number);
+    const [year, month] = date.split("-").map(Number);
     const nextMonth = month === 12 ? 1 : month + 1;
     const nextYear = nextMonth === 1 ? year + 1 : year;
     return `${nextYear}-${nextMonth.toString().padStart(2, "0")}`; // 2 digit month
@@ -296,6 +306,7 @@ function getNextDate(data) {
 // GUI helpers
 //
 function populate_select_type() {
+  console.log("fnc populate_select_type()");
   const select = html_sel_type;
   // remove all
   [...select.options].forEach((option) => option.remove());
