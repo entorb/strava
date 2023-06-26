@@ -20,7 +20,7 @@ import sys
 if len(argv) == 2:
     session = argv[1]
 else:
-    session = "123"
+    session = "SessionIdPlaceholder"
 
 # Path(__file__).parents[0] = location of current Python script
 pathStatsExport = Path(__file__).parents[0] / "download" / session
@@ -58,6 +58,10 @@ def read_activityListJson(pathToActivityListJsonDump: Path) -> pd.DataFrame:
     date_cols = ["start_date", "start_date_local", "x_date"]
     for col in date_cols:
         df_all[col] = pd.to_datetime(df_all[col])  # type: ignore
+
+    # filter out act < 10min
+    df_all = df_all[df_all["x_min"] >= 10]
+
     return df_all
 
 
