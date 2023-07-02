@@ -196,7 +196,6 @@ function calc_data_for_act_comparison(data_all_comparison) {
 
     // now add min start and max end to data for each act_type and fill the gaps
     for (const type of act_types) {
-
       data_all_comparison[date_agg][type] = {};
       const data_x = [...data_all[date_agg][type]["date"]];
       const data_y = [...data_all[date_agg][type]["count"]];
@@ -306,22 +305,9 @@ function getNextDate(date) {
 //
 function populate_select_type() {
   console.log("fnc populate_select_type()");
-  const select = html_sel_type;
-  // remove all
-  [...select.options].forEach((option) => option.remove());
-  // populate from data_all
-  let i_of_Run = 0;
-  const options = Object.keys(data_all["year"]);
-  options.map((opt, i) => {
-    const el = document.createElement("option");
-    el.textContent = opt;
-    el.value = opt;
-    select.appendChild(el);
-    if (opt === "Run") {
-      i_of_Run = i;
-    }
-  });
-  select.selectedIndex = i_of_Run;
+  const act_types = Object.keys(data_all["year"]);
+  const act_types_map = helper_array_to_object_of_key_eq_value(act_types);
+  helper_populate_select(html_sel_type, act_types_map, "Run", true);
 }
 
 //
