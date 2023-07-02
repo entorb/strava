@@ -14,7 +14,6 @@ const html_sel_measure = document.getElementById("sel-measure");
 //
 // Global variables
 //
-// eslint-disable-next-line prefer-const
 const data_all = [];
 const data_all_comparison = {};
 const promises = []; // array of promises for async fetching
@@ -62,9 +61,9 @@ function chart_create(html_div_chart) {
       {
         type: "slider",
         show: true,
-        start: 50,
+        start: 0,
         end: 100,
-        handleSize: 8,
+        // handleSize: 8,
       },
     ],
   });

@@ -62,7 +62,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "Kilometer",
+        title: "Kilometers",
         field: "x_km",
         sorter: "number",
         headerFilter: "number",
@@ -98,7 +98,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "elevation (m)",
+        title: "Elevation (m)",
         field: "total_elevation_gain",
         sorter: "number",
         headerFilter: "number",
@@ -110,7 +110,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "elevation (m/km)",
+        title: "Elevation (m/km)",
         field: "x_elev_m/km",
         sorter: "number",
         headerFilter: "number",
@@ -146,7 +146,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "cadence",
+        title: "Cadence",
         field: "average_cadence",
         sorter: "number",
         headerFilter: "number",
@@ -158,7 +158,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "watts avg",
+        title: "Watts avg",
         field: "average_watts",
         sorter: "number",
         headerFilter: "number",
@@ -182,7 +182,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "visible",
+        title: "Visible",
         field: "visibility",
         sorter: "number",
         headerFilter: "number",
@@ -194,7 +194,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "athletes",
+        title: "Athletes",
         field: "athlete_count",
         sorter: "number",
         headerFilter: "number",
@@ -218,7 +218,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "kudos",
+        title: "Kudos",
         field: "kudos_count",
         sorter: "number",
         headerFilter: "number",
@@ -230,7 +230,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "comments",
+        title: "Comments",
         field: "comment_count",
         sorter: "number",
         headerFilter: "number",
@@ -242,7 +242,7 @@ function defineTable() {
         headerFilterFunc: ">=",
       },
       {
-        title: "achievements",
+        title: "Achievements",
         field: "achievement_count",
         sorter: "number",
         headerFilter: "number",
