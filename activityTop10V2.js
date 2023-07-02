@@ -15,11 +15,9 @@ const html_yearMax = document.getElementById("sel-yearMax");
 //
 let data_all = [];
 let data_rank = [];
-// let yearMin = 1900;
-// let yearMax = new Date().getFullYear();;
-
 const promises = []; // array of promises for async fetching
 
+// measures used in table and in select
 const measures = {
   x_min: "Duration",
   x_km: "Distance",
@@ -32,13 +30,7 @@ const measures = {
 };
 
 // add options to html_sel_measure
-for (let i = 0; i < Object.keys(measures).length; i++) {
-  const key = Object.keys(measures)[i];
-  const option = document.createElement("option");
-  option.value = key;
-  option.text = measures[key];
-  html_sel_measure.appendChild(option);
-}
+helper_populate_select(html_sel_measure, measures, null, true);
 
 const table_columns = [
   {
@@ -123,21 +115,13 @@ const fetch_data = async (session) => {
 
     // extract activity types
     const act_types = [...new Set(data_all.map((obj) => obj.type))].sort();
+    // convert into object of key->value with key = value
+    const act_types_map = act_types.reduce((obj, value) => {
+      obj[value] = value;
+      return obj;
+    }, {});
 
-    // remove all
-    while (html_sel_type.firstChild) {
-      html_sel_type.removeChild(html_sel_type.firstChild);
-    }
-    // add options
-    act_types.forEach((type) => {
-      const option = document.createElement("option");
-      option.value = type;
-      option.text = type;
-      if (type === "Run") {
-        option.selected = true;
-      }
-      html_sel_type.appendChild(option);
-    });
+    helper_populate_select(html_sel_type, act_types_map, 'Run', true);
 
     const yearMin = Math.min(...data_all.map((obj) => obj.year));
     const yearMax = Math.max(...data_all.map((obj) => obj.year));
