@@ -23,24 +23,24 @@ const measures = {
   x_km: "Distance",
   "km/h": "Speed",
   total_elevation_gain: "Elevation",
-  "x_elev_m/km": "Elevation Gain per Distance",
-  x_dist_start_end_km: "Distance Start-End",
-  average_heartrate: "Average Heartrate",
-  kilojoules: "Kilo Joule",
+  "x_elev_m/km": "Elev. m/km",
+  x_dist_start_end_km: "Dist Start-End",
+  average_heartrate: "Heartrate avg",
+  kilojoules: "KJ",
 };
 
 // add options to html_sel_measure
 helper_populate_select(html_sel_measure, measures, null, true);
 
-const table_columns = [];
+const columns = [];
 
-table_columns.push(helper_tabulator_col_num("rank", "#"));
-table_columns.push(helper_tabulator_col_str("x_date", "Date"));
-table_columns.push(helper_tabulator_col_str("name", "Name", 300));
+columns.push(helper_tabulator_col_num("rank", "#"));
+columns.push(helper_tabulator_col_str("x_date", "Date"));
+columns.push(helper_tabulator_col_str("name", "Name", 300));
 
 for (let i = 0; i < Object.keys(measures).length; i++) {
   const key = Object.keys(measures)[i];
-  table_columns.push(helper_tabulator_col_num(key, measures[key]));
+  columns.push(helper_tabulator_col_num(key, measures[key]));
 }
 
 //
@@ -107,7 +107,7 @@ function defineTable() {
     layout: "fitDataStretch", // fit columns to width of table (optional)
     tooltipsHeader: false,
     selectable: false, // for row click
-    columns: table_columns,
+    columns: columns,
   });
   return table;
 }
@@ -168,9 +168,15 @@ function ranking() {
   table.getColumns().forEach(function (column) {
     table.showColumn(column.getField());
   });
+  // hide some columns
   if (type === "Swim") {
     table.hideColumn("total_elevation_gain");
     table.hideColumn("x_elev_m/km");
+  }
+  if (type === "Ride") {
+    table.showColumn("kilojoules");
+  } else {
+    table.hideColumn("kilojoules");
   }
 }
 
