@@ -45,3 +45,50 @@ function helper_array_to_object_of_key_eq_value(array) {
     return obj;
   }, {});
 }
+
+/**
+ * Tabulator table, column definition - string
+ * @param {string} field field id/name
+ * @param {string} title title to be displayed
+ * @param {int} width width
+ * @return {Object} object of column definition
+ */
+function helper_tabulator_col_str(field, title, width = 0) {
+  const obj = {
+    field: field,
+    title: title,
+    sorter: "string",
+    headerFilter: true,
+  };
+  if (width > 0) {
+    obj.width = width;
+  }
+  return obj;
+}
+
+/**
+ * Tabulator table, column definition - numeric
+ * @param {string} field field id/name
+ * @param {string} title title to be displayed
+ * @return {Object} object of column definition
+ */
+function helper_tabulator_col_num(field, title) {
+  const obj = {
+    field: field,
+    title: title,
+    sorter: "number",
+    headerFilter: "number",
+    hozAlign: "right",
+    sorterParams: {
+      alignEmptyValues: "bottom",
+    },
+    headerFilterPlaceholder: ">=",
+    headerFilterFunc: ">=",
+    formatter: function (cell, formatterParams, onRendered) {
+      if (cell.getValue()) {
+        return Math.round(cell.getValue() * 10) / 10;
+      }
+    },
+  };
+  return obj;
+}
