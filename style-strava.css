@@ -1,39 +1,64 @@
- /* The sidebar menu */
- /* from https://www.w3schools.com/howto/howto_css_fixed_sidebar.asp */
- .sidenav {
-   height: 100%;
-   /* Full-height: remove this if you want "auto" height */
-   width: 180px;
-   /* Set the width of the sidebar */
-   position: fixed;
-   /* Fixed Sidebar (stay in place on scroll) */
-   z-index: 1;
-   /* Stay on top */
-   top: 40px;
-   /* Stay at the top */
-   left: 0;
-   overflow-x: hidden;
-   /* Disable horizontal scroll */
-   padding-top: 20px;
- }
+/* pin title of page */
+h1_title {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  /* optional: provide a background color if needed */
+  z-index: 9999;
+  /* optional: adjust the z-index to ensure it stays on top of other elements */
+  padding: 20px;
+  /* adjust the padding according to your preference */
+}
+
+h1_title h1 {
+  margin: 0;
+  /* remove any default margin of the h1 element */
+}
+
+body {
+  padding-top: 80px;
+  /* add a top padding to body to create space for the fixed element */
+}
 
 
- /* When you mouse over the navigation links, change their color */
- /*
+/* The sidebar menu */
+/* from https://www.w3schools.com/howto/howto_css_fixed_sidebar.asp */
+.sidenav {
+  height: 100%;
+  /* Full-height: remove this if you want "auto" height */
+  width: 180px;
+  /* Set the width of the sidebar */
+  position: fixed;
+  /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1;
+  /* Stay on top */
+  top: 40px;
+  /* Stay at the top */
+  left: 0;
+  overflow-x: hidden;
+  /* Disable horizontal scroll */
+  padding-top: 20px;
+}
+
+
+/* When you mouse over the navigation links, change their color */
+/*
 .sidenav a:hover {
   color: #f1f1f1;
 }
 */
 
- /* Style page content */
- .main {
-   margin-left: 180px;
-   /* Same as the width of the sidebar */
-   padding: 0px 0px;
- }
+/* Style page content */
+.main {
+  margin-left: 180px;
+  /* Same as the width of the sidebar */
+  padding: 0px 0px;
+}
 
- /* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
- /*
+/* On smaller screens, where height is less than 450px, change the style of the sidebar (less padding and a smaller font size) */
+/*
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
@@ -42,35 +67,35 @@
 
 
 
- /* Style the submit button with a specific background color etc */
- /* input[type=submit] {*/
+/* Style the submit button with a specific background color etc */
+/* input[type=submit] {*/
 
- .navButton {
-   /*  background-color: #4CAF50; */
-   /*  color: white; */
-   padding: 0px 0px;
-   /*   border: none; */
-   /*  border-radius: 4px; */
-   cursor: pointer;
-   height: 30px;
-   width: 175px
- }
+.navButton {
+  /*  background-color: #4CAF50; */
+  /*  color: white; */
+  padding: 0px 0px;
+  /*   border: none; */
+  /*  border-radius: 4px; */
+  cursor: pointer;
+  height: 30px;
+  width: 175px
+}
 
- /* When moving the mouse over the submit button, add a darker green color */
+/* When moving the mouse over the submit button, add a darker green color */
 
- .navButton:hover {
-   background-color: #45a049;
- }
+.navButton:hover {
+  background-color: #45a049;
+}
 
- .navButton:disabled,
- button[disabled] {
-   border: 1px solid #999999;
-   background-color: #cccccc;
-   color: #666666;
- }
+.navButton:disabled,
+button[disabled] {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
 
- /* Tooltip text */
- /*
+/* Tooltip text */
+/*
 .tooltiptext {
   visibility: hidden;
   width: 120px;
@@ -91,23 +116,23 @@
 }
 */
 
- /* Show the tooltip text when you mouse over the tooltip container */
- .tooltip:hover .tooltiptext {
-   visibility: visible;
-   opacity: 1;
- }
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
 
- table {
-   border: solid 1px grey;
-   /* padding: 1px */
- }
+table {
+  border: solid 1px grey;
+  /* padding: 1px */
+}
 
- th {
-   border: solid 1px grey;
-   /* margin: 1; */
- }
+th {
+  border: solid 1px grey;
+  /* margin: 1; */
+}
 
- td {
-   border: solid 1px grey;
-   /* margin: 1; */
- }
+td {
+  border: solid 1px grey;
+  /* margin: 1; */
+}
