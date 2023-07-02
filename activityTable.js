@@ -261,6 +261,7 @@ function defineTable() {
 
 const table = defineTable();
 
+// wait for tableBuilt event and set data afterwards
 table.on("tableBuilt", () => {
   table.setData(
     `https://entorb.net/strava/download/${session}/activityList.json`
