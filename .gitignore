@@ -12,3 +12,4 @@ index-*.html
 stats.png
 *.pl.bak
 *.pm.bak
+.DS_Store

@@ -32,48 +32,15 @@ const measures = {
 // add options to html_sel_measure
 helper_populate_select(html_sel_measure, measures, null, true);
 
-const table_columns = [
-  {
-    field: "rank",
-    title: "#",
-    sorter: "number",
-    headerFilter: false,
-  },
-  {
-    field: "x_date",
-    title: "Date",
-    sorter: "string",
-    headerFilter: false,
-  },
-  {
-    field: "name",
-    title: "Name",
-    sorter: "string",
-    headerFilter: true,
-    width: 300,
-    widthGrow: 3,
-  },
-];
+const table_columns = [];
+
+table_columns.push(helper_tabulator_col_num("rank", "#"));
+table_columns.push(helper_tabulator_col_str("x_date", "Date"));
+table_columns.push(helper_tabulator_col_str("name", "Name", 300));
 
 for (let i = 0; i < Object.keys(measures).length; i++) {
   const key = Object.keys(measures)[i];
-  table_columns.push({
-    title: measures[key],
-    field: key,
-    sorter: "number",
-    headerFilter: "number",
-    hozAlign: "right",
-    sorterParams: {
-      alignEmptyValues: "bottom",
-    },
-    headerFilterPlaceholder: ">=",
-    headerFilterFunc: ">=",
-    formatter: function (cell, formatterParams, onRendered) {
-      if (cell.getValue()) {
-        return Math.round(cell.getValue() * 10) / 10;
-      }
-    },
-  });
+  table_columns.push(helper_tabulator_col_num(key, measures[key]));
 }
 
 //
@@ -139,12 +106,20 @@ function defineTable() {
     // height: 800,
     layout: "fitDataStretch", // fit columns to width of table (optional)
     tooltipsHeader: false,
-    selectable: false,
+    selectable: false, // for row click
     columns: table_columns,
   });
   return table;
 }
 const table = defineTable();
+
+// row click event -> open Strava
+table.on("cellClick", (e, cell) => {
+  const row = cell.getRow();
+  const rowData = row.getData();
+  const activityUrl = rowData.x_url;
+  window.open(activityUrl);
+});
 
 // add promise for tableBuilt event
 promises.push(
@@ -155,14 +130,6 @@ promises.push(
     });
   })
 );
-
-// row click event -> open Strava
-table.on("cellClick", (e, cell) => {
-  const row = cell.getRow();
-  const rowData = row.getData();
-  const activityUrl = rowData.x_url;
-  window.open(activityUrl);
-});
 
 // data_all -> data_rank
 function ranking() {
