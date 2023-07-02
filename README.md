@@ -43,6 +43,7 @@ set name, description, commute-flag, training-machine-flag for multiple activiti
 
 ## List of Changes
 
+* 2023-07-02: activity Top10 V2
 * 2023-06-12: fancy activity statistics charts
 * 2023-06-08: usage stats: 2697 unique and 669 returning users.
 * 2020-07-24: usage stats: this tool passed the 1000-unique-users milestone!
