@@ -34,33 +34,26 @@ helper_populate_select(html_sel_measure, measures, null, true);
 
 const table_columns = [
   {
-    title: "#",
     field: "rank",
+    title: "#",
     sorter: "number",
     headerFilter: false,
-    headerSortStartingDir: "",
-    // headerFilterPlaceholder: "filter >=",
-    // headerFilterFunc: "<=",
   },
-  { title: "Date", field: "x_date", sorter: "string", headerFilter: false },
   {
-    title: "Name",
+    field: "x_date",
+    title: "Date",
+    sorter: "string",
+    headerFilter: false,
+  },
+  {
     field: "name",
+    title: "Name",
     sorter: "string",
     headerFilter: true,
     width: 300,
     widthGrow: 3,
   },
-  // {
-  //   title: "Known location start",
-  //   field: "x_start_locality",
-  //   sorter: "string",
-  //   headerFilter: true,
-  // },
 ];
-
-// for (let i = 0; i < measures.length; i++) {
-//   const key = arr[i];
 
 for (let i = 0; i < Object.keys(measures).length; i++) {
   const key = Object.keys(measures)[i];
@@ -70,10 +63,10 @@ for (let i = 0; i < Object.keys(measures).length; i++) {
     sorter: "number",
     headerFilter: "number",
     hozAlign: "right",
-    // sorterParams: {
-    //   alignEmptyValues: "bottom",
-    // },
-    // headerFilterPlaceholder: "filter >=",
+    sorterParams: {
+      alignEmptyValues: "bottom",
+    },
+    headerFilterPlaceholder: ">=",
     headerFilterFunc: ">=",
     formatter: function (cell, formatterParams, onRendered) {
       if (cell.getValue()) {
@@ -94,16 +87,16 @@ const fetch_data = async (session) => {
     console.log("done download activityList.json");
 
     // delete not needed object properties
+    const allowedKeys = new Set([
+      "type",
+      "name",
+      "x_date",
+      "x_url",
+      ...Object.keys(measures),
+    ]);
     data.forEach((obj) => {
       Object.entries(obj).forEach(([key]) => {
-        if (
-          !measures.hasOwnProperty(key) &&
-          key !== "type" &&
-          key !== "name" &&
-          key !== "x_date" &&
-          // && key !== 'x_start_locality'
-          key !== "x_url" // for click on the row -> open at strava
-        ) {
+        if (!allowedKeys.has(key)) {
           delete obj[key];
         }
       });
@@ -112,25 +105,7 @@ const fetch_data = async (session) => {
     });
 
     data_all = data;
-
-    // extract activity types
-    const act_types = [...new Set(data_all.map((obj) => obj.type))].sort();
-    // convert into object of key->value with key = value
-    const act_types_map = act_types.reduce((obj, value) => {
-      obj[value] = value;
-      return obj;
-    }, {});
-
-    helper_populate_select(html_sel_type, act_types_map, 'Run', true);
-
-    const yearMin = Math.min(...data_all.map((obj) => obj.year));
-    const yearMax = Math.max(...data_all.map((obj) => obj.year));
-    html_yearMin.value = yearMin;
-    html_yearMin.min = yearMin;
-    html_yearMin.max = yearMax;
-    html_yearMax.value = yearMax;
-    html_yearMax.min = yearMin;
-    html_yearMax.max = yearMax;
+    use_data_all_to_populate_html_elements();
   } catch (error) {
     console.log("failed download activityList.json");
   }
@@ -139,7 +114,24 @@ const fetch_data = async (session) => {
 // Start the async fetching
 promises.push(fetch_data(session));
 
-// eslint-disable-next-line no-unused-vars
+function use_data_all_to_populate_html_elements() {
+  // extract activity types and populate select
+  const act_types = [...new Set(data_all.map((obj) => obj.type))].sort();
+  // convert into object of key->value with key = value
+  const act_types_map = helper_array_to_object_of_key_eq_value(act_types);
+  helper_populate_select(html_sel_type, act_types_map, "Run", true);
+
+  // extract min and may year value
+  const yearMin = Math.min(...data_all.map((obj) => obj.year));
+  const yearMax = Math.max(...data_all.map((obj) => obj.year));
+  html_yearMin.value = yearMin;
+  html_yearMin.min = yearMin;
+  html_yearMin.max = yearMax;
+  html_yearMax.value = yearMax;
+  html_yearMax.min = yearMin;
+  html_yearMax.max = yearMax;
+}
+
 function defineTable() {
   const table = new Tabulator("#table-activity-list", {
     // height: "100%",
@@ -150,10 +142,8 @@ function defineTable() {
     selectable: false,
     columns: table_columns,
   });
-
   return table;
 }
-
 const table = defineTable();
 
 // add promise for tableBuilt event
@@ -166,6 +156,7 @@ promises.push(
   })
 );
 
+// row click event -> open Strava
 table.on("cellClick", (e, cell) => {
   const row = cell.getRow();
   const rowData = row.getData();
@@ -173,11 +164,15 @@ table.on("cellClick", (e, cell) => {
   window.open(activityUrl);
 });
 
+// data_all -> data_rank
 function ranking() {
   const type = html_sel_type.value;
   const measure = html_sel_measure.value;
 
-  // filter data on type and measure not null/missing
+  // filter data on
+  // type
+  // measure not null/missing
+  // year
   data_rank = data_all.filter(
     (obj) =>
       obj.type === type &&
@@ -199,7 +194,9 @@ function ranking() {
     };
   });
 
+  // send data to table
   table.setData(data_rank);
+
   // unhide all columns
   table.getColumns().forEach(function (column) {
     table.showColumn(column.getField());
