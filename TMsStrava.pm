@@ -971,7 +971,7 @@ sub htmlPrintHeader {
   $html =~ s{<!DOCTYPE.*?>}{<!DOCTYPE html>}s;
   $html =~ s{ */>}{>}sg;
   say $html;
-  say "<h1>$title</h1>";
+  say "<h1_title><h1>$title</h1></h1_title>";
   return;
 } ## end sub htmlPrintHeader
 
