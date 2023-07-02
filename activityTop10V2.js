@@ -21,28 +21,29 @@ let data_rank = [];
 const promises = []; // array of promises for async fetching
 
 const measures = {
-  "x_min": "Duration",
-  "x_km": "Distance",
+  x_min: "Duration",
+  x_km: "Distance",
   "km/h": "Speed",
-  "total_elevation_gain": "Elevation",
+  total_elevation_gain: "Elevation",
   "x_elev_m/km": "Elevation Gain per Distance",
-  "x_dist_start_end_km": "Distance Start-End",
-  "average_heartrate": "Average Heartrate",
-  "kilojoules": "Kilo Joule",
+  x_dist_start_end_km: "Distance Start-End",
+  average_heartrate: "Average Heartrate",
+  kilojoules: "Kilo Joule",
 };
 
 // add options to html_sel_measure
-for (const key in measures) {
-  const option = document.createElement('option');
+for (let i = 0; i < Object.keys(measures).length; i++) {
+  const key = Object.keys(measures)[i];
+  const option = document.createElement("option");
   option.value = key;
   option.text = measures[key];
   html_sel_measure.appendChild(option);
-};
+}
 
 const table_columns = [
-
   {
-    title: "#", field: "rank",
+    title: "#",
+    field: "rank",
     sorter: "number",
     headerFilter: false,
     headerSortStartingDir: "",
@@ -66,7 +67,11 @@ const table_columns = [
   // },
 ];
 
-for (const key in measures) {
+// for (let i = 0; i < measures.length; i++) {
+//   const key = arr[i];
+
+for (let i = 0; i < Object.keys(measures).length; i++) {
+  const key = Object.keys(measures)[i];
   table_columns.push({
     title: measures[key],
     field: key,
@@ -79,10 +84,11 @@ for (const key in measures) {
     // headerFilterPlaceholder: "filter >=",
     headerFilterFunc: ">=",
     formatter: function (cell, formatterParams, onRendered) {
-      if (cell.getValue()) { return Math.round(cell.getValue() * 10) / 10; }
+      if (cell.getValue()) {
+        return Math.round(cell.getValue() * 10) / 10;
+      }
     },
-
-  },);
+  });
 }
 
 //
@@ -96,14 +102,15 @@ const fetch_data = async (session) => {
     console.log("done download activityList.json");
 
     // delete not needed object properties
-    data.forEach(obj => {
+    data.forEach((obj) => {
       Object.entries(obj).forEach(([key]) => {
-        if (!measures.hasOwnProperty(key)
-          && key !== 'type'
-          && key !== 'name'
-          && key !== 'x_date'
+        if (
+          !measures.hasOwnProperty(key) &&
+          key !== "type" &&
+          key !== "name" &&
+          key !== "x_date" &&
           // && key !== 'x_start_locality'
-          && key !== 'x_url' // for click on the row -> open at strava
+          key !== "x_url" // for click on the row -> open at strava
         ) {
           delete obj[key];
         }
@@ -115,26 +122,25 @@ const fetch_data = async (session) => {
     data_all = data;
 
     // extract activity types
-    const act_types = [...new Set(data_all.map(obj => obj.type))].sort();
+    const act_types = [...new Set(data_all.map((obj) => obj.type))].sort();
 
     // remove all
     while (html_sel_type.firstChild) {
       html_sel_type.removeChild(html_sel_type.firstChild);
     }
     // add options
-    act_types.forEach(type => {
-      const option = document.createElement('option');
+    act_types.forEach((type) => {
+      const option = document.createElement("option");
       option.value = type;
       option.text = type;
-      if (type === 'Run') {
+      if (type === "Run") {
         option.selected = true;
       }
       html_sel_type.appendChild(option);
     });
 
-
-    const yearMin = Math.min(...data_all.map(obj => obj.year));
-    const yearMax = Math.max(...data_all.map(obj => obj.year));
+    const yearMin = Math.min(...data_all.map((obj) => obj.year));
+    const yearMax = Math.max(...data_all.map((obj) => obj.year));
     html_yearMin.value = yearMin;
     html_yearMin.min = yearMin;
     html_yearMin.max = yearMax;
@@ -149,13 +155,11 @@ const fetch_data = async (session) => {
 // Start the async fetching
 promises.push(fetch_data(session));
 
-
-
 // eslint-disable-next-line no-unused-vars
 function defineTable() {
   const table = new Tabulator("#table-activity-list", {
     // height: "100%",
-    maxHeight: "100%", //do not let table get bigger than the height of its parent element
+    maxHeight: "100%", // do not let table get bigger than the height of its parent element
     // height: 800,
     layout: "fitDataStretch", // fit columns to width of table (optional)
     tooltipsHeader: false,
@@ -169,12 +173,14 @@ function defineTable() {
 const table = defineTable();
 
 // add promise for tableBuilt event
-promises.push(new Promise((resolve) => {
-  table.on("tableBuilt", () => {
-    console.log("tableBuilt")
-    resolve();
-  });
-}));
+promises.push(
+  new Promise((resolve) => {
+    table.on("tableBuilt", () => {
+      console.log("tableBuilt");
+      resolve();
+    });
+  })
+);
 
 table.on("cellClick", (e, cell) => {
   const row = cell.getRow();
@@ -188,11 +194,14 @@ function ranking() {
   const measure = html_sel_measure.value;
 
   // filter data on type and measure not null/missing
-  data_rank = data_all.filter(obj => obj.type === type
-    && obj[measure] !== null && obj[measure] !== undefined
-    && obj[measure] != 0
-    && obj["year"] >= html_yearMin.value
-    && obj["year"] <= html_yearMax.value
+  data_rank = data_all.filter(
+    (obj) =>
+      obj.type === type &&
+      obj[measure] !== null &&
+      obj[measure] !== undefined &&
+      obj[measure] != 0 &&
+      obj["year"] >= html_yearMin.value &&
+      obj["year"] <= html_yearMax.value
   );
 
   // sort by measure DESC
@@ -202,7 +211,7 @@ function ranking() {
   data_rank = data_rank.map((element, index) => {
     return {
       ...element,
-      rank: index + 1
+      rank: index + 1,
     };
   });
 
@@ -216,7 +225,6 @@ function ranking() {
     table.hideColumn("x_elev_m/km");
   }
 }
-
 
 //
 // Event listeners
@@ -235,8 +243,6 @@ html_yearMax.addEventListener("change", () => {
   html_yearMin.max = html_yearMax.value;
   ranking();
 });
-
-
 
 // Wait for all async promises to be done (all data is fetched)
 Promise.all(promises).then(function () {
