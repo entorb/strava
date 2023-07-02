@@ -1061,8 +1061,16 @@ sub htmlPrintNavigation {
 	</form>';
 
   say '
+	<form action="activityTop10V2.pl" method="post">
+	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActTop10" value="Activity Top10 V2" '
+      . $missingActivityCacheDisablesButton . '
+  title="display Top10 activities
+(requires caching first)" >
+	<input type="hidden" name="session" value="' . $s{'session'} . '">
+	</form>';
+  say '
 	<form action="activityTop10.pl" method="post">
-	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActTop10" value="Activity Top10" '
+	<input type="submit" name="submitFromNav" class="navButton" id="btnNavActTop10" value="Activity Top10 V1" '
       . $missingActivityCacheDisablesButton . '
   title="display Top10 activities
 (requires caching first)" >
