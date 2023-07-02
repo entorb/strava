@@ -2,42 +2,32 @@
 /* eslint-disable require-jsdoc */
 "use strict";
 
-const table_columns = [];
+const columns = [];
 
-table_columns.push(helper_tabulator_col_str("x_date", "Date"));
-table_columns.push(helper_tabulator_col_str("type", "Type"));
-table_columns.push(helper_tabulator_col_str("name", "Name", 120));
-table_columns.push(
-  helper_tabulator_col_str("x_nearest_city_start", "City", 120)
-);
-table_columns.push(
-  helper_tabulator_col_str("x_start_locality", "Known location start")
-);
-table_columns.push(helper_tabulator_col_str("x_end_locality", "-end"));
-table_columns.push(helper_tabulator_col_str("x_gear_name", "Gear", 120));
-table_columns.push(helper_tabulator_col_num("x_min", "Minutes"));
-table_columns.push(helper_tabulator_col_num("x_km", "Kilometers"));
-table_columns.push(helper_tabulator_col_num("km/h", "km/h"));
-table_columns.push(helper_tabulator_col_num("x_max_km/h", "max km/h"));
-table_columns.push(
-  helper_tabulator_col_num("total_elevation_gain", "Elevation (m)")
-);
-table_columns.push(
-  helper_tabulator_col_num("x_elev_m/km", "Elevation (m/km)")
-);
-table_columns.push(helper_tabulator_col_num("average_heartrate", "HR avg"));
-table_columns.push(helper_tabulator_col_num("max_heartrate", "HR max"));
-table_columns.push(helper_tabulator_col_num("average_cadence", "Cadence"));
-table_columns.push(helper_tabulator_col_num("average_watts", "Watts avg"));
-table_columns.push(helper_tabulator_col_num("kilojoules", "KJ"));
-table_columns.push(helper_tabulator_col_str("visibility", "visibility"));
-table_columns.push(helper_tabulator_col_num("athlete_count", "Athletes"));
-table_columns.push(helper_tabulator_col_num("workout_type", "W-Type"));
-table_columns.push(helper_tabulator_col_num("kudos_count", "Kudos"));
-table_columns.push(helper_tabulator_col_num("comment_count", "Comments"));
-table_columns.push(
-  helper_tabulator_col_num("achievement_count", "Achievements")
-);
+columns.push(helper_tabulator_col_str("x_date", "Date"));
+columns.push(helper_tabulator_col_str("type", "Type"));
+columns.push(helper_tabulator_col_str("name", "Name", 120));
+columns.push(helper_tabulator_col_str("x_nearest_city_start", "City", 120));
+columns.push(helper_tabulator_col_str("x_start_locality", "Known location start"));
+columns.push(helper_tabulator_col_str("x_end_locality", "-end"));
+columns.push(helper_tabulator_col_str("x_gear_name", "Gear", 120));
+columns.push(helper_tabulator_col_num("x_min", "Minutes"));
+columns.push(helper_tabulator_col_num("x_km", "Kilometers"));
+columns.push(helper_tabulator_col_num("km/h", "km/h"));
+columns.push(helper_tabulator_col_num("x_max_km/h", "max km/h"));
+columns.push(helper_tabulator_col_num("total_elevation_gain", "Elevation (m)"));
+columns.push(helper_tabulator_col_num("x_elev_m/km", "Elevation (m/km)"));
+columns.push(helper_tabulator_col_num("average_heartrate", "HR avg"));
+columns.push(helper_tabulator_col_num("max_heartrate", "HR max"));
+columns.push(helper_tabulator_col_num("average_cadence", "Cadence"));
+columns.push(helper_tabulator_col_num("average_watts", "Watts avg"));
+columns.push(helper_tabulator_col_num("kilojoules", "KJ"));
+columns.push(helper_tabulator_col_str("visibility", "visibility"));
+columns.push(helper_tabulator_col_num("athlete_count", "Athletes"));
+columns.push(helper_tabulator_col_num("workout_type", "W-Type"));
+columns.push(helper_tabulator_col_num("kudos_count", "Kudos"));
+columns.push(helper_tabulator_col_num("comment_count", "Comments"));
+columns.push(helper_tabulator_col_num("achievement_count", "Achievements"));
 
 function defineTable() {
   const table = new Tabulator("#table-activity-list", {
@@ -47,7 +37,7 @@ function defineTable() {
     layout: "fitDataStretch", // fit columns to width of table (optional)
     tooltipsHeader: false,
     selectable: false, // for row click
-    columns: table_columns,
+    columns: columns,
     initialSort: [{ column: "x_date", dir: "desc" }],
   });
   return table;
