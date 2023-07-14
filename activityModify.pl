@@ -119,7 +119,6 @@ elsif ( $cgi->param('submitFromModify') ) {    # form below
   ID</th><th>
   date</th><th>
   name</th><th>
-  description</th><th>
   commute</th><th>
   training machine</th></tr>';
   foreach my $activityID (@activityIDs) {
@@ -140,8 +139,7 @@ elsif ( $cgi->param('submitFromModify') ) {    # form below
       say '<tr>' . '<td>'
           . $h{'id'} . '</td>' . '<td>'
           . $h{'start_date_local'} . '</td>' . '<td>'
-          . $h{'name'} . '</td>' . '<td>'
-          . $h{'description'} . '</td>'
+          . $h{'name'} . '</td>'
           . '<td align="center">'
           . ( $h{'commute'} += 0 ) . '</td>'
           . '<td align="center">'
