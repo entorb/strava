@@ -25,6 +25,7 @@ columns.push(helper_tabulator_col_num("kilojoules", "KJ"));
 columns.push(helper_tabulator_col_str("visibility", "visibility"));
 columns.push(helper_tabulator_col_num("athlete_count", "Athletes"));
 columns.push(helper_tabulator_col_num("workout_type", "W-Type"));
+columns.push(helper_tabulator_col_num("commute", "Commute"));
 columns.push(helper_tabulator_col_num("kudos_count", "Kudos"));
 columns.push(helper_tabulator_col_num("comment_count", "Comments"));
 columns.push(helper_tabulator_col_num("achievement_count", "Achievements"));
