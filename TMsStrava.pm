@@ -467,17 +467,14 @@ sub getKnownLocationsOfUser {
   logSubStart('getKnownLocationsOfUser');
   # my $stravaUserID = $s{'stravaUserID'};
   my @knownLocations = ();
-  # some hard coded ones
-  # push @knownLocations, [ 49.574986, 10.967483 , "ER-Schaeffler"        ];
-  # push @knownLocations, [ 51.070298, 13.760067 , "DD-Alaunpark"         ];
-  # push @knownLocations, [ 53.330333, 10.138152 , "P-MTV-Pattensen"      ];
-
+  # some global hard coded ones
   @knownLocations = (
-    [ 49.574986, 10.967483, "ER-Schaeffler" ],
+    [ 49.574986, 10.967483, "ER-Schaeffler-SMB" ],
     [ 51.070298, 13.760067, "DD-Alaunpark" ],
     [ 53.330333, 10.138152, "P-MTV-Pattensen" ],
     [ 51.010218, 13.701419, 'DD-Robotron' ],
-    [ 49.60579,  11.036603, 'ER-MeilwaldWiese' ]
+    [ 49.60579,  11.036603, 'ER-Meilwald-Handtuchwiese' ],
+    [ 49.588036, 11.035357, "ER-ObiKreisel" ]
   );
 
   # logIt("knownLocations bevor");
