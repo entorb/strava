@@ -1174,6 +1174,9 @@ and deauthorize this app from your Strava account">
 	<input type="hidden" name="session" value="' . $s{'session'} . '">
 	</form>';
 
+  say
+      '<p><img src="./strava-resources/api_logo_pwrdBy_strava_stack_light.svg" alt="Powered by Strava" height="86"></p>';
+
   say '</div>';
   say '<div class="main">';
 
