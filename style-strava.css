@@ -136,3 +136,27 @@ td {
   border: solid 1px grey;
   /* margin: 1; */
 }
+
+
+/* .strava-connect-button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+} */
+
+/* Normal resolution */
+/* @media (min-resolution: 1dppx) {
+  .strava-connect-button {
+    height: 48px;
+  }
+} */
+
+/* High resolution (2x) */
+/* @media (min-resolution: 2dppx) {
+  .strava-connect-button {
+    height: 96px;
+  }
+} */
