@@ -6,19 +6,17 @@ Stats for Strava App V2.
 
 # import datetime as dt
 import json
+import sys
 from pathlib import Path
-from sys import argv
 
 import numpy as np
 import pandas as pd
-import sys
-
 
 # requirements
 # pip3.10 install numpy pandas
 
-if len(argv) == 2:
-    session = argv[1]
+if len(sys.argv) == 2:
+    session = sys.argv[1]
 else:
     session = "SessionIdPlaceholder"
 
@@ -32,7 +30,7 @@ if not pathStatsExport.is_dir():
 pathToActivityListJsonDump = pathStatsExport / "activityList.json"
 if not pathToActivityListJsonDump.is_file():
     # raise FileNotFoundError(f"file activityList.json missing")
-    sys.stderr.write(f"file activityList.json missing")
+    sys.stderr.write("file activityList.json missing")
     sys.exit(1)
 
 p = pathStatsExport / "activityStats2_year.json"
