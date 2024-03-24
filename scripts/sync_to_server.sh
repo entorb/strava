@@ -7,3 +7,4 @@ cd $script_dir/..
 rsync -vhu *.pl entorb@entorb.net:html/strava/
 rsync -vhu TMsStrava.pm entorb@entorb.net:html/strava/
 rsync -vhu lib/* entorb@entorb.net:html/strava/libs/
+rsync -vhu activityStats2.* entorb@entorb.net:html/strava/
