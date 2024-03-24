@@ -65,7 +65,7 @@ def read_activityListJson(pathToActivityListJsonDump: Path) -> pd.DataFrame:
 
 def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
     """
-    Perform GROUP BY aggregation for time_freq (month, quarter, year) and activity_type.
+    Perform GROUP BY aggregation for time_freq (month, week, quarter, year) and activity_type.
 
     exports resulting df as JSONs to pathStatsExport
     """
@@ -121,6 +121,11 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
         "heartrate(max)": "max",
     }
 
+    df_week = df.groupby(["type", pd.Grouper(key="date", freq="W")]).agg(
+        my_aggregations
+    )  # type: ignore
+    df_week = df_week.rename(columns={"id": "count"})
+
     # group by month
     df_month = df.groupby(["type", pd.Grouper(key="date", freq="MS")]).agg(  # type: ignore # noqa: E501
         my_aggregations,
@@ -165,6 +170,7 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
                 df[measure] = df[measure].round(1)  # type: ignore
 
     # replace 0 by nan (and later by JSON "null")
+    df_week = df_week.replace(0, np.nan, inplace=False)  # type: ignore
     df_month = df_month.replace(0, np.nan, inplace=False)  # type: ignore
     df_quarter = df_quarter.replace(0, np.nan, inplace=False)  # type: ignore
     df_year = df_year.replace(0, np.nan, inplace=False)  # type: ignore
@@ -172,6 +178,7 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
     # fill na value by None for JSON "null" conversion at export
     # from https://stackoverflow.com/questions/46283312/how-to-proceed-with-none-value-in-pandas-fillna
     # The first fillna will replace all of (None, NAT, np.nan, etc) with Numpy's NaN, then replace Numpy's NaN with python's None. # noqa: E501
+    df_week = df_week.fillna(np.nan).replace([np.nan], [None])  # type: ignore
     df_month = df_month.fillna(np.nan).replace([np.nan], [None])  # type: ignore
     df_quarter = df_quarter.fillna(np.nan).replace([np.nan], [None])  # type: ignore
     df_year = df_year.fillna(np.nan).replace([np.nan], [None])  # type: ignore
@@ -195,6 +202,7 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
 
     measures = list(my_aggregations.keys())
 
+    types_time_series_json_export(df=df_week, freq="week", measures=measures)
     types_time_series_json_export(df=df_month, freq="month", measures=measures)
     types_time_series_json_export(df=df_quarter, freq="quarter", measures=measures)
     types_time_series_json_export(df=df_year, freq="year", measures=measures)
@@ -206,7 +214,7 @@ def types_time_series_json_export(
     measures: list[str],
 ) -> None:
     """
-    Freq: month, quarter, year.
+    Freq: month, week, quarter, year.
     """
     # Convert DataFrame to JSON with nested lists
     json_data = {}
@@ -216,7 +224,9 @@ def types_time_series_json_export(
     for act_type, data in df.groupby(level="type"):  # type: ignore
         data = data.droplevel("type")
         data.reset_index(inplace=True)
-        if freq == "month":
+        if freq == "week":
+            data["date"] = data["date"].dt.strftime("%Y-W%W")
+        elif freq == "month":
             data["date"] = data["date"].dt.strftime("%Y-%m")
         elif freq == "quarter":
             data["date"] = data["date"].dt.to_period("Q").dt.strftime("%Y-Q%q")
