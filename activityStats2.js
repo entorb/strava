@@ -34,6 +34,7 @@ const fetch_data = async (session, date_agg) => {
 };
 
 // Start the async fetching
+promises.push(fetch_data(session, "week"));
 promises.push(fetch_data(session, "month"));
 promises.push(fetch_data(session, "quarter"));
 promises.push(fetch_data(session, "year"));
@@ -53,7 +54,7 @@ function chart_create(html_div_chart) {
       top: "12%",
       left: "1%",
       right: "10%",
-      containLabel: true,
+      containLabel: true
     },
     xAxis: { type: "category" },
     yAxis: { type: "value" },
@@ -62,10 +63,10 @@ function chart_create(html_div_chart) {
         type: "slider",
         show: true,
         start: 0,
-        end: 100,
+        end: 100
         // handleSize: 8,
-      },
-    ],
+      }
+    ]
   });
   return chart;
 }
@@ -98,7 +99,7 @@ function chart_update(data_all) {
       min:
         y_min - 0.1 * y_delta > 0
           ? Math.floor(y_min - 0.1 * y_delta)
-          : Math.floor(y_min),
+          : Math.floor(y_min)
     },
     series: [
       {
@@ -116,16 +117,16 @@ function chart_update(data_all) {
           data: [
             {
               name: "average",
-              type: "average",
-            },
-          ],
-        },
-      },
+              type: "average"
+            }
+          ]
+        }
+      }
     ],
     title: {
       text: `Strava Stats: ${type} ${date_agg} ${measure}`,
-      left: "center",
-    },
+      left: "center"
+    }
   });
 }
 
@@ -144,25 +145,25 @@ function chart_cnt_update(data_all_comparison) {
       type: "bar",
       stack: "x",
       data: data_all_comparison[date_agg][type][measure],
-      name: type,
+      name: type
     });
   }
   chart_cnt.setOption({
     xAxis: {
-      data: data_all_comparison[date_agg]["date"],
+      data: data_all_comparison[date_agg]["date"]
     },
     yAxis: {},
     series: series,
     title: {
       text: "Strava Stats: All Activity " + capitalize_words(measure),
-      left: "center",
+      left: "center"
     },
     legend: {
       show: true,
       orient: "vertical",
       right: 10,
-      top: "center",
-    },
+      top: "center"
+    }
   });
 }
 
@@ -174,7 +175,7 @@ function charts_update() {
 
 function calc_data_for_act_comparison(data_all_comparison) {
   console.log("fnc calc_data_for_act_comparison()");
-  for (const date_agg of ["month", "quarter", "year"]) {
+  for (const date_agg of ["week", "month", "quarter", "year"]) {
     data_all_comparison[date_agg] = {};
 
     // loop over act_types and extract min start and max end date
@@ -230,6 +231,7 @@ function calc_data_for_act_comparison(data_all_comparison) {
       data_all_comparison[date_agg][type]["kilometers(sum)"] = data_y3;
     }
   }
+  console.log(data_all_comparison);
 }
 
 //
@@ -245,7 +247,7 @@ function capitalize_words(str, separator) {
 }
 
 // fill gaps in the data
-// supports x data of years (integer), quarters ("2023-Q2"), month "2023-03"
+// supports x data of years (integer), quarters ("2023-Q2"), weeks ("2023-W02"), month "2023-03"
 function fillGapsInDateDataInPlace(
   data_echarts_x,
   data_echarts_y,
@@ -291,6 +293,12 @@ function getNextDate(date) {
     const nextQuarter = (quarter % 4) + 1;
     const nextYear = nextQuarter === 1 ? year + 1 : year;
     return `${nextYear}-Q${nextQuarter}`;
+  } else if (date.includes("-W")) {
+    // "2023-W02"
+    const [year, week] = date.split("-W").map(Number);
+    const nextWeek = week === 53 ? 0 : week + 1;
+    const nextYear = nextWeek === 0 ? year + 1 : year;
+    return `${nextYear}-W${nextWeek.toString().padStart(2, "0")}`;
   } else if (date.includes("-")) {
     // "2023-02"
     const [year, month] = date.split("-").map(Number);
