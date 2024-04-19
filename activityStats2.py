@@ -122,7 +122,7 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
     }
 
     df_week = df.groupby(["type", pd.Grouper(key="date", freq="W")]).agg(
-        my_aggregations
+        my_aggregations,
     )  # type: ignore
     df_week = df_week.rename(columns={"id": "count"})
 
