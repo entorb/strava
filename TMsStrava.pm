@@ -584,6 +584,7 @@ sub convertActivityHashToExcel {
       type
       x_gear_name
       start_date_local
+      x_week
       x_start_h
       name
       x_min
@@ -962,7 +963,7 @@ sub htmlPrintHeader {
         # ,-author=>'Torben Menke' # generates mailto:
     ,
     -style => { -src => [ '/style.css', './style-strava.css' ] }
-    #    -style => { -src => './style-strava.css' }
+        #    -style => { -src => './style-strava.css' }
   );
   # CGI.pm doesn't support HTML5 DTD; replace the one it puts in.
   $html =~ s{<!DOCTYPE.*?>}{<!DOCTYPE html>}s;
