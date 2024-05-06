@@ -43,6 +43,7 @@ use File::Path qw(make_path);
 
 # use local::lib;
 use JSON::Create 'create_json';
+use Date::WeekNumber qw/ cpan_week_number /;
 # use JSON::Create;
 # use CGI::ProgressBar qw/:standard/;
 
@@ -334,6 +335,7 @@ if ( $yearToDL ne '' ) {
       # 2018-10-02T08:10:49Z
       $h{"x_start_h"} = sprintf "%.1f", $4 + $5 / 60 + $6 / 3600;
       $h{"x_date"}    = "$1-$2-$3";
+      $h{"x_week"}    = cpan_week_number( $h{"x_date"} );
     } ## end if ( $h{"start_date_local"...})
     if ( $h{"average_speed"} and $h{"average_speed"} > 0 ) {
       $h{"x_min/km"} = sprintf "%.2f", 1 / $h{"average_speed"} / 60
