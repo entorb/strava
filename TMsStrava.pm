@@ -264,10 +264,10 @@ sub getContfromURL {
 
   my $res = $ua->request($req);
   if ( not $res->is_success ) {
-    # print "HTTP get code: ", $res->code,    "\n";
-    # print "HTTP get msg : ", $res->message, "\n";
-    #        use Data::Dump qw/ dd /;
-    #        dd( $res->as_string );
+    print "HTTP get code: ", $res->code,    "\n";
+    print "HTTP get msg : ", $res->message, "\n";
+    use Data::Dump qw/ dd /;
+    dd( $res->as_string );
     $_ = $res->code . ": " . $res->message;
     die "ERROR: $_";
   } ## end if ( not $res->is_success)
