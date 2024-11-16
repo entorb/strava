@@ -263,4 +263,3 @@ else {    # param("code") is set -> visitor coming from strava auth page
 }    # end of token exchange
 
 TMsStrava::htmlPrintFooter($cgi);
-
