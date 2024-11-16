@@ -44,7 +44,7 @@ TMsStrava::htmlPrintHeader( $cgi, 'Bulk modify activities' );
 TMsStrava::initSessionVariables( $cgi->param("session") );
 TMsStrava::htmlPrintNavigation();
 
-my ( @activityIDs, $commute, $trainer, $name, $description );
+my ( @activityIDs, $commute, $trainer, $name, $description, $gear_id );
 
 if ( $cgi->param('submitFromActivityList') ) {   # from list_all_activities.pl
       # say Dumper $cgi->param('activityID');
@@ -58,7 +58,7 @@ elsif ( $cgi->param('submitFromModify') ) {    # form below
       # cleaning for security
   $_ = $cgi->param('activityIDs');
   s/[^0-9]+/ /g;     # for security ensure only numbers and spaces
-  s/(^ +| +$)//g;    # spaces and the ends
+  s/(^ +| +$)//g;    # spaces at the ends
   @activityIDs = split / /, $_;
   @activityIDs = grep { $_ > 100000 }
       @activityIDs;    # for only numbers > 100000 are making sense
@@ -77,8 +77,9 @@ elsif ( $cgi->param('submitFromModify') ) {    # form below
   $trainer = $cgi->param('trainer');    # private was removed from stravas API
   $name    = $cgi->param('name');
   $description = $cgi->param('description');
+  $gear_id     = $cgi->param('gear_id');
   TMsStrava::logIt(
-    "commute='$commute' trainer='$trainer' name='$name' description='$description'"
+    "commute='$commute' trainer='$trainer' name='$name' description='$description' gear_id='$gear_id'"
   );
 
   %h = ();
@@ -99,13 +100,15 @@ elsif ( $cgi->param('submitFromModify') ) {    # form below
   if ( $name ne "" ) { $h{'name'} = '"' . $name . '"'; }
   $description =~ s/[^\w:_!\?\-\+\(\)\[\]\{\}]+//g;    # char whitelist
   if ( $description ne "" ) { $h{'description'} = '"' . $description . '"'; }
+  $gear_id =~ s/[^\w]+//g;                             # char whitelist
+  if ( $gear_id ne "" ) { $h{'gear_id'} = '"' . $gear_id . '"'; }
 
   die "ERROR: nothing to do" if ( not %h );
 
   # generate json string
   # goal: $json = '{ "commute": true, "private": false }';
   my $json = "{";    #
-  foreach my $s (qw(commute trainer name description))
+  foreach my $s (qw(commute trainer name description gear_id))
   {                  # private was removed by strava
     $json .= "\"$s\":$h{$s}, " if $h{$s};
   }
@@ -115,12 +118,14 @@ elsif ( $cgi->param('submitFromModify') ) {    # form below
 
   # print resulting table, bad IDs result in empty row
   say '<table>
-  <tr><th>
-  ID</th><th>
-  date</th><th>
-  name</th><th>
-  commute</th><th>
-  training machine</th></tr>';
+  <tr>
+  <th>ID</th>
+  <th>date</th>
+  <th>name</th>
+  <th>commute</th>
+  <th>training machine</th>
+  <th>gear</th>
+  </tr>';
   foreach my $activityID (@activityIDs) {
     my ( $htmlcode, $cont )
         = TMsStrava::PostPutJsonToURL( 'PUT',
@@ -143,7 +148,8 @@ elsif ( $cgi->param('submitFromModify') ) {    # form below
           . '<td align="center">'
           . ( $h{'commute'} += 0 ) . '</td>'
           . '<td align="center">'
-          . ( $h{'trainer'} += 0 ) . '</td>' . '</tr>';
+          . ( $h{'trainer'} += 0 ) . '</td>' . '<td>'
+          . $h{'gear'}{'name'} . '</td>' . '</tr>';
     } ## end else [ if ( not $h{'id'} ) ]
   } ## end foreach my $activityID (@activityIDs)
   say '</table><hr>';
@@ -178,6 +184,9 @@ say '
 <tr align="center"><td>description</td>
  <td colspan="2"><input type="text" name="description" value=""></td>
 </tr>
+<tr align="center"><td>gear ID</td>
+ <td colspan="2"><input type="text" name="gear_id" value=""></td>
+</tr>
 </table>
 <input type="hidden" name="session" value="' . $s{'session'} . '">
 <input type="submit" name="submitFromModify" value="Submit">
@@ -185,5 +194,27 @@ say '
 </table>
 </form>
 ';
+
+# TODO: this is just a copy from activityExcelImport
+use Storable;    # read and write variables to filesystem
+
+my %gear;
+if ( -f $s{'pathToGearHashDump'} ) {
+  %gear = %{ retrieve( $s{'pathToGearHashDump'} ) }
+      ;          # retrieve data from file (as ref)
+}
+if (%gear) {    # gear hash is not empty
+  say '<h3>List of gear used in cached activities</h3>
+<table>
+<tr><th>Gear ID</th><th>Gear Name</th></tr>';
+  foreach my $gear_id ( sort keys %gear ) {
+    say "<tr><td>$gear_id</td><td>$gear{$gear_id}</td></tr>";
+  }
+  say '</table>';
+} ## end if (%gear)
+else {
+  say
+      "<p>Cache your activities first to display a list of your gear_id (shoes/bikes) here.</p>";
+}
 
 TMsStrava::htmlPrintFooter($cgi);
