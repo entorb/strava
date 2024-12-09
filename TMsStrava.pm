@@ -251,7 +251,7 @@ sub getContfromURL {
   # returns string of contents
   my ( $url, $token ) = @_;    # () important!!!
   logSubStart('getContfromURL');
-  logIt("url='$url', token='$token'");
+  logIt("url='$url'");
   my $req = HTTP::Request->new( GET => $url );
   $req->header( 'Accept'          => 'application/json' );
   $req->header( 'Accept-Encoding' => 'UTF-8' );
@@ -290,7 +290,7 @@ sub PostPutJsonToURL {
   # out: string of contents
   my ( $postPut, $url, $token, $silent, $json ) = @_;    # () important!!!
   logSubStart('PostPutJsonToURL');
-  logIt("$postPut url='$url', token='$token'");
+  logIt("$postPut url='$url'");
   my $req;
   if ( $postPut eq 'POST' ) {
     $req = HTTP::Request->new( POST => $url );
