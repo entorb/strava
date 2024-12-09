@@ -191,7 +191,7 @@ else {    # param("code") is set -> visitor coming from strava auth page
   # TMsStrava::initSessionVariables ($cgi->param("session"));
   TMsStrava::initSessionVariables( $s{'session'} );
   TMsStrava::logIt("Auth complete");
-  TMsStrava::logIt("response content was (UTF-8-decoded):\n$json");
+  # TMsStrava::logIt("response content was (UTF-8-decoded):\n$json");
 
   @_ = TMsStrava::whoAmI( $s{'token'} );
 
