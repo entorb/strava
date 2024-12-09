@@ -251,7 +251,7 @@ sub getContfromURL {
   # returns string of contents
   my ( $url, $token ) = @_;    # () important!!!
   logSubStart('getContfromURL');
-  logIt("url='$url', token='$token'");
+  logIt("url='$url'");
   my $req = HTTP::Request->new( GET => $url );
   $req->header( 'Accept'          => 'application/json' );
   $req->header( 'Accept-Encoding' => 'UTF-8' );
