@@ -127,7 +127,7 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
     df_week = df_week.rename(columns={"id": "count"})
 
     # group by month
-    df_month = df.groupby(["type", pd.Grouper(key="date", freq="MS")]).agg(  # type: ignore # noqa: E501
+    df_month = df.groupby(["type", pd.Grouper(key="date", freq="MS")]).agg(  # type: ignore
         my_aggregations,
     )
     df_month = df_month.rename(columns={"id": "count"})
@@ -163,7 +163,7 @@ def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
 
     # TODO: round prior to fillna!
     for df in (df_month, df_quarter, df_year):
-        for measure in my_aggregations.keys():
+        for measure in my_aggregations:
             if measure in ("count", "elevation(sum)"):
                 df[measure] = df[measure].astype(np.int64)  # type: ignore
             else:
