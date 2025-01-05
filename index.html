@@ -33,14 +33,16 @@
 	</h1_title>
 	<!-- copied from README using https://markdowntohtml.com/ -->
 
-	<p><a href="https://github.com/entorb/strava" target="_blank">OpenSource</a> App using <a href="http://www.strava.com" target="_blank">Strava&trade;'s</a> <a href="https://developers.strava.com/" target="_blank">API</a> to visualize your activity data.</p>
+	<p><b>Update of 2025: I rewrote this old app in a modern technology. Check it out <a href="/strava-streamlit"><b>here</b></a>.</b><br /> <a href="/contact.php?origin=strava">Feedback</a> and ideas for new reports are highly appreciated.</p>
+
+	<p><a href="https://github.com/entorb/strava" target="_blank">OpenSource</a> App using <a href="https://www.strava.com" target="_blank">Strava&trade;'s</a> <a href="https://developers.strava.com/" target="_blank">API</a> to visualize your activity data.</p>
 	<ul>
 		<li><a href="#UserFeatures">Features</a></li>
 		<li><a href="#Screenshots">Screenshots</a></li>
 		<li><a href="#TechFeatures">Technical Features</a></li>
 		<li><a href="#ListOfChanges">List of Changes</a></li>
 		<li><a href="#UserFeedback">Feedback</a></li>
-		<li>Login: <br><a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">
+		<li>Login: <br><a href="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">
 				<button class="strava-connect-button">
 					<img src="./strava-resources/btn_strava_connectwith_light.svg" alt="Connect with Strava">
 				</button>
@@ -114,19 +116,19 @@
 	 <h2>Start by choosing permission scope for the app</h2>
 	<ul>
 		<li>
-			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">Quickstart</a><br>&nbsp;
+			<a href="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">Quickstart</a><br>&nbsp;
 		</li>
 		<li>
-			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read">read public activities</a>
+			<a href="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read">read public activities</a>
 		</li>
 		<li>
-			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all">read public&amp;private activities</a> (preferred choice for statistics and Excel export of your activities)
+			<a href="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all">read public&amp;private activities</a> (preferred choice for statistics and Excel export of your activities)
 		</li>
 		<li>
-			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read,activity:write">read&amp;write public activities</a>
+			<a href="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read,activity:write">read&amp;write public activities</a>
 		</li>
 		<li>
-			<a href="http://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">read&amp;write public&amp;private activities</a> (preferred choice if you want to modify your activities as well)
+			<a href="https://www.strava.com/oauth/authorize?client_id=28009&response_type=code&redirect_uri=https://entorb.net/strava/auth.pl?exchange_token&approval_prompt=force&scope=activity:read_all,activity:write">read&amp;write public&amp;private activities</a> (preferred choice if you want to modify your activities as well)
 		</li>
 	</ul>
 -->
@@ -153,6 +155,7 @@
 	<h2 id="ListOfChanges">List of Changes</h2>
 	<!-- copied from README using https://markdowntohtml.com/ -->
 	<ul>
+		<li>2025-01-02: <a href="/strava-streamlit">rewriting the app</a> in modern technology (Python Streamlit)</li>
 		<li>2024-11-16: activity bulk modify now supports update gear</li>
 		<li>2024-11-16: hit a Strava limit of 1000 active athlets of this app, they now raised the limit to 10000</li>
 		<li>2023-07-02: activity Top10 V2</li>
@@ -177,8 +180,10 @@
 
 	<h2 id="UserFeedback">User feedback</h2>
 	<ul>
+		<li>2025-02-20 Franco: Thanks a lot for this tool man, really saved me lots of time getting a json of my 3400 activities so I can send them to AI for analytics. THANKS!</li>
+		<li>2025-01-07 Todd: Just wanted to say a massive thank you for the Strava bulk upload app. You saved me soooooo much time trying to import 2 years worth of manually tracked weight training data. Absolutely brilliant app. Thank you!</li>
 		<li>2024-08-01 Gustavo: It's a super nice tool. THANK YOU!!</li>
-		<li>2022-12-06 Angela: Just wanted to say a huge thank you for your strava upload solution - it seems to be the only one out there. I'm super grateful to you for sharing this. </li>
+		<li>2022-12-06 Angela: Just wanted to say a huge thank you for your Strava upload solution - it seems to be the only one out there. I'm super grateful to you for sharing this. </li>
 		<li>2022-11-23 Jacob: I cannot thank you enough for this exceptionally useful tool. I was able to upload about 10 years of running data from my Garmin Connect to my Strava account. (even more blessings at <a href="https://twitter.com/SLCPaladin/status/1595473306983231488" target="_blank">Twitter</a>)</li>
 		<li>2022-09-12 Ricardo: Used it to upload data from CSV created by Zepp. I am switching to Polar, so your tool was EXTREMELY helpfull. Thank you so much!! Cheers</li>
 		<li>2022-03-18 Claudia: besten Dank für die Strava Äpp! Genau das, was ich gesucht habe</li>
