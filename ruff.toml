@@ -1,6 +1,6 @@
 fix = true               # auto-fix findings
 line-length = 88         # same as Black
-target-version = "py311" # Python 3.11
+target-version = "py313" # Python 3.13
 
 # extend-exclude = ["src/MyBadFile1.py"]
 
@@ -17,6 +17,7 @@ fixable = ["ALL"] # fix for all enabled rules
 extend-ignore = [
     "COM812", # missing-trailing-comma,
     "D200",   # fits-on-one-line"
+    "D203",   # incorrect-blank-line-before-class
     "D211",   # blank-line-before-class
     "D212",   # multi-line-summary-second-line
     "ERA",    # commented-out code
