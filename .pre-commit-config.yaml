@@ -17,7 +17,7 @@ exclude: |
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=500"]
@@ -45,8 +45,6 @@ repos:
       # - id: file-contents-sorter
       #   files: ^(deploy-whitelist.txt|\.gitignore|\.dockerignore)$
       - id: fix-byte-order-marker
-      - id: fix-encoding-pragma
-        args: ["--remove"]
       - id: forbid-new-submodules
       # - id: forbid-submodules
       - id: mixed-line-ending
