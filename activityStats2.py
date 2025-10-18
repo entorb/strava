@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.10
+#!/usr/bin/env python3.11
 
 """
 Stats for Strava App V2.
@@ -13,33 +13,30 @@ import numpy as np
 import pandas as pd
 
 # requirements
-# pip3.10 install numpy pandas
+# pip3.11 install numpy pandas
 
-if len(sys.argv) == 2:
-    session = sys.argv[1]
-else:
-    session = "SessionIdPlaceholder"
+session = sys.argv[1] if len(sys.argv) == 2 else "SessionIdPlaceholder"  # noqa: PLR2004
 
 # Path(__file__).parents[0] = location of current Python script
-pathStatsExport = Path(__file__).parents[0] / "download" / session
-if not pathStatsExport.is_dir():
+path_stats_export = Path(__file__).parents[0] / "download" / session
+if not path_stats_export.is_dir():
     # raise FileNotFoundError(f"session {session} invalid")
     sys.stderr.write(f"session {session} invalid")
     sys.exit(1)
 
-pathToActivityListJsonDump = pathStatsExport / "activityList.json"
-if not pathToActivityListJsonDump.is_file():
+path_to_activity_list_json_dump = path_stats_export / "activityList.json"
+if not path_to_activity_list_json_dump.is_file():
     # raise FileNotFoundError(f"file activityList.json missing")
     sys.stderr.write("file activityList.json missing")
     sys.exit(1)
 
-p = pathStatsExport / "activityStats2_year.json"
+p = path_stats_export / "activityStats2_year.json"
 if p.is_file():
     # nothing to do
-    exit()
+    sys.exit()
 
 
-def read_activityListJson(pathToActivityListJsonDump: Path) -> pd.DataFrame:
+def read_activity_list_json(path_to_activity_list_json_dump: Path) -> pd.DataFrame:
     """
     Read "activityList.json" file.
 
@@ -47,7 +44,7 @@ def read_activityListJson(pathToActivityListJsonDump: Path) -> pd.DataFrame:
     return DataFrame
     """
     # read json to DataFrame
-    df_all = pd.read_json(pathToActivityListJsonDump)  # type: ignore
+    df_all = pd.read_json(path_to_activity_list_json_dump)  # type: ignore
 
     # print(sorted(df.columns))
     # 'achievement_count', 'athlete', 'athlete_count', 'average_cadence', 'average_heartrate', 'average_speed', 'average_temp', 'average_watts', 'comment_count', 'commute', 'device_watts', 'display_hide_heartrate_option', 'distance', 'elapsed_time', 'elev_high', 'elev_low', 'end_latlng', 'external_id', 'flagged', 'from_accepted_tag', 'gear_id', 'has_heartrate', 'has_kudoed', 'heartrate_opt_out', 'id', 'kilojoules', 'km/h', 'kudos_count', 'location_city', 'location_country', 'location_state', 'manual', 'map', 'max_heartrate', 'max_speed', 'moving_time', 'name', 'photo_count', 'pr_count', 'private', 'resource_state', 'sport_type', 'start_date', 'start_date_local', 'start_latlng', 'timezone', 'total_elevation_gain', 'total_photo_count', 'trainer', 'type', 'upload_id', 'upload_id_str', 'utc_offset', 'visibility', 'workout_type', 'x_date', 'x_dist_start_end_km', 'x_elev_%', 'x_elev_m/km', 'x_end_locality', 'x_gear_name', 'x_km', 'x_max_km/h', 'x_max_mph', 'x_mi', 'x_min', 'x_min/km', 'x_min/mi', 'x_mph', 'x_nearest_city_start', 'x_start_h', 'x_start_locality', 'x_url'  # noqa: E501 # cspell:disable-line
@@ -58,17 +55,17 @@ def read_activityListJson(pathToActivityListJsonDump: Path) -> pd.DataFrame:
         df_all[col] = pd.to_datetime(df_all[col])  # type: ignore
 
     # filter out act < 10min
-    df_all = df_all[df_all["x_min"] >= 10]
+    df_all = df_all[df_all["x_min"] >= 10]  # noqa: PLR2004
 
     return df_all
 
 
-def gen_types_time_series(df_all: pd.DataFrame, pathStatsExport: Path) -> None:
+def gen_types_time_series(df_all: pd.DataFrame, _path_stats_export: Path) -> None:
     """
     Perform GROUP BY aggregation for time_freq (month, week, quarter, year) and activity_type.
 
     exports resulting df as JSONs to pathStatsExport
-    """
+    """  # noqa: E501
     df = df_all[
         [
             "id",
@@ -222,8 +219,7 @@ def types_time_series_json_export(
     cols.extend(measures)
 
     for act_type, data in df.groupby(level="type"):  # type: ignore
-        data = data.droplevel("type")
-        data.reset_index(inplace=True)
+        data = data.droplevel("type").reset_index()  # noqa: PLW2901
         if freq == "week":
             data["date"] = data["date"].dt.strftime("%Y-W%W")
         elif freq == "month":
@@ -237,7 +233,7 @@ def types_time_series_json_export(
             d[col] = data[col].values.tolist()  # type: ignore
         json_data[act_type] = d
 
-    with Path(pathStatsExport / f"activityStats2_{freq}.json").open(
+    with Path(path_stats_export / f"activityStats2_{freq}.json").open(
         "w",
         encoding="UTF-8",
     ) as fh:
@@ -251,7 +247,7 @@ def types_time_series_json_export(
 
 
 if __name__ == "__main__":
-    df_all = read_activityListJson(
-        pathToActivityListJsonDump=pathToActivityListJsonDump,
+    df_all = read_activity_list_json(
+        path_to_activity_list_json_dump=path_to_activity_list_json_dump,
     )
-    gen_types_time_series(df_all=df_all, pathStatsExport=pathStatsExport)
+    gen_types_time_series(df_all=df_all, _path_stats_export=path_stats_export)
