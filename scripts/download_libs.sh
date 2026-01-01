@@ -34,4 +34,4 @@ mv tmp-dl/tabulator-$ver/dist/css/tabulator.min.css.map lib/tabulator.min.css.ma
 # Cleanup
 rm -r tmp-dl
 
-rsync -vhu lib/* entorb@entorb.net:html/strava/libs/
+rsync -vhu lib/* entorb@entorb.net:html/strava-old/libs/

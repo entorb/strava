@@ -1,6 +1,6 @@
 # Strava Äpp
 
-Source code of Torben's Strava Äpp hosted at <https://entorb.net/strava/>
+Source code of Torben's Strava Äpp hosted at <https://entorb.net/strava-old/>
 
 [OpenSource](https://github.com/entorb/strava) Äpp using [Strava™'s](https://www.strava.com) [API](https://developers.strava.com/) to visualize your activity data.
 
