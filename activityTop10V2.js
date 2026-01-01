@@ -26,7 +26,7 @@ const measures = {
   "x_elev_m/km": "Elev. m/km",
   x_dist_start_end_km: "Dist Start-End",
   average_heartrate: "Heartrate avg",
-  kilojoules: "KJ",
+  kilojoules: "KJ"
 };
 
 // add options to html_sel_measure
@@ -47,7 +47,7 @@ for (let i = 0; i < Object.keys(measures).length; i++) {
 // Data fetching
 //
 const fetch_data = async (session) => {
-  const url = `https://entorb.net/strava/download/${session}/activityList.json`;
+  const url = `https://entorb.net/strava-old/download/${session}/activityList.json`;
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -59,7 +59,7 @@ const fetch_data = async (session) => {
       "name",
       "x_date",
       "x_url",
-      ...Object.keys(measures),
+      ...Object.keys(measures)
     ]);
     data.forEach((obj) => {
       Object.entries(obj).forEach(([key]) => {
@@ -107,7 +107,7 @@ function defineTable() {
     layout: "fitDataStretch", // fit columns to width of table (optional)
     tooltipsHeader: false,
     selectable: false, // for row click
-    columns: columns,
+    columns: columns
   });
   return table;
 }
@@ -157,7 +157,7 @@ function ranking() {
   data_rank = data_rank.map((element, index) => {
     return {
       ...element,
-      rank: index + 1,
+      rank: index + 1
     };
   });
 

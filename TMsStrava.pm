@@ -562,7 +562,7 @@ sub convertActivityHashToExcel {
     title    => 'Strava Excel Activity Export',
     author   => 'Torben Menke',
     comments =>
-        'https://entorb.net/strava/ created with Perl and Excel::Writer::XLSX',
+        'https://entorb.net/strava-old/ created with Perl and Excel::Writer::XLSX',
     category => 'Sport'
   );
   my $worksheet       = $workbook->add_worksheet("ActivityListData");
@@ -761,7 +761,7 @@ sub zipFiles {
       CanonicalName =>
       1 # This option controls whether the filename field in the zip header is normalized into Unix format before being written to the zip file.
       ,
-      ZipComment => "Created by Torben's Strava App https://entorb.net/strava"
+      ZipComment => "Created by Torben's Strava App https://entorb.net/strava-old/"
       # , Level => 9 # [0..9], 0=none, 9=best compression
       or die "zip failed: $ZipError\n";
   return;

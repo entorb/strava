@@ -8,7 +8,9 @@ columns.push(helper_tabulator_col_str("x_date", "Date"));
 columns.push(helper_tabulator_col_str("type", "Type"));
 columns.push(helper_tabulator_col_str("name", "Name", 120));
 columns.push(helper_tabulator_col_str("x_nearest_city_start", "City", 120));
-columns.push(helper_tabulator_col_str("x_start_locality", "Known location start"));
+columns.push(
+  helper_tabulator_col_str("x_start_locality", "Known location start")
+);
 columns.push(helper_tabulator_col_str("x_end_locality", "-end"));
 columns.push(helper_tabulator_col_str("x_gear_name", "Gear", 120));
 columns.push(helper_tabulator_col_num("x_min", "Minutes"));
@@ -39,7 +41,7 @@ function defineTable() {
     tooltipsHeader: false,
     selectable: false, // for row click
     columns: columns,
-    initialSort: [{ column: "x_date", dir: "desc" }],
+    initialSort: [{ column: "x_date", dir: "desc" }]
   });
   return table;
 }
@@ -48,7 +50,7 @@ const table = defineTable();
 // wait for tableBuilt event and set data afterwards
 table.on("tableBuilt", () => {
   table.setData(
-    `https://entorb.net/strava/download/${session}/activityList.json`
+    `https://entorb.net/strava-old/download/${session}/activityList.json`
   );
 });
 

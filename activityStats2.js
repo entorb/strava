@@ -22,7 +22,7 @@ const promises = []; // array of promises for async fetching
 // Data fetching
 //
 const fetch_data = async (session, date_agg) => {
-  const url = `https://entorb.net/strava/download/${session}/activityStats2_${date_agg}.json`;
+  const url = `https://entorb.net/strava-old/download/${session}/activityStats2_${date_agg}.json`;
   try {
     const response = await fetch(url);
     const data = await response.json();
