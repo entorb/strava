@@ -761,7 +761,8 @@ sub zipFiles {
       CanonicalName =>
       1 # This option controls whether the filename field in the zip header is normalized into Unix format before being written to the zip file.
       ,
-      ZipComment => "Created by Torben's Strava App https://entorb.net/strava-old/"
+      ZipComment =>
+      "Created by Torben's Strava App https://entorb.net/strava-old/"
       # , Level => 9 # [0..9], 0=none, 9=best compression
       or die "zip failed: $ZipError\n";
   return;
