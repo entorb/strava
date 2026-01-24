@@ -1,0 +1,15 @@
+.vscode/
+download/
+lib/
+tmp/
+
+.vstags
+TMsStravaSecret.pm
+0-*.pl
+1.js
+2.js
+index-*.html
+stats.png
+*.pl.bak
+*.pm.bak
+.DS_Store
