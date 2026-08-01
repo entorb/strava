@@ -24,8 +24,6 @@ jobs:
           persist-credentials: false
           fetch-depth: 1 # latest only
 
-      - uses: gitleaks/gitleaks-action@v3
-
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
