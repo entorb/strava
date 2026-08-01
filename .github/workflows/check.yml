@@ -33,7 +33,7 @@ jobs:
           node-version: 24
 
       - name: Run prek pre-commit
-        uses: j178/prek-action@v2
+        uses: j178/prek-action@v3.0.0
 
       - name: Run markdownlint
         run: npm exec markdownlint-cli2 "**/*.md"
