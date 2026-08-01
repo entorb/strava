@@ -1,0 +1,6 @@
+ignores:
+  - "**/.venv/**"
+  - "**/node_modules/**"
+
+config:
+  MD013: false # line-length

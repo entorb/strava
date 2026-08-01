@@ -30,6 +30,19 @@ jobs:
         with:
           python-version: "3.13"
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Run prek pre-commit
+        uses: j178/prek-action@v2
+
+      - name: Run markdownlint
+        run: npm exec markdownlint-cli2 "**/*.md"
+
+      # - name: Run cspell
+      #   run: npm exec cspell-cli --gitignore --unique --silent .
+
       # - name: Python cache set up
       #   uses: actions/cache@v3
       #   with:
@@ -44,7 +57,3 @@ jobs:
       # - name: install apt packages
       #   run: |
       #     sudo apt-get install -y perltidy
-
-      # could not fix the issue
-      # - name: Run pre-commit tests
-      #   uses: pre-commit/action@v3.0.0
