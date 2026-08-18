@@ -1,0 +1,16 @@
+*.pl.bak
+*.pm.bak
+.DS_Store
+.vscode/
+.vstags
+/.rumdl_cache/
+0-*.pl
+1.js
+2.js
+cspell-words-missing.txt
+download/
+index-*.html
+lib/
+stats.png
+tmp/
+TMsStravaSecret.pm
