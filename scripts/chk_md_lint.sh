@@ -5,6 +5,7 @@ cd "$(dirname "$0")/.."
 out=$(mktemp)
 trap 'rm -f "$out"' EXIT INT TERM
 
+rumdl fmt .
 rumdl check . >"$out" 2>&1
 status=$?
 

@@ -44,3 +44,13 @@ hooks = [
   { id = "requirements-txt-fixer" },
   { id = "trailing-whitespace" },
 ]
+
+[[repos]]
+repo = "https://github.com/rvben/rumdl-pre-commit"
+rev = "v0.2.57"
+hooks = [{ id = "rumdl", args = ["--fix"] }, { id = "rumdl-fmt" }]
+
+[[repos]]
+repo = "https://github.com/owenlamont/ryl-pre-commit"
+rev = "v0.21.0"
+hooks = [{ id = "ryl" }]
