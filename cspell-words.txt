@@ -352,6 +352,7 @@ seinen
 selbstdefinierte
 sensiblen
 sessionlogfile
+shfmt
 sich
 sicher
 Sicherheit

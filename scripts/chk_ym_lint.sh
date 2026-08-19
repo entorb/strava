@@ -9,6 +9,6 @@ uvx ryl@0.21.0 check -d '{extends: default, rules: {line-length: disable, truthy
 status=$?
 
 if [ $status -ne 0 ]; then
-    head -n 100 "$out"
+  head -n 100 "$out"
 fi
 exit $status

@@ -10,7 +10,7 @@ rumdl check . >"$out" 2>&1
 status=$?
 
 if [ $status -ne 0 ]; then
-    echo "Issues remaining, you can try:\nrumdl check . --fix"
-    head -n 100 "$out"
+  echo "Issues remaining, you can try:\nrumdl check . --fix"
+  head -n 100 "$out"
 fi
 exit $status
