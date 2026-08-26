@@ -10,7 +10,7 @@ set terminal png size 800,400 font myFont
 # settings for plot layout
 set grid
 # print url to bottom right corner
-set label 2 "https://entorb.net/strava" at screen 0.999, screen 0.01 right font myFont.",9"  textcolor rgb "black"
+set label 2 "https://entorb.net/strava-old/" at screen 0.999, screen 0.01 right font myFont.",9"  textcolor rgb "black"
 
 # settings for lines
 # TODO: dashtype does not work here

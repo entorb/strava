@@ -54,8 +54,8 @@ use JSON;    # imports encode_json, decode_json, to_json and from_json.
 use lib ('.');
 use lib ('/var/www/virtual/entorb/perl5/lib/perl5');
 # use lib "d:\\files\\Hacken\\Perl\\Strava-Web";
-use TMsStrava qw( %o %s)
-    ;        # at entorb.net some modules require use local::lib!!!
+use TMsStrava qw( %o %s);
+# at entorb.net some modules require use local::lib!!!
 
 TMsStrava::htmlPrintHeader( $cgi, 'Authorization' );
 
@@ -107,7 +107,7 @@ if ( not $cgi->param("code") ) {    # and not $cgi->param("session") ?
 
 # All user data and login tokens are periodically deleted for reasons of privacy and security. Therefore (re-) authorization of this app is required at each session.
   say '
-<a href="/strava/">start over</a>
+<a href="/strava-old/">start over</a>
 &nbsp;
 <a href="/contact.php?origin=strava">Contact me</a>
 &nbsp;

@@ -47,7 +47,7 @@ set terminal png size 1200,600 font myFont
 # settings for plot layout
 set grid
 # print url to bottom right corner
-set label 1 "https://entorb.net/strava" at screen 0.999, screen 0.01 right font myFont.",9"  textcolor rgb "black"
+set label 1 "https://entorb.net/strava-old/" at screen 0.999, screen 0.01 right font myFont.",9"  textcolor rgb "black"
 
 # settings for lines and colors
 set style increment user # important!!! switch between linetypes (default) and userdefined linestyles

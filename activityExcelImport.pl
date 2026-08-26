@@ -82,7 +82,7 @@ say "<p><i>The upload is currently limited to only 100 rows per run.</i></p>";
 if ( not $cgi->param('preview') and not $cgi->param('submit') ) {
   say '<h2>Input</h2>
 <ul>
-<li>Use <a href="/strava/download/StravaImportTemplate.xlsx" target="_blank">this template</a> to prepare a list of activities in Excel</li>
+<li>Use <a href="/strava-old/download/StravaImportTemplate.xlsx" target="_blank">this template</a> to prepare a list of activities in Excel</li>
 <li>Ensure to use the following date format \'YYYY-MM-DD HH:MM:SS\'</li>
 <li>Copy and paste from Excel into the textbox below</li>
 <li>Hint: Test the import with one activity until everything works as expected, only than add more</li>
