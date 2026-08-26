@@ -13,5 +13,5 @@ dictionaries:
 language: en-US
 ignorePaths:
   - '**/*.d.ts'
-  - '/.vscode/'
-  - '/LICENSE'
+  - /.vscode/
+  - /LICENSE
