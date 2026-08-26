@@ -1,0 +1,60 @@
+---
+name: Check Code
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1  # latest only
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      # - name: Gitleaks
+      #   uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e  # v3.0.0
+
+      - name: cleanup after Gitleaks
+        run: rm -rf results.sarif
+
+      - name: Run prek pre-commit
+        uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece  # v3.0.0
+
+      - name: Run md lint
+        uses: rvben/rumdl@4997ff07b63c7a54d6a495ebcd3ce7f23ee1173f  # v0.2.55
+
+        # - name: Run cspell
+        #   run: npm exec cspell-cli --gitignore --unique --silent .
+
+        # - name: Python cache set up
+        #   uses: actions/cache@v3
+        #   with:
+        #     path: ${{ env.pythonLocation }}
+        #     key: ${{ env.pythonLocation }}-py-cache
+
+        # - name: Install dependencies
+        #   run: |
+        #     python -m pip install --upgrade pip
+        #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+        # - name: install apt packages
+        #   run: |
+        #     sudo apt-get install -y perltidy
