@@ -3,8 +3,10 @@ name: Check Code
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * 0"  # Sunday 05:00 UTC, audit alert
   push:
-    branches: ["main"]
+    branches: ["main", "renovate/**"]
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -25,7 +27,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 1  # latest only
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
         with:
           python-version: "3.13"
 
@@ -36,24 +38,23 @@ jobs:
 
       - name: Run prek pre-commit
         uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece  # v3.0.0
+        with:
+          extra-args: '--all-files --quiet'
 
-      - name: Run md lint
-        uses: rvben/rumdl@4997ff07b63c7a54d6a495ebcd3ce7f23ee1173f  # v0.2.55
+          # - name: Run cspell
+          #   run: npm exec cspell-cli --gitignore --unique --silent .
 
-        # - name: Run cspell
-        #   run: npm exec cspell-cli --gitignore --unique --silent .
+          # - name: Python cache set up
+          #   uses: actions/cache@v3
+          #   with:
+          #     path: ${{ env.pythonLocation }}
+          #     key: ${{ env.pythonLocation }}-py-cache
 
-        # - name: Python cache set up
-        #   uses: actions/cache@v3
-        #   with:
-        #     path: ${{ env.pythonLocation }}
-        #     key: ${{ env.pythonLocation }}-py-cache
+          # - name: Install dependencies
+          #   run: |
+          #     python -m pip install --upgrade pip
+          #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-        # - name: Install dependencies
-        #   run: |
-        #     python -m pip install --upgrade pip
-        #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-        # - name: install apt packages
-        #   run: |
-        #     sudo apt-get install -y perltidy
+          # - name: install apt packages
+          #   run: |
+          #     sudo apt-get install -y perltidy
