@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 
 failures=0
 failed_list=""
