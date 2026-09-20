@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 
 pnpm dlx cspell-cli@10.0.1 --unique --words-only . >cspell-words-missing.txt 2>/dev/null
 status=$?
