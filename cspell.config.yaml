@@ -1,6 +1,6 @@
 ---
 $schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
-version: '0.2'
+version: "0.2"
 useCache: true
 useGitignore: true
 dictionaryDefinitions:
@@ -12,6 +12,7 @@ dictionaries:
   - perl
 language: en-US
 ignorePaths:
-  - '**/*.d.ts'
+  - "/*.json"
+  - "**/*.d.ts"
   - /.vscode/
   - /LICENSE
