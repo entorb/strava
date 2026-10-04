@@ -1,9 +1,9 @@
 #!/bin/sh
+set -e
+cd "$(dirname "$0")/.."
 
-cd "$(dirname "$0")/.." || exit 1
-
-pnpm dlx cspell-cli@10.0.1 --unique --words-only . >cspell-words-missing.txt 2>/dev/null
-status=$?
+status=0
+pnpm dlx cspell-cli@10.0.1 --unique --words-only . >cspell-words-missing.txt 2>/dev/null || status=$?
 
 if [ $status -ne 0 ]; then
   echo "Found unknown spellings, see cspell-words-missing.txt. Fix or transfer to cspell-words.txt"
