@@ -4,9 +4,9 @@ name: Check Code
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 5 * * 0"  # Sunday 05:00 UTC, audit alert
+    - cron: '0 5 * * 0'  # Sunday 05:00 UTC, audit alert
   push:
-    branches: ["main", "renovate/**"]
+    branches: [main, renovate/**]
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -29,7 +29,7 @@ jobs:
 
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
         with:
-          python-version: "3.13"
+          python-version: '3.13'
 
       # - name: Gitleaks
       #   uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e  # v3.0.0
@@ -39,7 +39,7 @@ jobs:
       - name: Run prek pre-commit
         uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece  # v3.0.0
         with:
-          extra-args: '--all-files --quiet'
+          extra-args: --all-files --quiet
 
           # - name: Run cspell
           #   run: npm exec cspell-cli --gitignore --unique --silent .
