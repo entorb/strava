@@ -215,7 +215,7 @@ else {    # param("code") is set -> visitor coming from strava auth page
 		<li>2023-06-08: usage stats: 2697 unique and 669 returning users. </li>
 		<li>2020-07-24: usage stats: this tool passed the 1000-unique-users milestone!</li>
 		<li>2020-07-21: fancy activity table</li>
-		<li>2020-01-06: published source code on <a href="https://github.com/entorb/strava/" target="_blank">GitHub</a></li>
+		<li>2020-01-06: published source code on <a href="https://github.com/entorb/strava-perl/" target="_blank">GitHub</a></li>
 		<li>2019-06-08: top10 activities</li>
 		<li>2019-05-21: starred segments overview</li>
 		<li>2019-05-21: Excel import of activities</li>
